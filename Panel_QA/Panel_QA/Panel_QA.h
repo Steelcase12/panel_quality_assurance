@@ -1,13 +1,15 @@
 // Panel_QA.h
+using namespace std;
 
 #pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
 
-using namespace System;
-
-namespace Panel_QA {
-
-	public ref class Class1
-	{
-		// TODO: Add your methods for this class here.
-	};
-}
+class Panel
+{
+public:
+	Panel();
+	~Panel();
+	void PrintMessage(string message);
+};
