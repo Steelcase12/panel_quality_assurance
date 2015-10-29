@@ -3,18 +3,21 @@
 #include "stdafx.h"
 #include "Panel_QA.h"
 
-Panel::Panel()
+namespace Panels
 {
-	// constructor
-}
+	Panel::Panel()
+	{
+		// constructor
+	}
 
-Panel::~Panel()
-{
-	// destructor
-}
+	Panel::~Panel()
+	{
+		// destructor
+	}
 
-void Panel::PrintMessage(string message)
-{
-	printf("%s", message);
+	void Panel::ShowMessage(String^ message)
+	{
+		MessageBox::Show(message, "Panel_QA.dll", MessageBoxButtons::OK, MessageBoxIcon::Exclamation);
+	}
 }
 
