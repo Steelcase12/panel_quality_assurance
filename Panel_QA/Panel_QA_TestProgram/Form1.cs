@@ -7,12 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Panels;
+using MYopencv;
 
 namespace Panel_QA_TestProgram
 {
     public partial class Form1 : Form
     {
+        MYPanel newPanel;
         public Form1()
         {
             InitializeComponent();
@@ -20,7 +21,7 @@ namespace Panel_QA_TestProgram
 
         private void goBtn_Click(object sender, EventArgs e)
         {
-            Panels.Panel newPanel = new Panels.Panel();
+            newPanel = new MYPanel();;
             newPanel.ShowMessage(inputBox.Text);
             newPanel = null;
         }

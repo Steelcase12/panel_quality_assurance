@@ -1,21 +1,26 @@
-// Panel_QA.h
-using namespace std;
-using namespace System::Windows::Forms;
-using namespace System;
-
 #pragma once
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
 
-namespace Panels
-{
-	public ref class Panel
+#include "C:\CPE 495\panel_quality_assurance\Panel_QA\Panel_QA_CPP\Panel.h"
+#include "C:\CPE 495\panel_quality_assurance\Panel_QA\Panel_QA_CPP\Panel.cpp"
+
+using namespace System;
+using namespace System::Runtime::InteropServices;
+
+namespace MYopencv {
+	public ref class MYConversion
 	{
-	private:
 	public:
-		Panel();
-		~Panel();
-		void ShowMessage(String^ message);
+		MYConversion();
+		char* myStringToChar(System::String^ str);
+	};
+
+	public ref class MYPanel
+	{
+	public:
+		MYPanel();
+		void ShowMessage(System::String^ message);
+
+	private:
+		Panel *panel;
 	};
 }
