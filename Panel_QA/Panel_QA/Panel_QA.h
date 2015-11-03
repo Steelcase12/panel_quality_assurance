@@ -1,7 +1,9 @@
 #pragma once
 
-#include "C:\CPE 495\panel_quality_assurance\Panel_QA\Panel_QA_CPP\Panel.h"
-#include "C:\CPE 495\panel_quality_assurance\Panel_QA\Panel_QA_CPP\Panel.cpp"
+#include "..\Panel_QA_CPP\Panel.h"
+#include "..\Panel_QA_CPP\Panel.cpp"
+
+// Test
 
 using namespace System;
 using namespace System::Runtime::InteropServices;
