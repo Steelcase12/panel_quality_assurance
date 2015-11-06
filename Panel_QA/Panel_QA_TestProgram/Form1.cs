@@ -21,8 +21,8 @@ namespace Panel_QA_TestProgram
 
         private void goBtn_Click(object sender, EventArgs e)
         {
-            newPanel = new MYPanel();;
-            newPanel.ShowMessage(inputBox.Text);
+            newPanel = new MYPanel();
+            newPanel.DetectColor(inputBox.Text);
             newPanel = null;
         }
     }
