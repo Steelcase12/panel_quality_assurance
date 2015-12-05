@@ -47,7 +47,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(106, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Enter Your Message:";
+            this.label1.Text = "Image Path:";
             // 
             // goBtn
             // 

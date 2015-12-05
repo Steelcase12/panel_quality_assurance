@@ -18,11 +18,14 @@ class Panel
 public:
 	Panel();
 	~Panel();
-	void ShowMessage(string message);
 	void DetectColor(string imgPath);
-	void ShowImage(string imgPath);
 private:
 	Panel *pPanel;
 	void FixPath(string& path);
 	bool win0;
+	Mat m_Image, m_Src;
+	BOOL m_bDrag;
+	Point m_Point1;
+	Point m_Point2;
+	const char* m_WindowName = "My Image";
 };
