@@ -19,13 +19,12 @@ public:
 	Panel();
 	~Panel();
 	void DetectColor(string imgPath);
+	string ColorName(Vec3b HSV);
+	void ColorAtPoint(Point point);
 private:
 	Panel *pPanel;
 	void FixPath(string& path);
 	bool win0;
-	Mat m_Image, m_Src;
-	BOOL m_bDrag;
-	Point m_Point1;
-	Point m_Point2;
+	Mat m_Image;
 	const char* m_WindowName = "My Image";
 };

@@ -4,7 +4,6 @@
 
 Panel::Panel()
 {
-	// constructor
 }
 
 Panel::~Panel()
@@ -21,53 +20,35 @@ void ShowMessage(string message)
 
 static void onMouse(int event, int x, int y, int f, void *ptr)
 {
-	Mat image = *(static_cast<Mat*>(ptr));
-	Mat HSV;
-	cvtColor(image, HSV, CV_BGR2HSV);
 	if (event == EVENT_LBUTTONDOWN)
 	{
-		uchar blue, green, red;
-		int hue, sat, val;
-		Vec3b RGBpix, HSVpix;
-		RGBpix = image.at<Vec3b>(y, x);
-		HSVpix = HSV.at<Vec3b>(y, x);
-		blue = RGBpix.val[0];
-		green = RGBpix.val[1];
-		red = RGBpix.val[2];
-		hue = HSVpix.val[0];
-		sat = HSVpix.val[1];
-		val = HSVpix.val[2];
-		string RGBStr("RGB: (" + to_string(red) + "," + to_string(green) + "," + to_string(blue) + ")");
-		string HSVStr("HSV: (" + to_string(hue) + "," + to_string(sat) + "," + to_string(val) + ")");
-
-		ShowMessage("Point (" + to_string(x) + "," + to_string(y) + ")\n" + RGBStr + "\n" + HSVStr);
+		Panel *pPanel = static_cast<Panel*>(ptr);
+		Point clickPoint(x, y);
+		pPanel->ColorAtPoint(clickPoint);
 	}
 }
 
 void Panel::DetectColor(string sImgPath)
 {
+	pPanel = new Panel;
 	// read specified image
-	m_Image = imread(sImgPath, IMREAD_COLOR);
+	pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
+	Mat HSV;
+	cvtColor(pPanel->m_Image, HSV, CV_BGR2HSV);
 
-	if (m_Image.empty()) // Check for invalid input
+	if (pPanel->m_Image.empty()) // Check for invalid input
 	{
 		ShowMessage("Could not open or find the image");
 		return;
 	}
 
-	imshow(m_WindowName, m_Image);
+	imshow(m_WindowName, pPanel->m_Image);
 
 	// Get the color of the pixel at the middle of the image
-	Vec3b color = m_Image.at<Vec3b>(Point(m_Image.cols / 2, m_Image.rows / 2));
-	uchar blue = color.val[0];
-	uchar green = color.val[1];
-	uchar red = color.val[2];
-	// Convert to string
-	string colorStr("(" + to_string(red) + "," + to_string(green) + "," + to_string(blue) + ")");
-	// Display the color
-	ShowMessage("Mid point: (" + to_string(m_Image.cols / 2) + "," + to_string(m_Image.rows / 2) + ") \nRGB Value: " + colorStr);
-	m_bDrag = FALSE;
-	setMouseCallback(m_WindowName, onMouse, static_cast<void*>(&m_Image));
+	Point midPoint(pPanel->m_Image.cols / 2, pPanel->m_Image.rows / 2);
+	ColorAtPoint(midPoint);
+
+	setMouseCallback(pPanel->m_WindowName, onMouse, static_cast<void*>(&pPanel));
 }
 
 void strReplace(string& source, string const& find, string const& replace)
@@ -82,4 +63,51 @@ void strReplace(string& source, string const& find, string const& replace)
 void Panel::FixPath(string &path)
 {
 	strReplace(path, "\\" , "\\\\");
+}
+
+string Panel::ColorName(Vec3b color)
+{
+	uchar hue = color.val[0];
+	uchar sat = color.val[1];
+	uchar val = color.val[2];
+	if (sat >= 100 && val >= 30)
+	{
+		if (hue >= 105 && hue <= 131)
+			return "Blue";
+		else if (hue >= 160 || hue <= 10)
+			return "Red";
+		else if (hue >= 15 && hue <= 35)
+			return "Yellow";
+		else if (hue >= 50 && hue <= 70)
+			return "Green";
+	}
+	else if (val < 30)
+		return "Black";
+	else if (val >= 190)
+		return "White";
+
+	return "Unknown";
+}
+
+void Panel::ColorAtPoint(Point point)
+{
+	Mat HSV;
+	cvtColor(pPanel->m_Image, HSV, CV_BGR2HSV);
+	Vec3b BGRpix, HSVpix;
+	BGRpix = pPanel->m_Image.at<Vec3b>(Point(point.x, point.y));
+	HSVpix = HSV.at<Vec3b>(Point(point.x, point.y));
+	uchar blue, green, red;
+	uchar hue, sat, val;
+	blue = BGRpix.val[0];
+	green = BGRpix.val[1];
+	red = BGRpix.val[2];
+	hue = HSVpix.val[0];
+	sat = HSVpix.val[1];
+	val = HSVpix.val[2];
+	// Convert to string
+	string RGBcolorStr("(" + to_string(red) + "," + to_string(green) + "," + to_string(blue) + ")");
+	string HSVcolorStr("(" + to_string(hue) + "," + to_string(sat) + "," + to_string(val) + ")");
+	// Display the color strings
+	ShowMessage("Point: (" + to_string(m_Image.cols / 2) + "," + to_string(m_Image.rows / 2) +
+		") \nRGB Value: " + RGBcolorStr + "\nHSV Value: " + HSVcolorStr + "\nColor: " + pPanel->ColorName(HSVpix));
 }
