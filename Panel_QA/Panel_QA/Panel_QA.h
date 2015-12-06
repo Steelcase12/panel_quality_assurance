@@ -21,8 +21,6 @@ namespace MYopencv {
 	public:
 		MYPanel();
 		~MYPanel();
-		void ShowMessage(System::String^ message);
-		void ShowImage(System::String^ imgPath);
 		void DetectColor(System::String^ imgPath);
 	private:
 		Panel *panel;

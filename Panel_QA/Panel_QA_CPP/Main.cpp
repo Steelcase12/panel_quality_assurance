@@ -3,7 +3,7 @@
 
 int main() {
 	Panel *panel = new Panel();
-	panel->ShowMessage("Test message");
+	// panel->ShowMessage("Test message");
 	free(panel);
 
 	printf("End of the test program\n");

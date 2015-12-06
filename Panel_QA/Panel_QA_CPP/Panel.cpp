@@ -4,7 +4,6 @@
 
 Panel::Panel()
 {
-	// constructor
 }
 
 Panel::~Panel()
@@ -12,58 +11,44 @@ Panel::~Panel()
 	delete pPanel;
 }
 
-void Panel::DetectColor(string sImgPath)
-{
-	Mat image, imageGrey;
-	double minVal, maxVal;
-	Point minLoc, maxLoc;
-
-	// read specified image
-	image = imread(sImgPath, IMREAD_COLOR);
-	imageGrey = imread(sImgPath, CV_LOAD_IMAGE_GRAYSCALE);
-
-	if (image.empty()) // Check for invalid input
-	{
-		ShowMessage("Could not open or find the image");
-		return;
-	}
-
-	// Get the color of the pixel at the middle of the image
-	Vec3b color = image.at<Vec3b>(Point(image.cols/2,image.rows/2));
-	uchar blue = color.val[0];
-	uchar green = color.val[1];
-	uchar red = color.val[2];
-	// Convert to string
-	string colorStr("(" + to_string(red) + "," + to_string(green) + "," + to_string(blue) + ")");
-	// Display the color
-	ShowMessage("RGB value at point (" + to_string(image.cols / 2) + "," + to_string(image.rows / 2) + "): " + colorStr);
-	// ShowImage(sImgPath);
-}
-
-void Panel::ShowMessage(string message)
+void ShowMessage(string message)
 {
 	char buff[100];
 	sprintf_s(buff, "%s", message.c_str());
 	MessageBoxA(NULL, (LPCSTR)buff, (LPCSTR)"Panel_QA_CPP.dll", MB_OK);
 }
 
-void Panel::ShowImage(string imgPath)
+static void onMouse(int event, int x, int y, int f, void *ptr)
 {
-	pPanel = new Panel();
-	pPanel->FixPath(imgPath);
-	Mat image;
-	image = imread(imgPath, IMREAD_COLOR); // Read the file
+	if (event == EVENT_LBUTTONDOWN)
+	{
+		Panel *pPanel = static_cast<Panel*>(ptr);
+		Point clickPoint(x, y);
+		pPanel->ColorAtPoint(clickPoint);
+	}
+}
 
-	if (image.empty()) // Check for invalid input
+void Panel::DetectColor(string sImgPath)
+{
+	pPanel = new Panel;
+	// read specified image
+	pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
+	Mat HSV;
+	cvtColor(pPanel->m_Image, HSV, CV_BGR2HSV);
+
+	if (pPanel->m_Image.empty()) // Check for invalid input
 	{
 		ShowMessage("Could not open or find the image");
 		return;
 	}
 
-	namedWindow("Display window", CV_WINDOW_NORMAL); // Create a window for display.
-	imshow("Display window", image); // Show our image inside it.
+	imshow(m_WindowName, pPanel->m_Image);
 
-	waitKey(0); // Wait for a keystroke in the window
+	// Get the color of the pixel at the middle of the image
+	Point midPoint(pPanel->m_Image.cols / 2, pPanel->m_Image.rows / 2);
+	ColorAtPoint(midPoint);
+
+	setMouseCallback(pPanel->m_WindowName, onMouse, static_cast<void*>(&pPanel));
 }
 
 void strReplace(string& source, string const& find, string const& replace)
@@ -78,4 +63,51 @@ void strReplace(string& source, string const& find, string const& replace)
 void Panel::FixPath(string &path)
 {
 	strReplace(path, "\\" , "\\\\");
+}
+
+string Panel::ColorName(Vec3b color)
+{
+	uchar hue = color.val[0];
+	uchar sat = color.val[1];
+	uchar val = color.val[2];
+	if (sat >= 100 && val >= 30)
+	{
+		if (hue >= 105 && hue <= 131)
+			return "Blue";
+		else if (hue >= 160 || hue <= 10)
+			return "Red";
+		else if (hue >= 15 && hue <= 35)
+			return "Yellow";
+		else if (hue >= 50 && hue <= 70)
+			return "Green";
+	}
+	else if (val < 30)
+		return "Black";
+	else if (val >= 190)
+		return "White";
+
+	return "Unknown";
+}
+
+void Panel::ColorAtPoint(Point point)
+{
+	Mat HSV;
+	cvtColor(pPanel->m_Image, HSV, CV_BGR2HSV);
+	Vec3b BGRpix, HSVpix;
+	BGRpix = pPanel->m_Image.at<Vec3b>(Point(point.x, point.y));
+	HSVpix = HSV.at<Vec3b>(Point(point.x, point.y));
+	uchar blue, green, red;
+	uchar hue, sat, val;
+	blue = BGRpix.val[0];
+	green = BGRpix.val[1];
+	red = BGRpix.val[2];
+	hue = HSVpix.val[0];
+	sat = HSVpix.val[1];
+	val = HSVpix.val[2];
+	// Convert to string
+	string RGBcolorStr("(" + to_string(red) + "," + to_string(green) + "," + to_string(blue) + ")");
+	string HSVcolorStr("(" + to_string(hue) + "," + to_string(sat) + "," + to_string(val) + ")");
+	// Display the color strings
+	ShowMessage("Point: (" + to_string(m_Image.cols / 2) + "," + to_string(m_Image.rows / 2) +
+		") \nRGB Value: " + RGBcolorStr + "\nHSV Value: " + HSVcolorStr + "\nColor: " + pPanel->ColorName(HSVpix));
 }

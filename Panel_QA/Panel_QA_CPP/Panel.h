@@ -18,11 +18,13 @@ class Panel
 public:
 	Panel();
 	~Panel();
-	void ShowMessage(string message);
 	void DetectColor(string imgPath);
-	void ShowImage(string imgPath);
+	string ColorName(Vec3b HSV);
+	void ColorAtPoint(Point point);
 private:
 	Panel *pPanel;
 	void FixPath(string& path);
 	bool win0;
+	Mat m_Image;
+	const char* m_WindowName = "My Image";
 };

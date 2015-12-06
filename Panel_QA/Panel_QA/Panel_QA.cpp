@@ -21,20 +21,6 @@ void MYPanel::DetectColor(System::String^ imgPath)
 	panel->DetectColor((string)strImgPath);
 }
 
-void MYPanel::ShowMessage(System::String^ message)
-{
-	MYConversion ^convert = gcnew MYConversion();
-	string str = convert->myStringToChar(message);
-	panel->ShowMessage((string)str);
-}
-
-void MYPanel::ShowImage(System::String^ imgPath)
-{
-	MYConversion ^convert = gcnew MYConversion();
-	string str = convert->myStringToChar(imgPath);
-	panel->ShowImage((string)str);
-}
-
 // ++++++++++++ MYConversion Class ++++++++++++ 
 MYConversion::MYConversion() {}
 
