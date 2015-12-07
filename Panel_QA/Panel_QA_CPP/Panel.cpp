@@ -46,7 +46,7 @@ void Panel::DetectColor(string sImgPath)
 
 	// Get the color of the pixel at the middle of the image
 	Point midPoint(pPanel->m_Image.cols / 2, pPanel->m_Image.rows / 2);
-	ColorAtPoint(midPoint);
+	//ColorAtPoint(midPoint);
 
 	setMouseCallback(pPanel->m_WindowName, onMouse, static_cast<void*>(&pPanel));
 }
@@ -108,6 +108,6 @@ void Panel::ColorAtPoint(Point point)
 	string RGBcolorStr("(" + to_string(red) + "," + to_string(green) + "," + to_string(blue) + ")");
 	string HSVcolorStr("(" + to_string(hue) + "," + to_string(sat) + "," + to_string(val) + ")");
 	// Display the color strings
-	ShowMessage("Point: (" + to_string(m_Image.cols / 2) + "," + to_string(m_Image.rows / 2) +
+	ShowMessage("Point: (" + to_string(point.x) + "," + to_string(point.y) +
 		") \nRGB Value: " + RGBcolorStr + "\nHSV Value: " + HSVcolorStr + "\nColor: " + pPanel->ColorName(HSVpix));
 }
