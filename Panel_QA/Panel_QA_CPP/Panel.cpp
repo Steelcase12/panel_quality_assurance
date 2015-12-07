@@ -74,6 +74,8 @@ string Panel::ColorName(Vec3b color)
 	{
 		if (hue >= 105 && hue <= 131)
 			return "Blue";
+		else if (hue <= 20 && (val <= 160 && val >= 55))
+			return "Brown";
 		else if (hue >= 160 || hue <= 10)
 			return "Red";
 		else if (hue >= 15 && hue <= 35)
@@ -81,6 +83,7 @@ string Panel::ColorName(Vec3b color)
 		else if (hue >= 50 && hue <= 70)
 			return "Green";
 	}
+	
 	else if (val < 30)
 		return "Black";
 	else if (val >= 190)
