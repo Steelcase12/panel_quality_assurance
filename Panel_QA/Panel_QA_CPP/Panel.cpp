@@ -8,7 +8,7 @@ Panel::Panel()
 
 Panel::~Panel()
 {
-	delete pPanel;
+	delete m_pPanel;
 }
 
 void ShowMessage(string message)
@@ -28,27 +28,24 @@ static void onMouse(int event, int x, int y, int f, void *ptr)
 	}
 }
 
-void Panel::DetectColor(string sImgPath)
+bool Panel::ShowImage(string sImgPath, string windowTitle)
 {
-	pPanel = new Panel;
+	m_pPanel = new Panel;
 	// read specified image
-	pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
-	Mat HSV;
-	cvtColor(pPanel->m_Image, HSV, CV_BGR2HSV);
+	m_pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
 
-	if (pPanel->m_Image.empty()) // Check for invalid input
+	if (m_pPanel->m_Image.empty()) // Check for invalid input
 	{
 		ShowMessage("Could not open or find the image");
-		return;
+		return false;
 	}
 
-	imshow(m_WindowName, pPanel->m_Image);
+	// Show the image
+	imshow(m_WindowName, m_pPanel->m_Image);
+	// Set mouse callback to show the color of the point clicked
+	setMouseCallback(windowTitle, onMouse, static_cast<void*>(&m_pPanel));
 
-	// Get the color of the pixel at the middle of the image
-	Point midPoint(pPanel->m_Image.cols / 2, pPanel->m_Image.rows / 2);
-	//ColorAtPoint(midPoint);
-
-	setMouseCallback(pPanel->m_WindowName, onMouse, static_cast<void*>(&pPanel));
+	return true;
 }
 
 void strReplace(string& source, string const& find, string const& replace)
@@ -95,9 +92,9 @@ string Panel::ColorName(Vec3b color)
 void Panel::ColorAtPoint(Point point)
 {
 	Mat HSV;
-	cvtColor(pPanel->m_Image, HSV, CV_BGR2HSV);
+	cvtColor(m_pPanel->m_Image, HSV, CV_BGR2HSV);
 	Vec3b BGRpix, HSVpix;
-	BGRpix = pPanel->m_Image.at<Vec3b>(Point(point.x, point.y));
+	BGRpix = m_pPanel->m_Image.at<Vec3b>(Point(point.x, point.y));
 	HSVpix = HSV.at<Vec3b>(Point(point.x, point.y));
 	uchar blue, green, red;
 	uchar hue, sat, val;
@@ -112,5 +109,39 @@ void Panel::ColorAtPoint(Point point)
 	string HSVcolorStr("(" + to_string(hue) + "," + to_string(sat) + "," + to_string(val) + ")");
 	// Display the color strings
 	ShowMessage("Point: (" + to_string(point.x) + "," + to_string(point.y) +
-		") \nRGB Value: " + RGBcolorStr + "\nHSV Value: " + HSVcolorStr + "\nColor: " + pPanel->ColorName(HSVpix));
+		") \nRGB Value: " + RGBcolorStr + "\nHSV Value: " + HSVcolorStr + "\nColor: " + m_pPanel->ColorName(HSVpix));
+}
+
+void Panel::MaskWithColor(string sImgPath, string color)
+{
+	if(!ShowImage(sImgPath, "Original"))
+		return;
+
+	// read specified image
+	m_pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
+	Mat HSV, Mask, BGR, Result;
+	double lowerBound, upperBound;
+	cvtColor(m_pPanel->m_Image, HSV, CV_BGR2HSV);
+	if (color == "blue")
+	{
+		lowerBound = 105;
+		upperBound = 131;
+		inRange(HSV, Scalar(lowerBound, 100, 30), Scalar(upperBound, 255, 255), Mask);
+		m_pPanel->m_Image.copyTo(Result, Mask);
+	}
+	else if (color == "red")
+	{
+		Mat Mask1, Mask2;
+		lowerBound = 0;
+		upperBound = 10;
+		inRange(HSV, Scalar(lowerBound, 100, 30), Scalar(upperBound, 255, 255), Mask1);
+		lowerBound = 160;
+		upperBound = 180;
+		inRange(HSV, Scalar(lowerBound, 100, 30), Scalar(upperBound, 255, 255), Mask2);
+		bitwise_or(Mask1, Mask2, Mask);
+		m_pPanel->m_Image.copyTo(Result, Mask);
+	}
+	// imshow("original", HSV);
+	imshow("Mask", Mask);
+	imshow("Result", Result);
 }

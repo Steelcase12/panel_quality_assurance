@@ -14,11 +14,20 @@ MYPanel::~MYPanel()
 	delete panel;
 }
 
-void MYPanel::DetectColor(System::String^ imgPath)
+void MYPanel::ShowImage(System::String^ imgPath, System::String^ windowTitle)
 {
 	MYConversion ^convert = gcnew MYConversion();
 	string strImgPath = convert->myStringToChar(imgPath);
-	panel->DetectColor((string)strImgPath);
+	string strWindowTitle = convert->myStringToChar(windowTitle);
+	panel->ShowImage((string)strImgPath, (string)strWindowTitle);
+}
+
+void MYPanel::MaskWithColor(System::String^ imgPath, System::String^ color)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	string strColor = convert->myStringToChar(color);
+	panel->MaskWithColor((string)strImgPath, (string)strColor);
 }
 
 // ++++++++++++ MYConversion Class ++++++++++++ 

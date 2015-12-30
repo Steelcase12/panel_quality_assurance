@@ -7,8 +7,9 @@
 #include <windows.h>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 
 using namespace std;
 using namespace cv;
@@ -18,11 +19,12 @@ class Panel
 public:
 	Panel();
 	~Panel();
-	void DetectColor(string imgPath);
+	bool ShowImage(string imgPath, string windowTitle);
 	string ColorName(Vec3b HSV);
 	void ColorAtPoint(Point point);
+	void MaskWithColor(string imgPath, string color);
 private:
-	Panel *pPanel;
+	Panel *m_pPanel;
 	void FixPath(string& path);
 	bool win0;
 	Mat m_Image;
