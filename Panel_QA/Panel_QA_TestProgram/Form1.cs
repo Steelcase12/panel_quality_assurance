@@ -21,9 +21,62 @@ namespace Panel_QA_TestProgram
 
         private void goBtn_Click(object sender, EventArgs e)
         {
-            newPanel = new MYPanel();
-            newPanel.DetectColor(inputBox.Text);
-            newPanel = null;
+            if (inputBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.ShowImage(inputBox.Text, "My Image");
+                newPanel = null;
+                warningLabel.Text = "";
+            } else {
+                warningLabel.Text = "You must enter a path to an image";
+            }
+        }
+
+        private void redBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.MaskWithColor(inputBox.Text, "red");
+                warningLabel.Text = "";
+                newPanel = null;
+            } else {
+                warningLabel.Text = "You must enter a path to an image";
+            }
+        }
+
+        private void blueBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.MaskWithColor(inputBox.Text, "blue");
+                warningLabel.Text = "";
+                newPanel = null;
+            } else {
+                warningLabel.Text = "You must enter a path to an image";
+            }
+        }
+
+        private void panelBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.MaskWithColor(inputBox.Text, "panel");
+                warningLabel.Text = "";
+                newPanel = null;
+            } else {
+                warningLabel.Text = "You must enter a path to an image";
+            }
+        }
+
+        private void detectEdgesBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.DetectEdges(inputBox.Text);
+                warningLabel.Text = "";
+                newPanel = null;
+            } else {
+                warningLabel.Text = "You must enter a path to an image";
+            }
         }
     }
 }
