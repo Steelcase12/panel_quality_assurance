@@ -23,6 +23,7 @@ namespace MYopencv {
 		~MYPanel();
 		void ShowImage(System::String^ imgPath, System::String^ windowTitle);
 		void MaskWithColor(System::String^ imgPath, System::String^ color);
+		void DetectEdges(System::String^ imgPath);
 	private:
 		Panel *panel;
 	};

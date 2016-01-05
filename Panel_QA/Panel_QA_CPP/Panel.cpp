@@ -127,7 +127,6 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		lowerBound = 105;
 		upperBound = 131;
 		inRange(HSV, Scalar(lowerBound, 100, 30), Scalar(upperBound, 255, 255), Mask);
-		m_pPanel->m_Image.copyTo(Result, Mask);
 	}
 	else if (color == "red")
 	{
@@ -139,9 +138,52 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		upperBound = 180;
 		inRange(HSV, Scalar(lowerBound, 100, 30), Scalar(upperBound, 255, 255), Mask2);
 		bitwise_or(Mask1, Mask2, Mask);
-		m_pPanel->m_Image.copyTo(Result, Mask);
 	}
+	else if (color == "panel")
+	{
+		// lowerBound = ;
+		// upperBount = ;
+		inRange(HSV, Scalar(120, 0, 170), Scalar(160, 25, 200), Mask);
+	}
+	m_pPanel->m_Image.copyTo(Result, Mask);
 	// imshow("original", HSV);
 	imshow("Mask", Mask);
 	imshow("Result", Result);
+}
+
+void Panel::DetectEdges(string sImgPath)
+{
+	m_pPanel = new Panel;
+	// read specified image
+	m_pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
+
+	if (m_pPanel->m_Image.empty()) // Check for invalid input
+	{
+		ShowMessage("Could not open or find the image");
+		return;
+	}
+
+	Mat edges = CannyDetection();
+
+	// Show the orignal image and detected canny edges
+	imshow("Original Image", m_pPanel->m_Image);
+	imshow("Detected Edges", edges);
+}
+
+Mat Panel::CannyDetection()
+{
+	Mat greyImage;
+	cvtColor(m_pPanel->m_Image, greyImage, CV_BGR2GRAY);
+
+	Mat thresh;
+	threshold(greyImage, thresh, 130.0, 255.0, THRESH_BINARY);
+	// imshow("Threshhold", thresh);
+
+	GaussianBlur(thresh, thresh, Size(7, 7), 2.0, 2.0);
+	// imshow("Blurred Threshhold", thresh);
+
+	Mat edges;
+	Canny(thresh, edges, 66.0, 133.0, 3);
+
+	return edges;
 }

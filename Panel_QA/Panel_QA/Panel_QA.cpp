@@ -30,6 +30,13 @@ void MYPanel::MaskWithColor(System::String^ imgPath, System::String^ color)
 	panel->MaskWithColor((string)strImgPath, (string)strColor);
 }
 
+void MYPanel::DetectEdges(System::String^ imgPath)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	panel->DetectEdges((string)strImgPath);
+}
+
 // ++++++++++++ MYConversion Class ++++++++++++ 
 MYConversion::MYConversion() {}
 

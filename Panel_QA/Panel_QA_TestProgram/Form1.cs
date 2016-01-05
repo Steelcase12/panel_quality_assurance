@@ -54,5 +54,29 @@ namespace Panel_QA_TestProgram
                 warningLabel.Text = "You must enter a path to an image";
             }
         }
+
+        private void panelBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.MaskWithColor(inputBox.Text, "panel");
+                warningLabel.Text = "";
+                newPanel = null;
+            } else {
+                warningLabel.Text = "You must enter a path to an image";
+            }
+        }
+
+        private void detectEdgesBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.DetectEdges(inputBox.Text);
+                warningLabel.Text = "";
+                newPanel = null;
+            } else {
+                warningLabel.Text = "You must enter a path to an image";
+            }
+        }
     }
 }

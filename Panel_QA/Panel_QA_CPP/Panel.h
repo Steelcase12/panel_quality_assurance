@@ -23,10 +23,11 @@ public:
 	string ColorName(Vec3b HSV);
 	void ColorAtPoint(Point point);
 	void MaskWithColor(string imgPath, string color);
+	void DetectEdges(string imgPath);
 private:
 	Panel *m_pPanel;
 	void FixPath(string& path);
-	bool win0;
+	Mat CannyDetection();
 	Mat m_Image;
 	const char* m_WindowName = "My Image";
 };
