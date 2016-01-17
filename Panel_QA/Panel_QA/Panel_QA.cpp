@@ -37,6 +37,13 @@ void MYPanel::DetectEdges(System::String^ imgPath)
 	panel->DetectEdges((string)strImgPath);
 }
 
+void MYPanel::CalibrateCamera(System::String^ imgPath)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	panel->CalibrateCamera((string)strImgPath);
+}
+
 // ++++++++++++ MYConversion Class ++++++++++++ 
 MYConversion::MYConversion() {}
 

@@ -37,6 +37,7 @@
             this.warningLabel = new System.Windows.Forms.Label();
             this.detectEdgesBtn = new System.Windows.Forms.Button();
             this.panelBtn = new System.Windows.Forms.Button();
+            this.calibrateBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // inputBox
@@ -104,7 +105,7 @@
             // 
             // detectEdgesBtn
             // 
-            this.detectEdgesBtn.Location = new System.Drawing.Point(148, 157);
+            this.detectEdgesBtn.Location = new System.Drawing.Point(99, 147);
             this.detectEdgesBtn.Name = "detectEdgesBtn";
             this.detectEdgesBtn.Size = new System.Drawing.Size(87, 23);
             this.detectEdgesBtn.TabIndex = 7;
@@ -122,11 +123,22 @@
             this.panelBtn.UseVisualStyleBackColor = true;
             this.panelBtn.Click += new System.EventHandler(this.panelBtn_Click);
             // 
+            // calibrateBtn
+            // 
+            this.calibrateBtn.Location = new System.Drawing.Point(210, 147);
+            this.calibrateBtn.Name = "calibrateBtn";
+            this.calibrateBtn.Size = new System.Drawing.Size(75, 23);
+            this.calibrateBtn.TabIndex = 9;
+            this.calibrateBtn.Text = "Calibrate";
+            this.calibrateBtn.UseVisualStyleBackColor = true;
+            this.calibrateBtn.Click += new System.EventHandler(this.calibrateBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(390, 223);
+            this.Controls.Add(this.calibrateBtn);
             this.Controls.Add(this.panelBtn);
             this.Controls.Add(this.detectEdgesBtn);
             this.Controls.Add(this.warningLabel);
@@ -154,6 +166,7 @@
         private System.Windows.Forms.Label warningLabel;
         private System.Windows.Forms.Button detectEdgesBtn;
         private System.Windows.Forms.Button panelBtn;
+        private System.Windows.Forms.Button calibrateBtn;
     }
 }
 

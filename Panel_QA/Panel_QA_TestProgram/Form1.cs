@@ -78,5 +78,17 @@ namespace Panel_QA_TestProgram
                 warningLabel.Text = "You must enter a path to an image";
             }
         }
+
+        private void calibrateBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.CalibrateCamera(inputBox.Text);
+                warningLabel.Text = "";
+                newPanel = null;
+            } else {
+                warningLabel.Text = "You must enter a path to an file";
+            }
+        }
     }
 }
