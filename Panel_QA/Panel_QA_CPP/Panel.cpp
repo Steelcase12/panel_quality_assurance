@@ -121,35 +121,62 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	// read specified image
 	m_pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
 	Mat HSV, Mask, BGR, Result;
-	double lowerBound, upperBound;
 	cvtColor(m_pPanel->m_Image, HSV, CV_BGR2HSV);
 	if (color == "blue")
 	{
-		lowerBound = 105;
-		upperBound = 131;
-		inRange(HSV, Scalar(lowerBound, 100, 30), Scalar(upperBound, 255, 255), Mask);
+		inRange(HSV, Scalar(105, 100, 30), Scalar(131, 255, 255), Mask);
 	}
 	else if (color == "red")
 	{
 		Mat Mask1, Mask2;
-		lowerBound = 0;
-		upperBound = 10;
-		inRange(HSV, Scalar(lowerBound, 100, 30), Scalar(upperBound, 255, 255), Mask1);
-		lowerBound = 160;
-		upperBound = 180;
-		inRange(HSV, Scalar(lowerBound, 100, 30), Scalar(upperBound, 255, 255), Mask2);
+		inRange(HSV, Scalar(0, 100, 30), Scalar(10, 255, 255), Mask1);
+		inRange(HSV, Scalar(160, 100, 30), Scalar(180, 255, 255), Mask2);
 		bitwise_or(Mask1, Mask2, Mask);
 	}
 	else if (color == "panel")
 	{
-		// lowerBound = ;
-		// upperBount = ;
-		inRange(HSV, Scalar(120, 0, 170), Scalar(160, 25, 200), Mask);
+		int h1Lo = 150, s1Lo = 10, v1Lo = 100;
+		int h1Hi = 180, s1Hi = 50, v1Hi = 200;
+		int h2Lo = 0, s2Lo = 30, v2Lo = 100;
+		int h2Hi = 15, s2Hi = 50, v2Hi = 150;
+		namedWindow("InRange Tester", CV_WINDOW_AUTOSIZE);
+		cvCreateTrackbar("Hue Lo 1:", "InRange Tester", &h1Lo, 180);
+		cvCreateTrackbar("Hue Hi 1:", "InRange Tester", &h1Hi, 180);
+		cvCreateTrackbar("Sat Lo 1", "InRange Tester", &s1Lo, 255);
+		cvCreateTrackbar("Sat Hi 1", "InRange Tester", &s1Hi, 255);
+		cvCreateTrackbar("Val Lo 1", "InRange Tester", &v1Lo, 255);
+		cvCreateTrackbar("Val Hi 1", "InRange Tester", &v1Hi, 255);
+		cvCreateTrackbar("Hue Lo 2:", "InRange Tester", &h2Lo, 180);
+		cvCreateTrackbar("Hue Hi 2:", "InRange Tester", &h2Hi, 180);
+		cvCreateTrackbar("Sat Lo 2", "InRange Tester", &s2Lo, 255);
+		cvCreateTrackbar("Sat Hi 2", "InRange Tester", &s2Hi, 255);
+		cvCreateTrackbar("Val Lo 2", "InRange Tester", &v2Lo, 255);
+		cvCreateTrackbar("Val Hi 2", "InRange Tester", &v2Hi, 255);
+		while (true)
+		{
+			Mat Mask1, Mask2;
+			inRange(HSV, Scalar(h1Lo, s1Lo, v1Lo), Scalar(h1Hi, s1Hi, v1Hi), Mask1);
+			inRange(HSV, Scalar(h2Lo, s2Lo, v2Lo), Scalar(h2Hi, s2Hi, v2Hi), Mask2);
+			bitwise_or(Mask1, Mask2, Mask);
+
+			m_pPanel->m_Image.copyTo(Result, Mask);
+
+			imshow("Result", Result);
+
+			if (waitKey(30) == 27)
+				break;
+		}
+		return;
 	}
 	m_pPanel->m_Image.copyTo(Result, Mask);
-	// imshow("original", HSV);
-	imshow("Mask", Mask);
-	imshow("Result", Result);
+	Mat greyOrig;
+	cvtColor(Result, greyOrig, CV_BGR2GRAY);
+	Mat thresh;
+	threshold(greyOrig, thresh, 50.0, 255.0, THRESH_BINARY);
+	Mat filtered;
+	m_pPanel->m_Image.copyTo(filtered, thresh);
+
+	DetectBlob(filtered);
 }
 
 void Panel::DetectEdges(string sImgPath)
@@ -164,29 +191,131 @@ void Panel::DetectEdges(string sImgPath)
 		return;
 	}
 
-	Mat edges = CannyDetection();
-
 	// Show the orignal image and detected canny edges
 	imshow("Original Image", m_pPanel->m_Image);
-	imshow("Detected Edges", edges);
+
+	// Canny Edge and Hough Line Detection
+	Mat edges = CannyDetection(m_pPanel->m_Image);
 }
 
-Mat Panel::CannyDetection()
+Mat Panel::CannyDetection(Mat image)
 {
 	Mat greyImage;
-	cvtColor(m_pPanel->m_Image, greyImage, CV_BGR2GRAY);
+	cvtColor(image, greyImage, CV_BGR2GRAY);
 
-	Mat thresh;
-	threshold(greyImage, thresh, 130.0, 255.0, THRESH_BINARY);
-	// imshow("Threshhold", thresh);
+	namedWindow("Thresh", CV_WINDOW_AUTOSIZE);
+	Mat thresh, blurredThresh, edges, edgesGray;
+	int low = 141, high = 255;
+	int sigmaX = 2, sigmaY = 2; 
+	int cannyLow = 255, cannyHi = 255;
+	int houghLength = 116;
+	vector<Vec2f> lines;
+	/*	This code is for testing different values of various functions
+		Uncomment if you want to test different values than the ones given
+	*/
+	cvCreateTrackbar("Threshhold", "Thresh", &low, 255);
+	// cvCreateTrackbar("Value", "Thresh", &high, 255);
+	// cvCreateTrackbar("SigmaX", "Thresh", &sigmaX, 500);
+	// cvCreateTrackbar("SigmaY", "Thresh", &sigmaY, 500);
+	cvCreateTrackbar("Canny Low", "Thresh", &cannyLow, 255);
+	cvCreateTrackbar("Canny High", "Thresh", &cannyHi, 255);
+	cvCreateTrackbar("Hough Line length", "Thresh", &houghLength, 1000);
+	while (true)
+	{
+		threshold(greyImage, thresh, low, 255, THRESH_BINARY);
+		imshow("Threshhold", thresh);
 
-	GaussianBlur(thresh, thresh, Size(7, 7), 2.0, 2.0);
-	// imshow("Blurred Threshhold", thresh);
+		GaussianBlur(thresh, blurredThresh, Size(7, 7), sigmaX, sigmaY);
+		imshow("Blurred", blurredThresh);
 
-	Mat edges;
-	Canny(thresh, edges, 66.0, 133.0, 3);
+		Canny(blurredThresh, edges, cannyLow, cannyHi, 3);
+		imshow("Canny Edges", edges);
 
+		HoughLines(edges, lines, 1, CV_PI / 180, houghLength, 0, 0);
+
+		cvtColor(edges, edgesGray, CV_GRAY2BGR);
+		for (size_t i = 0; i < lines.size(); i++)
+		{
+		float rho = lines[i][0], theta = lines[i][1];
+		Point pt1, pt2;
+		double a = cos(theta), b = sin(theta);
+		double x0 = a*rho, y0 = b*rho;
+		pt1.x = cvRound(x0 + 1000 * (-b));
+		pt1.y = cvRound(y0 + 1000 * (a));
+		pt2.x = cvRound(x0 - 1000 * (-b));
+		pt2.y = cvRound(y0 - 1000 * (a));
+		line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
+		}
+
+		imshow("Hough Lines", edgesGray);
+
+		if (waitKey(30) == 27)
+			break;
+	}
 	return edges;
+}
+
+void Panel::DetectBlob(Mat image)
+{
+	Mat grayImage, dilatedEroded, dilated, blurred;
+	cvtColor(image, grayImage, CV_BGR2GRAY);
+
+	// Setup SimpleBlobDetector parameters.
+	Ptr<SimpleBlobDetector> detector;
+	SimpleBlobDetector::Params params;
+	std::vector<KeyPoint> keypoints;
+	Mat im_with_keypoints, thresh;
+
+	int low = 60;
+	int blobArea = 200;
+	int sigmaX = 0, sigmaY = 0;
+	/*	This is Test Code
+		Uncomment this and the waiteKey() code and add closing bracket after
+		break to run this portion of code withs trackbars
+
+	namedWindow("Blob", CV_WINDOW_NORMAL);
+	cvCreateTrackbar("Blob Area", "Blob", &blobArea, 2000);
+	cvCreateTrackbar("Threshhold", "Blob", &low, 255);
+	while (true)
+	{
+	*/
+	dilate(grayImage, dilated, Mat());
+
+	GaussianBlur(dilated, blurred, Size(7, 7), 0, 0);
+
+	threshold(blurred, thresh, low, 255, THRESH_BINARY);
+
+	// Filter by Area.
+	params.filterByArea = true;
+	params.filterByColor = false;
+	params.filterByConvexity = false;
+	params.filterByCircularity = false;
+	params.filterByInertia = false;
+	params.minArea = blobArea;
+
+	// Set up the detector with default parameters.
+	detector = SimpleBlobDetector::create(params);
+
+	// Detect blobs.
+	detector->detect(thresh, keypoints);
+
+	// Draw detected blobs as red circles.
+	// DrawMatchesFlags::DRAW_RICH_KEYPOINTS flag ensures the size of the circle corresponds to the size of blob
+	drawKeypoints(thresh, keypoints, im_with_keypoints, Scalar(0, 0, 255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+
+	// Show blobs
+	imshow("keypoints", im_with_keypoints);
+
+	// Pass/Fail Message
+	if (!keypoints.empty())
+		ShowMessage("Tag detected");
+	else
+		ShowMessage("No tag detected");
+
+	/*
+	if (waitKey(30) == 27)
+		break;
+	*/
 }
 
 void Panel::CalibrateCamera(string sFilePath)

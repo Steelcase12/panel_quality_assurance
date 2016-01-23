@@ -28,7 +28,8 @@ public:
 private:
 	Panel *m_pPanel;
 	void FixPath(string& path);
-	Mat CannyDetection();
+	Mat CannyDetection(Mat image);
 	Mat m_Image;
+	void DetectBlob(Mat image);
 	const char* m_WindowName = "My Image";
 };
