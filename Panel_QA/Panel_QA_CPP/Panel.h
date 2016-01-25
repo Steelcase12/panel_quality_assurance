@@ -2,6 +2,7 @@
 #pragma once
 #pragma comment(lib,"user32.lib")
 #include <iostream>
+#include <vector>
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
