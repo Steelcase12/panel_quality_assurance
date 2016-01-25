@@ -12,6 +12,62 @@ Panel::~Panel()
 	delete m_pPanel;
 }
 
+
+///////////////////////////////////////////////////////////////////////
+///// Helper functions for Computing Hough Line Intersections /////////
+///////////////////////////////////////////////////////////////////////
+vector<Point2f> lineToPointPair(Vec2f line)
+{
+	vector<Point2f> points;
+
+	float r = line[0], t = line[1];
+	double cos_t = cos(t), sin_t = sin(t);
+	double x0 = r*cos_t, y0 = r*sin_t;
+	double alpha = 1000;
+
+	points.push_back(Point2f(x0 + alpha*(-sin_t), y0 + alpha*cos_t));
+	points.push_back(Point2f(x0 - alpha*(-sin_t), y0 - alpha*cos_t));
+
+	return points;
+}
+
+bool acceptLinePair(Vec2f line1, Vec2f line2, float minTheta)
+{
+	float theta1 = line1[1], theta2 = line2[1];
+
+	if (theta1 < minTheta)
+	{
+		theta1 += CV_PI; // dealing with 0 and 180 ambiguities...
+	}
+
+	if (theta2 < minTheta)
+	{
+		theta2 += CV_PI; // dealing with 0 and 180 ambiguities...
+	}
+
+	return abs(theta1 - theta2) > minTheta;
+}
+
+// the long nasty wikipedia line-intersection equation...bleh...
+Point2f computeIntersect(Vec2f line1, Vec2f line2)
+{
+	vector<Point2f> p1 = lineToPointPair(line1);
+	vector<Point2f> p2 = lineToPointPair(line2);
+
+	float denom = (p1[0].x - p1[1].x)*(p2[0].y - p2[1].y) - (p1[0].y - p1[1].y)*(p2[0].x - p2[1].x);
+	Point2f intersect(((p1[0].x*p1[1].y - p1[0].y*p1[1].x)*(p2[0].x - p2[1].x) -
+		(p1[0].x - p1[1].x)*(p2[0].x*p2[1].y - p2[0].y*p2[1].x)) / denom,
+		((p1[0].x*p1[1].y - p1[0].y*p1[1].x)*(p2[0].y - p2[1].y) -
+		(p1[0].y - p1[1].y)*(p2[0].x*p2[1].y - p2[0].y*p2[1].x)) / denom);
+
+	return intersect;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+///// End of Helper functions for Computing Hough Line Intersections /////////
+//////////////////////////////////////////////////////////////////////////////
+
+// Helper function to display a message box
 void ShowMessage(string message)
 {
 	char buff[100];
@@ -19,6 +75,17 @@ void ShowMessage(string message)
 	MessageBoxA(NULL, (LPCSTR)buff, (LPCSTR)"Panel_QA_CPP.dll", MB_OK);
 }
 
+// Helper function to replace characters in a string
+void strReplace(string& source, string const& find, string const& replace)
+{
+	for (string::size_type i = 0; (i = source.find(find, i)) != string::npos;)
+	{
+		source.replace(i, find.length(), replace);
+		i += replace.length();
+	}
+}
+
+// On click listener to display the HSV value of the point clicked
 static void onMouse(int event, int x, int y, int f, void *ptr)
 {
 	if (event == EVENT_LBUTTONDOWN)
@@ -29,6 +96,8 @@ static void onMouse(int event, int x, int y, int f, void *ptr)
 	}
 }
 
+// Function to display the specified image and add an 
+//	on click listener (onMouse())
 bool Panel::ShowImage(string sImgPath, string windowTitle)
 {
 	m_pPanel = new Panel;
@@ -47,15 +116,6 @@ bool Panel::ShowImage(string sImgPath, string windowTitle)
 	setMouseCallback(windowTitle, onMouse, static_cast<void*>(&m_pPanel));
 
 	return true;
-}
-
-void strReplace(string& source, string const& find, string const& replace)
-{
-	for (string::size_type i = 0; (i = source.find(find, i)) != string::npos;)
-	{
-		source.replace(i, find.length(), replace);
-		i += replace.length();
-	}
 }
 
 void Panel::FixPath(string &path)
@@ -152,9 +212,9 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		cvCreateTrackbar("Sat Hi 2", "InRange Tester", &s2Hi, 255);
 		cvCreateTrackbar("Val Lo 2", "InRange Tester", &v2Lo, 255);
 		cvCreateTrackbar("Val Hi 2", "InRange Tester", &v2Hi, 255);
+		Mat Mask1, Mask2;
 		while (true)
 		{
-			Mat Mask1, Mask2;
 			inRange(HSV, Scalar(h1Lo, s1Lo, v1Lo), Scalar(h1Hi, s1Hi, v1Hi), Mask1);
 			inRange(HSV, Scalar(h2Lo, s2Lo, v2Lo), Scalar(h2Hi, s2Hi, v2Hi), Mask2);
 			bitwise_or(Mask1, Mask2, Mask);
@@ -236,18 +296,46 @@ Mat Panel::CannyDetection(Mat image)
 		cvtColor(edges, edgesGray, CV_GRAY2BGR);
 		for (size_t i = 0; i < lines.size(); i++)
 		{
-		float rho = lines[i][0], theta = lines[i][1];
-		Point pt1, pt2;
-		double a = cos(theta), b = sin(theta);
-		double x0 = a*rho, y0 = b*rho;
-		pt1.x = cvRound(x0 + 1000 * (-b));
-		pt1.y = cvRound(y0 + 1000 * (a));
-		pt2.x = cvRound(x0 - 1000 * (-b));
-		pt2.y = cvRound(y0 - 1000 * (a));
-		line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
+			float rho = lines[i][0], theta = lines[i][1];
+			Point pt1, pt2;
+			double a = cos(theta), b = sin(theta);
+			double x0 = a*rho, y0 = b*rho;
+			pt1.x = cvRound(x0 + 1000 * (-b));
+			pt1.y = cvRound(y0 + 1000 * (a));
+			pt2.x = cvRound(x0 - 1000 * (-b));
+			pt2.y = cvRound(y0 - 1000 * (a));
+			line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
 		}
 
 		imshow("Hough Lines", edgesGray);
+
+		// compute the intersection from the lines detected...
+		vector<Point2f> intersections;
+		for (size_t i = 0; i < lines.size(); i++)
+		{
+			for (size_t j = 0; j < lines.size(); j++)
+			{
+				Vec2f line1 = lines[i];
+				Vec2f line2 = lines[j];
+				if (acceptLinePair(line1, line2, CV_PI / 32))
+				{
+					Point2f intersection = computeIntersect(line1, line2);
+					intersections.push_back(intersection);
+				}
+			}
+		}
+
+		if (intersections.size() > 0)
+		{
+			vector<Point2f>::iterator i;
+			for (i = intersections.begin(); i != intersections.end(); ++i)
+			{
+				cout << "Intersection is " << i->x << ", " << i->y << endl;
+				circle(m_pPanel->m_Image, *i, 1, Scalar(0, 255, 0), 3);
+			}
+		}
+
+		imshow("intersect", m_pPanel->m_Image);
 
 		if (waitKey(30) == 27)
 			break;
@@ -267,7 +355,7 @@ void Panel::DetectBlob(Mat image)
 	Mat im_with_keypoints, thresh;
 
 	int low = 60;
-	int blobArea = 200;
+	int blobArea = 325;
 	int sigmaX = 0, sigmaY = 0;
 	/*	This is Test Code
 		Uncomment this and the waiteKey() code and add closing bracket after
@@ -311,11 +399,11 @@ void Panel::DetectBlob(Mat image)
 		ShowMessage("Tag detected");
 	else
 		ShowMessage("No tag detected");
-
-	/*
-	if (waitKey(30) == 27)
-		break;
-	*/
+		/*
+		if (waitKey(30) == 27)
+			break;
+			}
+		*/
 }
 
 void Panel::CalibrateCamera(string sFilePath)
