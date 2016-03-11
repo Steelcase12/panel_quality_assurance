@@ -12,61 +12,6 @@ Panel::~Panel()
 	delete m_pPanel;
 }
 
-
-///////////////////////////////////////////////////////////////////////
-///// Helper functions for Computing Hough Line Intersections /////////
-///////////////////////////////////////////////////////////////////////
-vector<Point2f> lineToPointPair(Vec2f line)
-{
-	vector<Point2f> points;
-
-	float r = line[0], t = line[1];
-	double cos_t = cos(t), sin_t = sin(t);
-	double x0 = r*cos_t, y0 = r*sin_t;
-	double alpha = 1000;
-
-	points.push_back(Point2f(x0 + alpha*(-sin_t), y0 + alpha*cos_t));
-	points.push_back(Point2f(x0 - alpha*(-sin_t), y0 - alpha*cos_t));
-
-	return points;
-}
-
-bool acceptLinePair(Vec2f line1, Vec2f line2, float minTheta)
-{
-	float theta1 = line1[1], theta2 = line2[1];
-
-	if (theta1 < minTheta)
-	{
-		theta1 += CV_PI; // dealing with 0 and 180 ambiguities...
-	}
-
-	if (theta2 < minTheta)
-	{
-		theta2 += CV_PI; // dealing with 0 and 180 ambiguities...
-	}
-
-	return abs(theta1 - theta2) > minTheta;
-}
-
-// the long nasty wikipedia line-intersection equation...bleh...
-Point2f computeIntersect(Vec2f line1, Vec2f line2)
-{
-	vector<Point2f> p1 = lineToPointPair(line1);
-	vector<Point2f> p2 = lineToPointPair(line2);
-
-	float denom = (p1[0].x - p1[1].x)*(p2[0].y - p2[1].y) - (p1[0].y - p1[1].y)*(p2[0].x - p2[1].x);
-	Point2f intersect(((p1[0].x*p1[1].y - p1[0].y*p1[1].x)*(p2[0].x - p2[1].x) -
-		(p1[0].x - p1[1].x)*(p2[0].x*p2[1].y - p2[0].y*p2[1].x)) / denom,
-		((p1[0].x*p1[1].y - p1[0].y*p1[1].x)*(p2[0].y - p2[1].y) -
-		(p1[0].y - p1[1].y)*(p2[0].x*p2[1].y - p2[0].y*p2[1].x)) / denom);
-
-	return intersect;
-}
-
-//////////////////////////////////////////////////////////////////////////////
-///// End of Helper functions for Computing Hough Line Intersections /////////
-//////////////////////////////////////////////////////////////////////////////
-
 // Helper function to display a message box
 void ShowMessage(string message)
 {
@@ -74,6 +19,103 @@ void ShowMessage(string message)
 	sprintf_s(buff, "%s", message.c_str());
 	MessageBoxA(NULL, (LPCSTR)buff, (LPCSTR)"Panel_QA_CPP.dll", MB_OK);
 }
+
+///////////////////////////////////////////////////////////////////////
+// Helper Function for Cascade Classifier				       ////////
+///////////////////////////////////////////////////////////////////////
+
+void detectAndDisplay(Mat image, string panel_cascade_name)
+{
+	CascadeClassifier panel_cascade;
+	if (!panel_cascade.load(panel_cascade_name)){ printf("--(!)Error loading\n"); return; };
+
+	std::vector<Rect> faces;
+	Mat frame_gray;
+
+	cvtColor(image, frame_gray, CV_BGR2GRAY);
+	equalizeHist(frame_gray, frame_gray);
+
+	//-- Detect faces
+	panel_cascade.detectMultiScale(frame_gray, faces, 1.1, 20, 0 | CV_HAAR_SCALE_IMAGE, Size(200, 200));
+
+	for (size_t i = 0; i < faces.size(); i++)
+	{
+		Point topLeft(faces[i].x, faces[i].y);
+		Point botRight(faces[i].x + faces[i].width, faces[i].y + faces[i].height);
+		rectangle(image, topLeft, botRight, Scalar(0, 0, 255), 4);
+		}
+	//-- Show what you got
+	imshow("Classifier Result", image);
+}
+
+///////////////////////////////////////////////////////////////////////
+// End of Helper Function for Cascade Classifier			   ////////
+///////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////
+///// Helper functions for Finding Contours                   /////////
+///////////////////////////////////////////////////////////////////////
+void morphIt(Mat &img)
+{
+	cvtColor(img, img, CV_RGB2GRAY);
+	threshold(img, img, 50.0, 255.0, THRESH_BINARY);
+	erode(img, img, Mat());
+	dilate(img, img, Mat());
+}
+
+void blurthresh(Mat &img)
+{
+	int kblur = 1;
+	int threshval = 0;
+	//medianBlur(img,img,kblur%2+3+kblur);
+	blur(img, img, Size(kblur, kblur), Point(-1, -1), BORDER_DEFAULT);
+	// threshold(img, img, threshval, 255, THRESH_BINARY_INV);
+}
+
+void showimgcontours(Mat &threshedimg, Mat &original)
+{
+	vector<vector<Point> > contours;
+	RotatedRect rect;
+	vector<Vec4i> hierarchy;
+	Point2f rectPoints[4];
+	Scalar color = Scalar(255, 0, 0);
+	int largest_area = 0;
+	int largest_contour_index = 0;
+	findContours(threshedimg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
+	//this will find largest contour
+	for (int i = 0; i< contours.size(); i++) // iterate through each contour. 
+	{
+		double a = contourArea(contours[i], false);  //  Find the area of contour
+		if (a>largest_area)
+		{
+			largest_area = a;
+			largest_contour_index = i;                //Store the index of largest contour
+		}
+
+	}
+	//search for largest contour has end
+
+	if (contours.size() > 0)
+	{
+		drawContours(original, contours, largest_contour_index, CV_RGB(0, 255, 0), 2, 8, hierarchy);
+		//if want to show all contours use below one
+		//drawContours(original,contours,-1, CV_RGB(0, 255, 0), 2, 8, hierarchy);
+
+		// Find and add bounding rectangle
+		rect = minAreaRect(contours[largest_contour_index]);
+		rect.points(rectPoints);
+		for (int j; j < 4; j++)
+			line(original, rectPoints[j], rectPoints[(j + 1) % 4], color, 1, 8);
+		string strDim = "Min Area Rectangle Dimensions:\n" + 
+			to_string(rect.size.height) + " x " + to_string(rect.size.width);
+		imshow("Largest Contour", original);
+		ShowMessage(strDim);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+///// End of Helper functions for Finding Contours					 /////////
+//////////////////////////////////////////////////////////////////////////////
 
 // Helper function to replace characters in a string
 void strReplace(string& source, string const& find, string const& replace)
@@ -110,8 +152,18 @@ bool Panel::ShowImage(string sImgPath, string windowTitle)
 		return false;
 	}
 
+	// resize the image to have 1000 width, keeping the aspect ratio
+	float r = 750.0 / m_pPanel->m_Image.cols;
+	Size dim = Size(750.0, int(m_pPanel->m_Image.rows * r));
+	resize(m_pPanel->m_Image, m_pPanel->m_Image, dim);
+
+	// Find the ROI
+	const Rect roi(0,0,650,m_pPanel->m_Image.rows);
+	m_pPanel->m_Image(roi);
+
 	// Show the image
-	imshow(m_WindowName, m_pPanel->m_Image);
+	namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
+	imshow(windowTitle, m_pPanel->m_Image);
 	// Set mouse callback to show the color of the point clicked
 	setMouseCallback(windowTitle, onMouse, static_cast<void*>(&m_pPanel));
 
@@ -178,9 +230,7 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	if(!ShowImage(sImgPath, "Original"))
 		return;
 
-	// read specified image
-	m_pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
-	Mat HSV, Mask, BGR, Result;
+	Mat HSV, Mask, BGR, MaskResult;
 	cvtColor(m_pPanel->m_Image, HSV, CV_BGR2HSV);
 	if (color == "blue")
 	{
@@ -195,10 +245,12 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	}
 	else if (color == "panel")
 	{
-		int h1Lo = 150, s1Lo = 10, v1Lo = 100;
-		int h1Hi = 180, s1Hi = 50, v1Hi = 200;
-		int h2Lo = 0, s2Lo = 30, v2Lo = 100;
-		int h2Hi = 15, s2Hi = 50, v2Hi = 150;
+		int h1Lo = 0, s1Lo = 55, v1Lo = 115;
+		int h1Hi = 20, s1Hi = 120, v1Hi = 210;
+		int h2Lo = 0, s2Lo = 0, v2Lo = 0;
+		int h2Hi = 0, s2Hi = 0, v2Hi = 0;
+
+		/*
 		namedWindow("InRange Tester", CV_WINDOW_AUTOSIZE);
 		cvCreateTrackbar("Hue Lo 1:", "InRange Tester", &h1Lo, 180);
 		cvCreateTrackbar("Hue Hi 1:", "InRange Tester", &h1Hi, 180);
@@ -212,47 +264,49 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		cvCreateTrackbar("Sat Hi 2", "InRange Tester", &s2Hi, 255);
 		cvCreateTrackbar("Val Lo 2", "InRange Tester", &v2Lo, 255);
 		cvCreateTrackbar("Val Hi 2", "InRange Tester", &v2Hi, 255);
+		*/
+
 		Mat Mask1, Mask2;
-		while (true)
+		// while (true)
 		{
 			inRange(HSV, Scalar(h1Lo, s1Lo, v1Lo), Scalar(h1Hi, s1Hi, v1Hi), Mask1);
 			inRange(HSV, Scalar(h2Lo, s2Lo, v2Lo), Scalar(h2Hi, s2Hi, v2Hi), Mask2);
 			bitwise_or(Mask1, Mask2, Mask);
 
-			m_pPanel->m_Image.copyTo(Result, Mask);
+			m_pPanel->m_Image.copyTo(MaskResult, Mask);
 
-			imshow("Result", Result);
+			// namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
+			// imshow("Mask Result", MaskResult);
 
-			if (waitKey(30) == 27)
-				break;
+			// CannyDetection(Result);
+
+			// if (waitKey(30) == 27)
+			//	break;
 		}
-		return;
 	}
-	m_pPanel->m_Image.copyTo(Result, Mask);
-	Mat greyOrig;
-	cvtColor(Result, greyOrig, CV_BGR2GRAY);
-	Mat thresh;
-	threshold(greyOrig, thresh, 50.0, 255.0, THRESH_BINARY);
-	Mat filtered;
-	m_pPanel->m_Image.copyTo(filtered, thresh);
 
-	DetectBlob(filtered);
+	m_pPanel->m_Image.copyTo(MaskResult, Mask);
+	morphIt(MaskResult);
+	blurthresh(MaskResult);
+	// imshow("Morphed and Blurred", MaskResult);
+	Mat modified;
+	m_pPanel->m_Image.copyTo(modified, MaskResult);
+	// imshow("Masked Original", modified);
+
+	if (color == "red" || color == "blue")
+	{
+		DetectBlob(MaskResult);
+	}
+	else if (color == "panel")
+	{
+		FindContours(modified);
+	}
 }
 
 void Panel::DetectEdges(string sImgPath)
 {
-	m_pPanel = new Panel;
-	// read specified image
-	m_pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
-
-	if (m_pPanel->m_Image.empty()) // Check for invalid input
-	{
-		ShowMessage("Could not open or find the image");
+	if (!ShowImage(sImgPath, "Original"))
 		return;
-	}
-
-	// Show the orignal image and detected canny edges
-	imshow("Original Image", m_pPanel->m_Image);
 
 	// Canny Edge and Hough Line Detection
 	Mat edges = CannyDetection(m_pPanel->m_Image);
@@ -263,84 +317,58 @@ Mat Panel::CannyDetection(Mat image)
 	Mat greyImage;
 	cvtColor(image, greyImage, CV_BGR2GRAY);
 
-	namedWindow("Thresh", CV_WINDOW_AUTOSIZE);
 	Mat thresh, blurredThresh, edges, edgesGray;
-	int low = 141, high = 255;
+	int low = 80, high = 255;
 	int sigmaX = 2, sigmaY = 2; 
-	int cannyLow = 255, cannyHi = 255;
-	int houghLength = 116;
-	vector<Vec2f> lines;
+	int cannyLow = 100, ratio = 1, aperture = 3;
 	/*	This code is for testing different values of various functions
 		Uncomment if you want to test different values than the ones given
 	*/
-	cvCreateTrackbar("Threshhold", "Thresh", &low, 255);
-	// cvCreateTrackbar("Value", "Thresh", &high, 255);
-	// cvCreateTrackbar("SigmaX", "Thresh", &sigmaX, 500);
-	// cvCreateTrackbar("SigmaY", "Thresh", &sigmaY, 500);
-	cvCreateTrackbar("Canny Low", "Thresh", &cannyLow, 255);
-	cvCreateTrackbar("Canny High", "Thresh", &cannyHi, 255);
-	cvCreateTrackbar("Hough Line length", "Thresh", &houghLength, 1000);
+	namedWindow("Sliders", CV_WINDOW_AUTOSIZE);
+	cvCreateTrackbar("Threshhold", "Sliders", &low, 255);
+	//cvCreateTrackbar("High", "Sliders", &high, 255);
+	cvCreateTrackbar("SigmaX", "Sliders", &sigmaX, 500);
+	cvCreateTrackbar("SigmaY", "Sliders", &sigmaY, 500);
+	cvCreateTrackbar("Low Threshold", "Sliders", &cannyLow, 100);
+	cvCreateTrackbar("Ratio", "Sliders", &ratio, 5);
+
 	while (true)
 	{
 		threshold(greyImage, thresh, low, 255, THRESH_BINARY);
+		namedWindow("Threshhold", CV_WINDOW_AUTOSIZE);
 		imshow("Threshhold", thresh);
 
 		GaussianBlur(thresh, blurredThresh, Size(7, 7), sigmaX, sigmaY);
+		namedWindow("Blurred", CV_WINDOW_AUTOSIZE);
 		imshow("Blurred", blurredThresh);
 
-		Canny(blurredThresh, edges, cannyLow, cannyHi, 3);
+		Canny(blurredThresh, edges, cannyLow, cannyLow*ratio, 3);
+		namedWindow("Canny Edges", CV_WINDOW_AUTOSIZE);
 		imshow("Canny Edges", edges);
-
-		HoughLines(edges, lines, 1, CV_PI / 180, houghLength, 0, 0);
-
-		cvtColor(edges, edgesGray, CV_GRAY2BGR);
-		for (size_t i = 0; i < lines.size(); i++)
-		{
-			float rho = lines[i][0], theta = lines[i][1];
-			Point pt1, pt2;
-			double a = cos(theta), b = sin(theta);
-			double x0 = a*rho, y0 = b*rho;
-			pt1.x = cvRound(x0 + 1000 * (-b));
-			pt1.y = cvRound(y0 + 1000 * (a));
-			pt2.x = cvRound(x0 - 1000 * (-b));
-			pt2.y = cvRound(y0 - 1000 * (a));
-			line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
-		}
-
-		imshow("Hough Lines", edgesGray);
-
-		// compute the intersection from the lines detected...
-		vector<Point2f> intersections;
-		for (size_t i = 0; i < lines.size(); i++)
-		{
-			for (size_t j = 0; j < lines.size(); j++)
-			{
-				Vec2f line1 = lines[i];
-				Vec2f line2 = lines[j];
-				if (acceptLinePair(line1, line2, CV_PI / 32))
-				{
-					Point2f intersection = computeIntersect(line1, line2);
-					intersections.push_back(intersection);
-				}
-			}
-		}
-
-		if (intersections.size() > 0)
-		{
-			vector<Point2f>::iterator i;
-			for (i = intersections.begin(); i != intersections.end(); ++i)
-			{
-				cout << "Intersection is " << i->x << ", " << i->y << endl;
-				circle(m_pPanel->m_Image, *i, 1, Scalar(0, 255, 0), 3);
-			}
-		}
-
-		imshow("intersect", m_pPanel->m_Image);
 
 		if (waitKey(30) == 27)
 			break;
 	}
 	return edges;
+}
+
+void Panel::FindContours(Mat image)
+{
+	int low = 60;
+	Mat grayImage;
+	cvtColor(image, grayImage, CV_BGR2GRAY);
+	Mat dilated;
+	dilate(grayImage, dilated, Mat());
+	Mat blurred;
+	GaussianBlur(dilated, blurred, Size(7, 7), 0, 0);
+	Mat thresh;
+	threshold(blurred, thresh, low, 255, THRESH_BINARY);
+	// namedWindow("Threshold", CV_WINDOW_AUTOSIZE);
+	// imshow("Threshold", thresh);
+	showimgcontours(thresh, image);
+	// namedWindow("Contours", CV_WINDOW_AUTOSIZE);
+	// imshow("Contours", thresh);
+	// imshow("Largest Contour", image);
 }
 
 void Panel::DetectBlob(Mat image)
@@ -404,6 +432,14 @@ void Panel::DetectBlob(Mat image)
 			break;
 			}
 		*/
+}
+
+void Panel::CascadeClassify(string sImgPath, string sClassPath)
+{
+	if (!ShowImage(sImgPath, "Original"))
+		return;
+
+	detectAndDisplay(m_pPanel->m_Image, sClassPath);
 }
 
 void Panel::CalibrateCamera(string sFilePath)

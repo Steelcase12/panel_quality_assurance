@@ -25,6 +25,7 @@ namespace MYopencv {
 		void MaskWithColor(System::String^ imgPath, System::String^ color);
 		void DetectEdges(System::String^ imgPath);
 		void CalibrateCamera(System::String^ filePath);
+		void CascadeClassify(System::String^ imgPath, System::String^ classifierPath);
 	private:
 		Panel *panel;
 	};
