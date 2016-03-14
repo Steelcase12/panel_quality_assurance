@@ -29,19 +29,19 @@ void detectAndDisplay(Mat image, string panel_cascade_name)
 	CascadeClassifier panel_cascade;
 	if (!panel_cascade.load(panel_cascade_name)){ printf("--(!)Error loading\n"); return; };
 
-	std::vector<Rect> faces;
+	std::vector<Rect> detectedPanels;
 	Mat frame_gray;
 
 	cvtColor(image, frame_gray, CV_BGR2GRAY);
 	equalizeHist(frame_gray, frame_gray);
 
 	//-- Detect faces
-	panel_cascade.detectMultiScale(frame_gray, faces, 1.1, 20, 0 | CV_HAAR_SCALE_IMAGE, Size(200, 200));
+	panel_cascade.detectMultiScale(frame_gray, detectedPanels, 1.1, 20, 0 | CV_HAAR_SCALE_IMAGE, Size(200, 200));
 
-	for (size_t i = 0; i < faces.size(); i++)
+	for (size_t i = 0; i < detectedPanels.size(); i++)
 	{
-		Point topLeft(faces[i].x, faces[i].y);
-		Point botRight(faces[i].x + faces[i].width, faces[i].y + faces[i].height);
+		Point topLeft(detectedPanels[i].x, detectedPanels[i].y);
+		Point botRight(detectedPanels[i].x + detectedPanels[i].width, detectedPanels[i].y + detectedPanels[i].height);
 		rectangle(image, topLeft, botRight, Scalar(0, 0, 255), 4);
 		}
 	//-- Show what you got
