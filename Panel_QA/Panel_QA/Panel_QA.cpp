@@ -44,6 +44,13 @@ void MYPanel::CalibrateCamera(System::String^ imgPath)
 	panel->CalibrateCamera((string)strImgPath);
 }
 
+void MYPanel::CalibrateCameraNoOutput(System::String^ imgPath)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	panel->CalibrateCameraNoOutput((string)strImgPath);
+}
+
 // ++++++++++++ MYConversion Class ++++++++++++ 
 MYConversion::MYConversion() {}
 

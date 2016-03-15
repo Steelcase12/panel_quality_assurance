@@ -26,6 +26,7 @@ public:
 	void MaskWithColor(string imgPath, string color);
 	void DetectEdges(string imgPath);
 	void CalibrateCamera(string filePath);
+	void CalibrateCameraNoOutput(string filePath);
 private:
 	Panel *m_pPanel;
 	void FixPath(string& path);
