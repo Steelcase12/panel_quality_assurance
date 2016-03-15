@@ -173,6 +173,43 @@ bool Panel::ShowImage(string sImgPath, string windowTitle)
 	return true;
 }
 
+// Function to display the specified image and add an 
+//	on click listener (onMouse())
+bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle)
+{
+	m_pPanel = new Panel;
+	// read specified image
+	m_pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
+
+	if (m_pPanel->m_Image.empty()) // Check for invalid input
+	{
+		ShowMessage("Could not open or find the image");
+		return false;
+	}
+
+	// resize the image to have 1000 width, keeping the aspect ratio
+	//float r = 750.0 / m_pPanel->m_Image.cols;
+	//Size dim = Size(750.0, int(m_pPanel->m_Image.rows * r));
+	//resize(m_pPanel->m_Image, m_pPanel->m_Image, dim);
+
+	// Find the ROI
+	//const Rect roi(0, 0, 650, m_pPanel->m_Image.rows);
+	//m_pPanel->m_Image(roi);
+
+	// Calibrate
+	Mat rview;
+	remap(m_pPanel->m_Image, rview, mainMap1, mainMap2, INTER_LINEAR);
+
+	// Show the image
+	namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
+	imshow(windowTitle, rview);
+	// Set mouse callback to show the color of the point clicked
+	setMouseCallback(windowTitle, onMouse, static_cast<void*>(&m_pPanel));
+
+	return true;
+}
+
+
 void Panel::FixPath(string &path)
 {
 	strReplace(path, "\\" , "\\\\");

@@ -38,17 +38,20 @@
             this.detectEdgesBtn = new System.Windows.Forms.Button();
             this.panelBtn = new System.Windows.Forms.Button();
             this.calibrateNoOutputBtn = new System.Windows.Forms.Button();
-            this.calibrateBtn = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.classifierBox = new System.Windows.Forms.TextBox();
             this.classifierBtn = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.calibrationPath = new System.Windows.Forms.TextBox();
+            this.calibrateBtn = new System.Windows.Forms.Button();
+            this.viewWithCalibrationBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // inputBox
             // 
-            this.inputBox.Location = new System.Drawing.Point(94, 42);
+            this.inputBox.Location = new System.Drawing.Point(132, 42);
             this.inputBox.Name = "inputBox";
-            this.inputBox.Size = new System.Drawing.Size(191, 20);
+            this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 0;
             // 
             // label1
@@ -62,7 +65,7 @@
             // 
             // goBtn
             // 
-            this.goBtn.Location = new System.Drawing.Point(291, 42);
+            this.goBtn.Location = new System.Drawing.Point(419, 40);
             this.goBtn.Name = "goBtn";
             this.goBtn.Size = new System.Drawing.Size(75, 23);
             this.goBtn.TabIndex = 2;
@@ -73,7 +76,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 129);
+            this.label2.Location = new System.Drawing.Point(24, 187);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 3;
@@ -81,7 +84,7 @@
             // 
             // redBtn
             // 
-            this.redBtn.Location = new System.Drawing.Point(94, 124);
+            this.redBtn.Location = new System.Drawing.Point(132, 182);
             this.redBtn.Name = "redBtn";
             this.redBtn.Size = new System.Drawing.Size(75, 23);
             this.redBtn.TabIndex = 4;
@@ -91,7 +94,7 @@
             // 
             // blueBtn
             // 
-            this.blueBtn.Location = new System.Drawing.Point(175, 124);
+            this.blueBtn.Location = new System.Drawing.Point(213, 182);
             this.blueBtn.Name = "blueBtn";
             this.blueBtn.Size = new System.Drawing.Size(75, 23);
             this.blueBtn.TabIndex = 5;
@@ -102,14 +105,14 @@
             // warningLabel
             // 
             this.warningLabel.AutoSize = true;
-            this.warningLabel.Location = new System.Drawing.Point(170, 181);
+            this.warningLabel.Location = new System.Drawing.Point(208, 239);
             this.warningLabel.Name = "warningLabel";
             this.warningLabel.Size = new System.Drawing.Size(0, 13);
             this.warningLabel.TabIndex = 6;
             // 
             // detectEdgesBtn
             // 
-            this.detectEdgesBtn.Location = new System.Drawing.Point(94, 171);
+            this.detectEdgesBtn.Location = new System.Drawing.Point(132, 229);
             this.detectEdgesBtn.Name = "detectEdgesBtn";
             this.detectEdgesBtn.Size = new System.Drawing.Size(87, 23);
             this.detectEdgesBtn.TabIndex = 7;
@@ -119,7 +122,7 @@
             // 
             // panelBtn
             // 
-            this.panelBtn.Location = new System.Drawing.Point(256, 124);
+            this.panelBtn.Location = new System.Drawing.Point(294, 182);
             this.panelBtn.Name = "panelBtn";
             this.panelBtn.Size = new System.Drawing.Size(75, 23);
             this.panelBtn.TabIndex = 8;
@@ -129,42 +132,35 @@
             // 
             // calibrateNoOutputBtn
             // 
-            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(210, 171);
+            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(500, 90);
             this.calibrateNoOutputBtn.Name = "calibrateNoOutputBtn";
-            this.calibrateNoOutputBtn.Size = new System.Drawing.Size(75, 23);
+            this.calibrateNoOutputBtn.Size = new System.Drawing.Size(121, 23);
             this.calibrateNoOutputBtn.TabIndex = 9;
-            this.calibrateNoOutputBtn.Text = "Calibrate";
+            this.calibrateNoOutputBtn.Text = "Calibrate No Output";
             this.calibrateNoOutputBtn.UseVisualStyleBackColor = true;
             this.calibrateNoOutputBtn.Click += new System.EventHandler(this.calibrateNoOutputBtn_Click);
-            // 
-            // calibrateBtn
-            // 
-            this.calibrateBtn.Location = new System.Drawing.Point(0, 0);
-            this.calibrateBtn.Name = "calibrateBtn";
-            this.calibrateBtn.Size = new System.Drawing.Size(75, 23);
-            this.calibrateBtn.TabIndex = 0;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 86);
+            this.label3.Location = new System.Drawing.Point(24, 144);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(48, 13);
+            this.label3.Size = new System.Drawing.Size(51, 13);
             this.label3.TabIndex = 11;
-            this.label3.Text = "Classifier";
+            this.label3.Text = "Classifier:";
             // 
             // classifierBox
             // 
-            this.classifierBox.Location = new System.Drawing.Point(94, 83);
+            this.classifierBox.Location = new System.Drawing.Point(132, 141);
             this.classifierBox.Name = "classifierBox";
-            this.classifierBox.Size = new System.Drawing.Size(191, 20);
+            this.classifierBox.Size = new System.Drawing.Size(281, 20);
             this.classifierBox.TabIndex = 12;
             this.classifierBox.Text = "C:\\CPE 495 496\\Haar_Example\\opencv-haar-classifier-training\\classifier\\cascade.xm" +
     "l";
             // 
             // classifierBtn
             // 
-            this.classifierBtn.Location = new System.Drawing.Point(291, 81);
+            this.classifierBtn.Location = new System.Drawing.Point(419, 139);
             this.classifierBtn.Name = "classifierBtn";
             this.classifierBtn.Size = new System.Drawing.Size(75, 23);
             this.classifierBtn.TabIndex = 13;
@@ -172,11 +168,51 @@
             this.classifierBtn.UseVisualStyleBackColor = true;
             this.classifierBtn.Click += new System.EventHandler(this.classifierBtn_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(27, 92);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(84, 13);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Calibration Path:";
+            // 
+            // calibrationPath
+            // 
+            this.calibrationPath.Location = new System.Drawing.Point(132, 92);
+            this.calibrationPath.Name = "calibrationPath";
+            this.calibrationPath.Size = new System.Drawing.Size(281, 20);
+            this.calibrationPath.TabIndex = 15;
+            // 
+            // calibrateBtn
+            // 
+            this.calibrateBtn.Location = new System.Drawing.Point(419, 90);
+            this.calibrateBtn.Name = "calibrateBtn";
+            this.calibrateBtn.Size = new System.Drawing.Size(75, 23);
+            this.calibrateBtn.TabIndex = 16;
+            this.calibrateBtn.Text = "Calibrate";
+            this.calibrateBtn.UseVisualStyleBackColor = true;
+            this.calibrateBtn.Click += new System.EventHandler(this.calibrateBtn_Click);
+            // 
+            // viewWithCalibrationBtn
+            // 
+            this.viewWithCalibrationBtn.Location = new System.Drawing.Point(500, 40);
+            this.viewWithCalibrationBtn.Name = "viewWithCalibrationBtn";
+            this.viewWithCalibrationBtn.Size = new System.Drawing.Size(121, 23);
+            this.viewWithCalibrationBtn.TabIndex = 17;
+            this.viewWithCalibrationBtn.Text = "View With Calibration";
+            this.viewWithCalibrationBtn.UseVisualStyleBackColor = true;
+            this.viewWithCalibrationBtn.Click += new System.EventHandler(this.viewWithCalibrationBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(390, 223);
+            this.ClientSize = new System.Drawing.Size(702, 388);
+            this.Controls.Add(this.viewWithCalibrationBtn);
+            this.Controls.Add(this.calibrateBtn);
+            this.Controls.Add(this.calibrationPath);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.classifierBtn);
             this.Controls.Add(this.classifierBox);
             this.Controls.Add(this.label3);
@@ -209,10 +245,13 @@
         private System.Windows.Forms.Button detectEdgesBtn;
         private System.Windows.Forms.Button panelBtn;
         private System.Windows.Forms.Button calibrateNoOutputBtn;
-        private System.Windows.Forms.Button calibrateBtn;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox classifierBox;
         private System.Windows.Forms.Button classifierBtn;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox calibrationPath;
+        private System.Windows.Forms.Button calibrateBtn;
+        private System.Windows.Forms.Button viewWithCalibrationBtn;
     }
 }
 

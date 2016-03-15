@@ -22,6 +22,7 @@ public:
 	Panel();
 	~Panel();
 	bool ShowImage(string imgPath, string windowTitle);
+	bool ShowImageWithCalibration(string imgPath, string windowTitle);
 	string ColorName(Vec3b HSV);
 	void ColorAtPoint(Point point);
 	void MaskWithColor(string imgPath, string color);

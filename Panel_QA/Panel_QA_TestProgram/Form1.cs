@@ -83,26 +83,26 @@ namespace Panel_QA_TestProgram
         {
             if (inputBox.Text != "") {
                 newPanel = new MYPanel();
-                newPanel.CalibrateCamera(inputBox.Text);
+                newPanel.CalibrateCamera(calibrationPath.Text);
                 warningLabel.Text = "";
                 newPanel = null;
             } else {
-                warningLabel.Text = "You must enter a path to an file";
+                warningLabel.Text = "You must enter a path to a file";
             }
         }
 
         private void calibrateNoOutputBtn_Click(object sender, EventArgs e)
         {
-            if (inputBox.Text != "")
+            if (calibrationPath.Text != "")
             {
                 newPanel = new MYPanel();
-                newPanel.CalibrateCameraNoOutput(inputBox.Text);
+                newPanel.CalibrateCameraNoOutput(calibrationPath.Text);
                 warningLabel.Text = "";
                 newPanel = null;
             }
             else
             {
-                warningLabel.Text = "You must enter a path to an file";
+                warningLabel.Text = "You must enter a path to a file";
             }
         }
 
@@ -114,8 +114,24 @@ namespace Panel_QA_TestProgram
                 warningLabel.Text = "";
                 newPanel = null;
             } else {
-                warningLabel.Text = "You must enter a path to an file";
+                warningLabel.Text = "You must enter a path to a file";
             }
         }
+
+        private void viewWithCalibrationBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "")
+            {
+                newPanel = new MYPanel();
+                newPanel.ShowImageWithCalibration(inputBox.Text, "My Image");
+                newPanel = null;
+                warningLabel.Text = "";
+            }
+            else
+            {
+                warningLabel.Text = "You must enter a path to an image";
+            }
+        }
+
     }
 }

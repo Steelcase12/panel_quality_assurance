@@ -22,6 +22,14 @@ void MYPanel::ShowImage(System::String^ imgPath, System::String^ windowTitle)
 	panel->ShowImage((string)strImgPath, (string)strWindowTitle);
 }
 
+void MYPanel::ShowImageWithCalibration(System::String^ imgPath, System::String^ windowTitle)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	string strWindowTitle = convert->myStringToChar(windowTitle);
+	panel->ShowImageWithCalibration((string)strImgPath, (string)strWindowTitle);
+}
+
 void MYPanel::MaskWithColor(System::String^ imgPath, System::String^ color)
 {
 	MYConversion ^convert = gcnew MYConversion();
