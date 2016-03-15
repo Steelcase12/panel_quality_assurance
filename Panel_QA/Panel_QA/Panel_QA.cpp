@@ -51,6 +51,14 @@ void MYPanel::CalibrateCameraNoOutput(System::String^ imgPath)
 	panel->CalibrateCameraNoOutput((string)strImgPath);
 }
 
+void MYPanel::CascadeClassify(System::String^ imgPath, System::String^ classPath)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	string strClassPath = convert->myStringToChar(classPath);
+	panel->CascadeClassify(strImgPath, strClassPath);
+}
+
 // ++++++++++++ MYConversion Class ++++++++++++ 
 MYConversion::MYConversion() {}
 

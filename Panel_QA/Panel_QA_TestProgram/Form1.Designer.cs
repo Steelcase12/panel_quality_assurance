@@ -38,6 +38,10 @@
             this.detectEdgesBtn = new System.Windows.Forms.Button();
             this.panelBtn = new System.Windows.Forms.Button();
             this.calibrateNoOutputBtn = new System.Windows.Forms.Button();
+            this.calibrateBtn = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.classifierBox = new System.Windows.Forms.TextBox();
+            this.classifierBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // inputBox
@@ -46,7 +50,6 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(191, 20);
             this.inputBox.TabIndex = 0;
-            this.inputBox.Text = "C:\\Users\\Nick\\distortion\\Steelcase.xml";
             // 
             // label1
             // 
@@ -70,7 +73,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 105);
+            this.label2.Location = new System.Drawing.Point(24, 129);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 3;
@@ -78,7 +81,7 @@
             // 
             // redBtn
             // 
-            this.redBtn.Location = new System.Drawing.Point(99, 100);
+            this.redBtn.Location = new System.Drawing.Point(94, 124);
             this.redBtn.Name = "redBtn";
             this.redBtn.Size = new System.Drawing.Size(75, 23);
             this.redBtn.TabIndex = 4;
@@ -88,7 +91,7 @@
             // 
             // blueBtn
             // 
-            this.blueBtn.Location = new System.Drawing.Point(195, 100);
+            this.blueBtn.Location = new System.Drawing.Point(175, 124);
             this.blueBtn.Name = "blueBtn";
             this.blueBtn.Size = new System.Drawing.Size(75, 23);
             this.blueBtn.TabIndex = 5;
@@ -99,24 +102,24 @@
             // warningLabel
             // 
             this.warningLabel.AutoSize = true;
-            this.warningLabel.Location = new System.Drawing.Point(170, 157);
+            this.warningLabel.Location = new System.Drawing.Point(170, 181);
             this.warningLabel.Name = "warningLabel";
             this.warningLabel.Size = new System.Drawing.Size(0, 13);
             this.warningLabel.TabIndex = 6;
             // 
             // detectEdgesBtn
             // 
-            this.detectEdgesBtn.Location = new System.Drawing.Point(99, 147);
+            this.detectEdgesBtn.Location = new System.Drawing.Point(94, 171);
             this.detectEdgesBtn.Name = "detectEdgesBtn";
             this.detectEdgesBtn.Size = new System.Drawing.Size(87, 23);
             this.detectEdgesBtn.TabIndex = 7;
-            this.detectEdgesBtn.Text = "Detect Edges";
+            this.detectEdgesBtn.Text = "Canny Edges";
             this.detectEdgesBtn.UseVisualStyleBackColor = true;
             this.detectEdgesBtn.Click += new System.EventHandler(this.detectEdgesBtn_Click);
             // 
             // panelBtn
             // 
-            this.panelBtn.Location = new System.Drawing.Point(291, 100);
+            this.panelBtn.Location = new System.Drawing.Point(256, 124);
             this.panelBtn.Name = "panelBtn";
             this.panelBtn.Size = new System.Drawing.Size(75, 23);
             this.panelBtn.TabIndex = 8;
@@ -126,7 +129,7 @@
             // 
             // calibrateNoOutputBtn
             // 
-            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(210, 147);
+            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(210, 171);
             this.calibrateNoOutputBtn.Name = "calibrateNoOutputBtn";
             this.calibrateNoOutputBtn.Size = new System.Drawing.Size(75, 23);
             this.calibrateNoOutputBtn.TabIndex = 9;
@@ -134,11 +137,49 @@
             this.calibrateNoOutputBtn.UseVisualStyleBackColor = true;
             this.calibrateNoOutputBtn.Click += new System.EventHandler(this.calibrateNoOutputBtn_Click);
             // 
+            // calibrateBtn
+            // 
+            this.calibrateBtn.Location = new System.Drawing.Point(0, 0);
+            this.calibrateBtn.Name = "calibrateBtn";
+            this.calibrateBtn.Size = new System.Drawing.Size(75, 23);
+            this.calibrateBtn.TabIndex = 0;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(24, 86);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(48, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Classifier";
+            // 
+            // classifierBox
+            // 
+            this.classifierBox.Location = new System.Drawing.Point(94, 83);
+            this.classifierBox.Name = "classifierBox";
+            this.classifierBox.Size = new System.Drawing.Size(191, 20);
+            this.classifierBox.TabIndex = 12;
+            this.classifierBox.Text = "C:\\CPE 495 496\\Haar_Example\\opencv-haar-classifier-training\\classifier\\cascade.xm" +
+    "l";
+            // 
+            // classifierBtn
+            // 
+            this.classifierBtn.Location = new System.Drawing.Point(291, 81);
+            this.classifierBtn.Name = "classifierBtn";
+            this.classifierBtn.Size = new System.Drawing.Size(75, 23);
+            this.classifierBtn.TabIndex = 13;
+            this.classifierBtn.Text = "Detect";
+            this.classifierBtn.UseVisualStyleBackColor = true;
+            this.classifierBtn.Click += new System.EventHandler(this.classifierBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(390, 223);
+            this.Controls.Add(this.classifierBtn);
+            this.Controls.Add(this.classifierBox);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.calibrateNoOutputBtn);
             this.Controls.Add(this.panelBtn);
             this.Controls.Add(this.detectEdgesBtn);
@@ -168,6 +209,10 @@
         private System.Windows.Forms.Button detectEdgesBtn;
         private System.Windows.Forms.Button panelBtn;
         private System.Windows.Forms.Button calibrateNoOutputBtn;
+        private System.Windows.Forms.Button calibrateBtn;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox classifierBox;
+        private System.Windows.Forms.Button classifierBtn;
     }
 }
 

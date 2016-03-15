@@ -105,5 +105,17 @@ namespace Panel_QA_TestProgram
                 warningLabel.Text = "You must enter a path to an file";
             }
         }
+
+        private void classifierBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "" && classifierBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.CascadeClassify(inputBox.Text, classifierBox.Text);
+                warningLabel.Text = "";
+                newPanel = null;
+            } else {
+                warningLabel.Text = "You must enter a path to an file";
+            }
+        }
     }
 }
