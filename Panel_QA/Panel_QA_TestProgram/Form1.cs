@@ -133,5 +133,20 @@ namespace Panel_QA_TestProgram
             }
         }
 
+        private void calibrateFisheyeNoOutputBtn_Click(object sender, EventArgs e)
+        {
+            if (calibrationPath.Text != "")
+            {
+                newPanel = new MYPanel();
+                newPanel.CalibrateCameraFisheyeNoOutput(calibrationPath.Text);
+                warningLabel.Text = "";
+                newPanel = null;
+            }
+            else
+            {
+                warningLabel.Text = "You must enter a path to a file";
+            }
+        }
+
     }
 }

@@ -27,6 +27,7 @@ namespace MYopencv {
 		void DetectEdges(System::String^ imgPath);
 		void CalibrateCamera(System::String^ filePath);
 		void CalibrateCameraNoOutput(System::String^ filePath);
+		void CalibrateCameraFisheyeNoOutput(System::String^ filePath);
 		void CascadeClassify(System::String^ imgPath, System::String^ classifierPath);
 	private:
 		Panel *panel;

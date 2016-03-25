@@ -45,6 +45,7 @@
             this.calibrationPath = new System.Windows.Forms.TextBox();
             this.calibrateBtn = new System.Windows.Forms.Button();
             this.viewWithCalibrationBtn = new System.Windows.Forms.Button();
+            this.calibrateFisheyeNoOutputBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // inputBox
@@ -53,6 +54,7 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 0;
+            this.inputBox.Text = "C:\\Users\\Nick\\distortion\\Smaller_Images\\1.jpg";
             // 
             // label1
             // 
@@ -76,7 +78,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 187);
+            this.label2.Location = new System.Drawing.Point(24, 216);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 3;
@@ -84,7 +86,7 @@
             // 
             // redBtn
             // 
-            this.redBtn.Location = new System.Drawing.Point(132, 182);
+            this.redBtn.Location = new System.Drawing.Point(132, 211);
             this.redBtn.Name = "redBtn";
             this.redBtn.Size = new System.Drawing.Size(75, 23);
             this.redBtn.TabIndex = 4;
@@ -94,7 +96,7 @@
             // 
             // blueBtn
             // 
-            this.blueBtn.Location = new System.Drawing.Point(213, 182);
+            this.blueBtn.Location = new System.Drawing.Point(213, 211);
             this.blueBtn.Name = "blueBtn";
             this.blueBtn.Size = new System.Drawing.Size(75, 23);
             this.blueBtn.TabIndex = 5;
@@ -105,14 +107,14 @@
             // warningLabel
             // 
             this.warningLabel.AutoSize = true;
-            this.warningLabel.Location = new System.Drawing.Point(208, 239);
+            this.warningLabel.Location = new System.Drawing.Point(208, 268);
             this.warningLabel.Name = "warningLabel";
             this.warningLabel.Size = new System.Drawing.Size(0, 13);
             this.warningLabel.TabIndex = 6;
             // 
             // detectEdgesBtn
             // 
-            this.detectEdgesBtn.Location = new System.Drawing.Point(132, 229);
+            this.detectEdgesBtn.Location = new System.Drawing.Point(132, 258);
             this.detectEdgesBtn.Name = "detectEdgesBtn";
             this.detectEdgesBtn.Size = new System.Drawing.Size(87, 23);
             this.detectEdgesBtn.TabIndex = 7;
@@ -122,7 +124,7 @@
             // 
             // panelBtn
             // 
-            this.panelBtn.Location = new System.Drawing.Point(294, 182);
+            this.panelBtn.Location = new System.Drawing.Point(294, 211);
             this.panelBtn.Name = "panelBtn";
             this.panelBtn.Size = new System.Drawing.Size(75, 23);
             this.panelBtn.TabIndex = 8;
@@ -143,7 +145,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 144);
+            this.label3.Location = new System.Drawing.Point(24, 173);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(51, 13);
             this.label3.TabIndex = 11;
@@ -151,7 +153,7 @@
             // 
             // classifierBox
             // 
-            this.classifierBox.Location = new System.Drawing.Point(132, 141);
+            this.classifierBox.Location = new System.Drawing.Point(132, 170);
             this.classifierBox.Name = "classifierBox";
             this.classifierBox.Size = new System.Drawing.Size(281, 20);
             this.classifierBox.TabIndex = 12;
@@ -160,7 +162,7 @@
             // 
             // classifierBtn
             // 
-            this.classifierBtn.Location = new System.Drawing.Point(419, 139);
+            this.classifierBtn.Location = new System.Drawing.Point(419, 168);
             this.classifierBtn.Name = "classifierBtn";
             this.classifierBtn.Size = new System.Drawing.Size(75, 23);
             this.classifierBtn.TabIndex = 13;
@@ -183,6 +185,7 @@
             this.calibrationPath.Name = "calibrationPath";
             this.calibrationPath.Size = new System.Drawing.Size(281, 20);
             this.calibrationPath.TabIndex = 15;
+            this.calibrationPath.Text = "C:\\Users\\Nick\\distortion\\Steelcase.xml";
             // 
             // calibrateBtn
             // 
@@ -204,11 +207,22 @@
             this.viewWithCalibrationBtn.UseVisualStyleBackColor = true;
             this.viewWithCalibrationBtn.Click += new System.EventHandler(this.viewWithCalibrationBtn_Click);
             // 
+            // calibrateFisheyeNoOutputBtn
+            // 
+            this.calibrateFisheyeNoOutputBtn.Location = new System.Drawing.Point(500, 119);
+            this.calibrateFisheyeNoOutputBtn.Name = "calibrateFisheyeNoOutputBtn";
+            this.calibrateFisheyeNoOutputBtn.Size = new System.Drawing.Size(121, 34);
+            this.calibrateFisheyeNoOutputBtn.TabIndex = 18;
+            this.calibrateFisheyeNoOutputBtn.Text = "Calibrate Fisheye\r\nNo Output";
+            this.calibrateFisheyeNoOutputBtn.UseVisualStyleBackColor = true;
+            this.calibrateFisheyeNoOutputBtn.Click += new System.EventHandler(this.calibrateFisheyeNoOutputBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 388);
+            this.Controls.Add(this.calibrateFisheyeNoOutputBtn);
             this.Controls.Add(this.viewWithCalibrationBtn);
             this.Controls.Add(this.calibrateBtn);
             this.Controls.Add(this.calibrationPath);
@@ -252,6 +266,7 @@
         private System.Windows.Forms.TextBox calibrationPath;
         private System.Windows.Forms.Button calibrateBtn;
         private System.Windows.Forms.Button viewWithCalibrationBtn;
+        private System.Windows.Forms.Button calibrateFisheyeNoOutputBtn;
     }
 }
 

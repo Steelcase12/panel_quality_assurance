@@ -304,6 +304,36 @@ static bool runCalibration(Settings& s, Size& imageSize, Mat& cameraMatrix, Mat&
 	return ok;
 }
 
+static bool runCalibrationFisheye(Settings& s, Size& imageSize, Mat& cameraMatrix, Mat& distCoeffs,
+	vector<vector<Point2f> > imagePoints, vector<Vec3d>& rvecs, vector<Vec3d>& tvecs,
+	vector<float>& reprojErrs, double& totalAvgErr)
+{
+	//! [fixed_aspect]
+	cameraMatrix = Mat::eye(3, 3, CV_64F);
+	if (s.flag & CALIB_FIX_ASPECT_RATIO)
+		cameraMatrix.at<double>(0, 0) = s.aspectRatio;
+	//! [fixed_aspect]
+	distCoeffs = Mat::zeros(4, 1, CV_64F);
+
+	vector<vector<Point3f> > objectPoints(1);
+	calcBoardCornerPositions(s.boardSize, s.squareSize, objectPoints[0], s.calibrationPattern);
+
+	objectPoints.resize(imagePoints.size(), objectPoints[0]);
+
+	//Find intrinsic and extrinsic camera parameters
+	double rms = fisheye::calibrate(objectPoints, imagePoints, imageSize, cameraMatrix,
+		distCoeffs, rvecs, tvecs, s.flag | CALIB_FIX_K4 | CALIB_FIX_K5);
+
+	cout << "Re-projection error reported by calibrateCamera: " << rms << endl;
+
+	bool ok = checkRange(cameraMatrix) && checkRange(distCoeffs);
+
+//	totalAvgErr = computeReprojectionErrors(objectPoints, imagePoints,
+//		rvecs, tvecs, cameraMatrix, distCoeffs, reprojErrs);
+
+	return ok;
+}
+
 // Print camera parameters to the output file
 static void saveCameraParams(Settings& s, Size& imageSize, Mat& cameraMatrix, Mat& distCoeffs,
 	const vector<Mat>& rvecs, const vector<Mat>& tvecs,
@@ -402,3 +432,23 @@ bool runCalibrationAndSave(Settings& s, Size imageSize, Mat& cameraMatrix, Mat& 
 	return ok;
 }
 //! [run_and_save]
+
+//! [run_and_save fisheye] DOESN'T ACTUALLY SAVE
+bool runCalibrationFisheyeAndSave(Settings& s, Size imageSize, Mat& cameraMatrix, Mat& distCoeffs,
+	vector<vector<Point2f> > imagePoints)
+{
+	vector<Vec3d> rvecs, tvecs;
+	vector<float> reprojErrs;
+	double totalAvgErr = 0;
+
+	bool ok = runCalibrationFisheye(s, imageSize, cameraMatrix, distCoeffs, imagePoints, rvecs, tvecs, reprojErrs,
+		totalAvgErr);
+	cout << (ok ? "Calibration succeeded" : "Calibration failed")
+		<< ". avg re projection error = " << totalAvgErr << endl;
+
+//	if (ok)
+//		saveCameraParams(s, imageSize, cameraMatrix, distCoeffs, rvecs, tvecs, reprojErrs, imagePoints,
+//		totalAvgErr);
+	return ok;
+}
+//! [run_and_save fisheye]

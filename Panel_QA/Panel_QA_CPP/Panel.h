@@ -29,6 +29,7 @@ public:
 	void DetectEdges(string imgPath);
 	void CalibrateCamera(string filePath);
 	void CalibrateCameraNoOutput(string filePath);
+	void CalibrateCameraFisheyeNoOutput(string filePath);
 	void CascadeClassify(string imgPath, string classPath);
 private:
 	Panel *m_pPanel;
