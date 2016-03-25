@@ -54,7 +54,6 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 0;
-            this.inputBox.Text = "C:\\Users\\Nick\\distortion\\Smaller_Images\\1.jpg";
             // 
             // label1
             // 
@@ -185,7 +184,6 @@
             this.calibrationPath.Name = "calibrationPath";
             this.calibrationPath.Size = new System.Drawing.Size(281, 20);
             this.calibrationPath.TabIndex = 15;
-            this.calibrationPath.Text = "C:\\Users\\Nick\\distortion\\Steelcase.xml";
             // 
             // calibrateBtn
             // 

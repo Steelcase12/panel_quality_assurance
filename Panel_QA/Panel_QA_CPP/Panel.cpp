@@ -516,6 +516,7 @@ void Panel::CalibrateCamera(string sFilePath)
 	clock_t prevTimestamp = 0;
 	const Scalar RED(0, 0, 255), GREEN(0, 255, 0);
 	const char ESC_KEY = 27;
+	int counter = 1;
 
 	//! [get_input]
 	for (;;)
@@ -621,8 +622,14 @@ void Panel::CalibrateCamera(string sFilePath)
 		//! [output_undistorted]
 		//------------------------------ Show image and check for input commands -------------------
 		//! [await_input]
-		imshow("Image View", view);
+		
+		namedWindow("Image View" + to_string(counter), WINDOW_NORMAL);
+		resizeWindow("Image View" + to_string(counter), 640, 480);
+		imshow("Image View" + to_string(counter), view);
 		char key = (char)waitKey(s.inputCapture.isOpened() ? 50 : s.delay);
+
+		cout << "Image " << to_string(counter) << " Completed" << endl;
+		counter++;
 
 		if (key == ESC_KEY)
 			break;
@@ -646,6 +653,9 @@ void Panel::CalibrateCamera(string sFilePath)
 		initUndistortRectifyMap(cameraMatrix, distCoeffs, Mat(),
 			getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, imageSize, 1, imageSize, 0),
 			imageSize, CV_16SC2, map1, map2);
+
+		mainMap1 = map1;
+		mainMap2 = map2;
 
 		for (size_t i = 0; i < s.imageList.size(); i++)
 		{
@@ -691,7 +701,7 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 	{
 		cout << "Invalid input detected. Application stopping. " << endl;
 		//		return -1;
-}
+	}
 
 	vector<vector<Point2f> > imagePoints;
 	Mat cameraMatrix, distCoeffs;
@@ -700,6 +710,7 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 	clock_t prevTimestamp = 0;
 	const Scalar RED(0, 0, 255), GREEN(0, 255, 0);
 	const char ESC_KEY = 27;
+	int counter = 1;
 
 	//! [get_input]
 	for (;;)
@@ -822,6 +833,8 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 		}
 		//! [await_input]
 */
+		cout << "Image " << to_string(counter) << " Completed" << endl;
+		counter++;
 	}
 
 /*	// -----------------------Show the undistorted image for the image list ------------------------
@@ -856,7 +869,6 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 
 	mainMap1 = map1;
 	mainMap2 = map2;
-
 
 	//	return 0;
 
