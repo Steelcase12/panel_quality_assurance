@@ -81,7 +81,8 @@ namespace Panel_QA_TestProgram
 
         private void calibrateBtn_Click(object sender, EventArgs e)
         {
-            if (inputBox.Text != "") {
+            if (calibrationPath.Text != "")
+            {
                 newPanel = new MYPanel();
                 newPanel.CalibrateCamera(calibrationPath.Text);
                 warningLabel.Text = "";
@@ -145,6 +146,21 @@ namespace Panel_QA_TestProgram
             else
             {
                 warningLabel.Text = "You must enter a path to a file";
+            }
+        }
+
+        private void drawOnBoardBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "")
+            {
+                newPanel = new MYPanel();
+                newPanel.DrawOnBoard(inputBox.Text);
+                warningLabel.Text = "";
+                newPanel = null;
+            }
+            else
+            {
+                warningLabel.Text = "You must enter a path to an image";
             }
         }
 

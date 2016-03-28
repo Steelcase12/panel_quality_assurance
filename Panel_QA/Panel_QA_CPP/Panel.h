@@ -25,8 +25,10 @@ public:
 	bool ShowImageWithCalibration(string imgPath, string windowTitle);
 	string ColorName(Vec3b HSV);
 	void ColorAtPoint(Point point);
+	void PointLocation(Point point);
 	void MaskWithColor(string imgPath, string color);
 	void DetectEdges(string imgPath);
+	void DrawOnBoard(string imgPath);
 	void CalibrateCamera(string filePath);
 	void CalibrateCameraNoOutput(string filePath);
 	void CalibrateCameraFisheyeNoOutput(string filePath);
@@ -34,6 +36,8 @@ public:
 private:
 	Panel *m_pPanel;
 	Mat m_Image;
+	// This is just for testing distance measurement
+	vector<Point2f> corners;
 	void FixPath(string& path);
 	Mat CannyDetection(Mat image);
 	void FindContours(Mat image);

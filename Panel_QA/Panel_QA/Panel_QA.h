@@ -25,6 +25,7 @@ namespace MYopencv {
 		void ShowImageWithCalibration(System::String^ imgPath, System::String^ windowTitle);
 		void MaskWithColor(System::String^ imgPath, System::String^ color);
 		void DetectEdges(System::String^ imgPath);
+		void DrawOnBoard(System::String^ imgPath);
 		void CalibrateCamera(System::String^ filePath);
 		void CalibrateCameraNoOutput(System::String^ filePath);
 		void CalibrateCameraFisheyeNoOutput(System::String^ filePath);

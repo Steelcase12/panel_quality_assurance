@@ -66,6 +66,12 @@ void MYPanel::CalibrateCameraFisheyeNoOutput(System::String^ imgPath)
 	panel->CalibrateCameraFisheyeNoOutput((string)strImgPath);
 }
 
+void MYPanel::DrawOnBoard(System::String^ imgPath)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	panel->DrawOnBoard((string)strImgPath);
+}
 
 void MYPanel::CascadeClassify(System::String^ imgPath, System::String^ classPath)
 {

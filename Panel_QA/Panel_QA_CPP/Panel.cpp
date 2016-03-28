@@ -14,6 +14,7 @@ Panel::~Panel()
 
 // Camera Calibration Constants
 Mat mainMap1, mainMap2;
+Mat mainCameraMatrix, mainDistCoeffs;
 
 // Helper function to display a message box
 void ShowMessage(string message)
@@ -132,13 +133,24 @@ void strReplace(string& source, string const& find, string const& replace)
 }
 
 // On click listener to display the HSV value of the point clicked
-static void onMouse(int event, int x, int y, int f, void *ptr)
+static void onMouseColor(int event, int x, int y, int f, void *ptr)
 {
 	if (event == EVENT_LBUTTONDOWN)
 	{
 		Panel *pPanel = static_cast<Panel*>(ptr);
 		Point clickPoint(x, y);
 		pPanel->ColorAtPoint(clickPoint);
+	}
+}
+
+// On click listener to display the location of the point clicked
+static void onMouseLocation(int event, int x, int y, int f, void *ptr)
+{
+	if (event == EVENT_LBUTTONDOWN)
+	{
+		Panel *pPanel = static_cast<Panel*>(ptr);
+		Point clickPoint(x, y);
+		pPanel->PointLocation(clickPoint);
 	}
 }
 
@@ -169,7 +181,7 @@ bool Panel::ShowImage(string sImgPath, string windowTitle)
 	namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
 	imshow(windowTitle, m_pPanel->m_Image);
 	// Set mouse callback to show the color of the point clicked
-	setMouseCallback(windowTitle, onMouse, static_cast<void*>(&m_pPanel));
+	setMouseCallback(windowTitle, onMouseColor, static_cast<void*>(&m_pPanel));
 
 	return true;
 }
@@ -204,8 +216,12 @@ bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle)
 	// Show the image
 	namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
 	imshow(windowTitle, rview);
+
+	// Save image
+	imwrite("Calibrated_Image.jpg", rview);
+
 	// Set mouse callback to show the color of the point clicked
-	setMouseCallback(windowTitle, onMouse, static_cast<void*>(&m_pPanel));
+	setMouseCallback(windowTitle, onMouseColor, static_cast<void*>(&m_pPanel));
 
 	return true;
 }
@@ -264,6 +280,26 @@ void Panel::ColorAtPoint(Point point)
 	// Display the color strings
 	ShowMessage("Point: (" + to_string(point.x) + "," + to_string(point.y) +
 		") \nRGB Value: " + RGBcolorStr + "\nHSV Value: " + HSVcolorStr + "\nColor: " + m_pPanel->ColorName(HSVpix));
+}
+
+void Panel::PointLocation(Point point)
+{
+	Point corner_point;
+	corner_point.x = m_pPanel->corners[9].x;
+	corner_point.y = m_pPanel->corners[9].y;
+	double distance = norm(corner_point - point);
+	
+	line(m_pPanel->m_Image, point, corner_point, CV_RGB(255, 0, 0), 2);
+	
+	// .2932 cm/pixels
+	cout << "Point1: (" + to_string(point.x) + "," + to_string(point.y) + ") " + 
+		"\nPoint2: (" + to_string(corner_point.x) + "," + to_string(corner_point.y) + ") " +
+		"\nDistance in pixels: " + to_string(distance) +
+		"\nDistance in cm: " + to_string(distance * .2932) +
+		"\n\n";
+
+	namedWindow("Original", WINDOW_AUTOSIZE);
+	imshow("Original", m_pPanel->m_Image);
 }
 
 void Panel::MaskWithColor(string sImgPath, string color)
@@ -483,6 +519,46 @@ void Panel::CascadeClassify(string sImgPath, string sClassPath)
 	detectAndDisplay(m_pPanel->m_Image, sClassPath);
 }
 
+void Panel::DrawOnBoard(string sImgPath)
+{
+	m_pPanel = new Panel;
+
+	m_pPanel->m_Image = imread(sImgPath);
+	
+	namedWindow("Original", WINDOW_AUTOSIZE);
+	imshow("Original", m_pPanel->m_Image);
+
+	setMouseCallback("Original", onMouseLocation, static_cast<void*>(&m_pPanel));
+
+	bool found = false;
+
+	found = findChessboardCorners(m_pPanel->m_Image, Size(9, 6), m_pPanel->corners,
+		CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
+
+	Point corner1;
+	corner1.x = m_pPanel->corners[0].x;
+	corner1.y = m_pPanel->corners[0].y;
+	
+	Point corner2;
+	corner2.x = m_pPanel->corners[4].x;
+	corner2.y = m_pPanel->corners[4].y;
+
+	line(m_pPanel->m_Image, corner1, corner2, CV_RGB(0, 0, 255), 2);
+
+	if (found){
+		Mat imgGray;
+		cvtColor(m_pPanel->m_Image, imgGray, COLOR_BGR2GRAY);
+		cornerSubPix(imgGray, m_pPanel->corners, Size(11, 11), Size(-1, -1),
+			TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+		cout << "Corner 1: " << corner1 << endl;
+		cout << "Corner 2: " << corner2 << endl;
+		cout << "Subtraction: " << corner2 - corner1 << endl;
+		cout << "Distance in pixels: " << norm(corner2 - corner1) << endl;
+		cout << "Distance in cm " << norm(corner2 - corner1) * .2932 << endl << endl;
+	}
+
+}
+
 void Panel::CalibrateCamera(string sFilePath)
 {
 	help();
@@ -679,7 +755,7 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 {
 	help();
 
-	cout << "NO OUTPUT" << endl;
+	cout << "No Picture Output" << endl;
 
 	//! [file_read]
 	Settings s;
@@ -870,6 +946,10 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 	mainMap1 = map1;
 	mainMap2 = map2;
 
+	// Just for testing DrawOnBoard
+
+	mainCameraMatrix = cameraMatrix;
+	mainDistCoeffs = distCoeffs;
 	//	return 0;
 
 }

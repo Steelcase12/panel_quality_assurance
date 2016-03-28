@@ -46,6 +46,7 @@
             this.calibrateBtn = new System.Windows.Forms.Button();
             this.viewWithCalibrationBtn = new System.Windows.Forms.Button();
             this.calibrateFisheyeNoOutputBtn = new System.Windows.Forms.Button();
+            this.drawOnBoardBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // inputBox
@@ -77,7 +78,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 216);
+            this.label2.Location = new System.Drawing.Point(24, 239);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 3;
@@ -85,7 +86,7 @@
             // 
             // redBtn
             // 
-            this.redBtn.Location = new System.Drawing.Point(132, 211);
+            this.redBtn.Location = new System.Drawing.Point(132, 234);
             this.redBtn.Name = "redBtn";
             this.redBtn.Size = new System.Drawing.Size(75, 23);
             this.redBtn.TabIndex = 4;
@@ -95,7 +96,7 @@
             // 
             // blueBtn
             // 
-            this.blueBtn.Location = new System.Drawing.Point(213, 211);
+            this.blueBtn.Location = new System.Drawing.Point(213, 234);
             this.blueBtn.Name = "blueBtn";
             this.blueBtn.Size = new System.Drawing.Size(75, 23);
             this.blueBtn.TabIndex = 5;
@@ -106,14 +107,14 @@
             // warningLabel
             // 
             this.warningLabel.AutoSize = true;
-            this.warningLabel.Location = new System.Drawing.Point(208, 268);
+            this.warningLabel.Location = new System.Drawing.Point(208, 291);
             this.warningLabel.Name = "warningLabel";
             this.warningLabel.Size = new System.Drawing.Size(0, 13);
             this.warningLabel.TabIndex = 6;
             // 
             // detectEdgesBtn
             // 
-            this.detectEdgesBtn.Location = new System.Drawing.Point(132, 258);
+            this.detectEdgesBtn.Location = new System.Drawing.Point(132, 281);
             this.detectEdgesBtn.Name = "detectEdgesBtn";
             this.detectEdgesBtn.Size = new System.Drawing.Size(87, 23);
             this.detectEdgesBtn.TabIndex = 7;
@@ -123,7 +124,7 @@
             // 
             // panelBtn
             // 
-            this.panelBtn.Location = new System.Drawing.Point(294, 211);
+            this.panelBtn.Location = new System.Drawing.Point(294, 234);
             this.panelBtn.Name = "panelBtn";
             this.panelBtn.Size = new System.Drawing.Size(75, 23);
             this.panelBtn.TabIndex = 8;
@@ -133,7 +134,7 @@
             // 
             // calibrateNoOutputBtn
             // 
-            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(500, 90);
+            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(500, 113);
             this.calibrateNoOutputBtn.Name = "calibrateNoOutputBtn";
             this.calibrateNoOutputBtn.Size = new System.Drawing.Size(121, 23);
             this.calibrateNoOutputBtn.TabIndex = 9;
@@ -144,7 +145,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 173);
+            this.label3.Location = new System.Drawing.Point(24, 196);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(51, 13);
             this.label3.TabIndex = 11;
@@ -152,7 +153,7 @@
             // 
             // classifierBox
             // 
-            this.classifierBox.Location = new System.Drawing.Point(132, 170);
+            this.classifierBox.Location = new System.Drawing.Point(132, 193);
             this.classifierBox.Name = "classifierBox";
             this.classifierBox.Size = new System.Drawing.Size(281, 20);
             this.classifierBox.TabIndex = 12;
@@ -161,7 +162,7 @@
             // 
             // classifierBtn
             // 
-            this.classifierBtn.Location = new System.Drawing.Point(419, 168);
+            this.classifierBtn.Location = new System.Drawing.Point(419, 191);
             this.classifierBtn.Name = "classifierBtn";
             this.classifierBtn.Size = new System.Drawing.Size(75, 23);
             this.classifierBtn.TabIndex = 13;
@@ -172,7 +173,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(27, 92);
+            this.label4.Location = new System.Drawing.Point(27, 115);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 13);
             this.label4.TabIndex = 14;
@@ -180,14 +181,14 @@
             // 
             // calibrationPath
             // 
-            this.calibrationPath.Location = new System.Drawing.Point(132, 92);
+            this.calibrationPath.Location = new System.Drawing.Point(132, 115);
             this.calibrationPath.Name = "calibrationPath";
             this.calibrationPath.Size = new System.Drawing.Size(281, 20);
             this.calibrationPath.TabIndex = 15;
             // 
             // calibrateBtn
             // 
-            this.calibrateBtn.Location = new System.Drawing.Point(419, 90);
+            this.calibrateBtn.Location = new System.Drawing.Point(419, 113);
             this.calibrateBtn.Name = "calibrateBtn";
             this.calibrateBtn.Size = new System.Drawing.Size(75, 23);
             this.calibrateBtn.TabIndex = 16;
@@ -207,7 +208,7 @@
             // 
             // calibrateFisheyeNoOutputBtn
             // 
-            this.calibrateFisheyeNoOutputBtn.Location = new System.Drawing.Point(500, 119);
+            this.calibrateFisheyeNoOutputBtn.Location = new System.Drawing.Point(500, 142);
             this.calibrateFisheyeNoOutputBtn.Name = "calibrateFisheyeNoOutputBtn";
             this.calibrateFisheyeNoOutputBtn.Size = new System.Drawing.Size(121, 34);
             this.calibrateFisheyeNoOutputBtn.TabIndex = 18;
@@ -215,11 +216,22 @@
             this.calibrateFisheyeNoOutputBtn.UseVisualStyleBackColor = true;
             this.calibrateFisheyeNoOutputBtn.Click += new System.EventHandler(this.calibrateFisheyeNoOutputBtn_Click);
             // 
+            // drawOnBoardBtn
+            // 
+            this.drawOnBoardBtn.Location = new System.Drawing.Point(500, 69);
+            this.drawOnBoardBtn.Name = "drawOnBoardBtn";
+            this.drawOnBoardBtn.Size = new System.Drawing.Size(121, 23);
+            this.drawOnBoardBtn.TabIndex = 19;
+            this.drawOnBoardBtn.Text = "Draw on Board";
+            this.drawOnBoardBtn.UseVisualStyleBackColor = true;
+            this.drawOnBoardBtn.Click += new System.EventHandler(this.drawOnBoardBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 388);
+            this.Controls.Add(this.drawOnBoardBtn);
             this.Controls.Add(this.calibrateFisheyeNoOutputBtn);
             this.Controls.Add(this.viewWithCalibrationBtn);
             this.Controls.Add(this.calibrateBtn);
@@ -265,6 +277,7 @@
         private System.Windows.Forms.Button calibrateBtn;
         private System.Windows.Forms.Button viewWithCalibrationBtn;
         private System.Windows.Forms.Button calibrateFisheyeNoOutputBtn;
+        private System.Windows.Forms.Button drawOnBoardBtn;
     }
 }
 
