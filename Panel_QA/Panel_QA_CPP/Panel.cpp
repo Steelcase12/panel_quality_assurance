@@ -361,23 +361,20 @@ void Panel::MaskWithColor(string sImgPath, string color)
 			//	break;
 		}
 	}
-
 	m_pPanel->m_Image.copyTo(MaskResult, Mask);
-	morphIt(MaskResult);
-	blurthresh(MaskResult);
-	// imshow("Morphed and Blurred", MaskResult);
-	Mat modified;
-	m_pPanel->m_Image.copyTo(modified, MaskResult);
-	// imshow("Masked Original", modified);
 
-	if (color == "red" || color == "blue")
-	{
-		DetectBlob(MaskResult);
-}
-	else if (color == "panel")
-	{
+	if (color == "panel"){
+		morphIt(MaskResult);
+		blurthresh(MaskResult);
+		// imshow("Morphed and Blurred", MaskResult);
+		Mat modified;
+		m_pPanel->m_Image.copyTo(modified, MaskResult);
+		// imshow("Masked Original", modified);
 		FindContours(modified);
 	}
+
+	if (color == "red" || color == "blue")
+		DetectBlob(MaskResult);
 }
 
 void Panel::DetectEdges(string sImgPath)
