@@ -73,6 +73,21 @@ void MYPanel::DrawOnBoard(System::String^ imgPath)
 	panel->DrawOnBoard((string)strImgPath);
 }
 
+void MYPanel::Perspective(System::String^ imgPath, System::String^ selectedItem)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	string strSelectedItem = convert->myStringToChar(selectedItem);
+	panel->Perspective((string)strImgPath, (string)strSelectedItem);
+}
+
+void MYPanel::BatchCalibrate(System::String^ dirPath)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strDirPath = convert->myStringToChar(dirPath);
+	panel->BatchCalibrate(strDirPath);
+}
+
 void MYPanel::CascadeClassify(System::String^ imgPath, System::String^ classPath)
 {
 	MYConversion ^convert = gcnew MYConversion();

@@ -164,5 +164,35 @@ namespace Panel_QA_TestProgram
             }
         }
 
+        private void batchCalibrateBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "")
+            {
+                newPanel = new MYPanel();
+                newPanel.BatchCalibrate(inputBox.Text);
+                newPanel = null;
+                warningLabel.Text = "";
+            }
+            else
+            {
+                warningLabel.Text = "You must enter a path to a directory";
+            }
+        }
+
+        private void perspectiveBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "")
+            {
+                newPanel = new MYPanel();
+                newPanel.Perspective(inputBox.Text, comboBox1.SelectedItem.ToString());
+                warningLabel.Text = "";
+                newPanel = null;
+            }
+            else
+            {
+                warningLabel.Text = "You must enter a path to an image";
+            }
+        }
+
     }
 }

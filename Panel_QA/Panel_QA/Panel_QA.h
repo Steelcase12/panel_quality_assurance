@@ -26,10 +26,12 @@ namespace MYopencv {
 		void MaskWithColor(System::String^ imgPath, System::String^ color);
 		void DetectEdges(System::String^ imgPath);
 		void DrawOnBoard(System::String^ imgPath);
+		void Perspective(System::String^ imgPath, System::String^ selectedPath);
 		void CalibrateCamera(System::String^ filePath);
 		void CalibrateCameraNoOutput(System::String^ filePath);
 		void CalibrateCameraFisheyeNoOutput(System::String^ filePath);
 		void CascadeClassify(System::String^ imgPath, System::String^ classifierPath);
+		void BatchCalibrate(System::String^ dirPath);
 	private:
 		Panel *panel;
 	};

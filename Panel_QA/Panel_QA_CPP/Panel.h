@@ -29,10 +29,13 @@ public:
 	void MaskWithColor(string imgPath, string color);
 	void DetectEdges(string imgPath);
 	void DrawOnBoard(string imgPath);
+	void Perspective(string imgPath, string selectedItem);
 	void CalibrateCamera(string filePath);
 	void CalibrateCameraNoOutput(string filePath);
 	void CalibrateCameraFisheyeNoOutput(string filePath);
 	void CascadeClassify(string imgPath, string classPath);
+	void BatchCalibrate(string dirPath);
+
 private:
 	Panel *m_pPanel;
 	Mat m_Image;
