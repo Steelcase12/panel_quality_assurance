@@ -47,6 +47,9 @@
             this.viewWithCalibrationBtn = new System.Windows.Forms.Button();
             this.calibrateFisheyeNoOutputBtn = new System.Windows.Forms.Button();
             this.drawOnBoardBtn = new System.Windows.Forms.Button();
+            this.batchCalibrateBtn = new System.Windows.Forms.Button();
+            this.perspectiveBtn = new System.Windows.Forms.Button();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.featureTemplateBox = new System.Windows.Forms.TextBox();
             this.featureTemplateLabel = new System.Windows.Forms.Label();
             this.featureDetectionBtn = new System.Windows.Forms.Button();
@@ -59,6 +62,7 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 0;
+            this.inputBox.Text = "C:\\Users\\Nick\\Pictures\\Training\\Calibrated_Checkerboards\\Checkerboard_010.jpg";
             // 
             // label1
             // 
@@ -73,7 +77,7 @@
             // 
             this.goBtn.Location = new System.Drawing.Point(419, 40);
             this.goBtn.Name = "goBtn";
-            this.goBtn.Size = new System.Drawing.Size(75, 23);
+            this.goBtn.Size = new System.Drawing.Size(102, 23);
             this.goBtn.TabIndex = 2;
             this.goBtn.Text = "Show Image";
             this.goBtn.UseVisualStyleBackColor = true;
@@ -139,7 +143,7 @@
             // 
             // calibrateNoOutputBtn
             // 
-            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(500, 113);
+            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(527, 143);
             this.calibrateNoOutputBtn.Name = "calibrateNoOutputBtn";
             this.calibrateNoOutputBtn.Size = new System.Drawing.Size(121, 23);
             this.calibrateNoOutputBtn.TabIndex = 9;
@@ -150,7 +154,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 196);
+            this.label3.Location = new System.Drawing.Point(24, 225);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(51, 13);
             this.label3.TabIndex = 11;
@@ -158,7 +162,7 @@
             // 
             // classifierBox
             // 
-            this.classifierBox.Location = new System.Drawing.Point(132, 193);
+            this.classifierBox.Location = new System.Drawing.Point(132, 222);
             this.classifierBox.Name = "classifierBox";
             this.classifierBox.Size = new System.Drawing.Size(281, 20);
             this.classifierBox.TabIndex = 12;
@@ -167,9 +171,9 @@
             // 
             // classifierBtn
             // 
-            this.classifierBtn.Location = new System.Drawing.Point(419, 191);
+            this.classifierBtn.Location = new System.Drawing.Point(419, 220);
             this.classifierBtn.Name = "classifierBtn";
-            this.classifierBtn.Size = new System.Drawing.Size(99, 23);
+            this.classifierBtn.Size = new System.Drawing.Size(102, 23);
             this.classifierBtn.TabIndex = 13;
             this.classifierBtn.Text = "Detect Object";
             this.classifierBtn.UseVisualStyleBackColor = true;
@@ -178,7 +182,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(27, 115);
+            this.label4.Location = new System.Drawing.Point(27, 144);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 13);
             this.label4.TabIndex = 14;
@@ -186,16 +190,17 @@
             // 
             // calibrationPath
             // 
-            this.calibrationPath.Location = new System.Drawing.Point(132, 115);
+            this.calibrationPath.Location = new System.Drawing.Point(132, 144);
             this.calibrationPath.Name = "calibrationPath";
             this.calibrationPath.Size = new System.Drawing.Size(281, 20);
             this.calibrationPath.TabIndex = 15;
+            this.calibrationPath.Text = "C:\\Users\\Nick\\distortion\\Steelcase.xml";
             // 
             // calibrateBtn
             // 
-            this.calibrateBtn.Location = new System.Drawing.Point(419, 113);
+            this.calibrateBtn.Location = new System.Drawing.Point(419, 142);
             this.calibrateBtn.Name = "calibrateBtn";
-            this.calibrateBtn.Size = new System.Drawing.Size(75, 23);
+            this.calibrateBtn.Size = new System.Drawing.Size(102, 23);
             this.calibrateBtn.TabIndex = 16;
             this.calibrateBtn.Text = "Calibrate";
             this.calibrateBtn.UseVisualStyleBackColor = true;
@@ -203,7 +208,7 @@
             // 
             // viewWithCalibrationBtn
             // 
-            this.viewWithCalibrationBtn.Location = new System.Drawing.Point(500, 40);
+            this.viewWithCalibrationBtn.Location = new System.Drawing.Point(527, 41);
             this.viewWithCalibrationBtn.Name = "viewWithCalibrationBtn";
             this.viewWithCalibrationBtn.Size = new System.Drawing.Size(121, 23);
             this.viewWithCalibrationBtn.TabIndex = 17;
@@ -213,7 +218,7 @@
             // 
             // calibrateFisheyeNoOutputBtn
             // 
-            this.calibrateFisheyeNoOutputBtn.Location = new System.Drawing.Point(500, 142);
+            this.calibrateFisheyeNoOutputBtn.Location = new System.Drawing.Point(527, 172);
             this.calibrateFisheyeNoOutputBtn.Name = "calibrateFisheyeNoOutputBtn";
             this.calibrateFisheyeNoOutputBtn.Size = new System.Drawing.Size(121, 34);
             this.calibrateFisheyeNoOutputBtn.TabIndex = 18;
@@ -223,7 +228,7 @@
             // 
             // drawOnBoardBtn
             // 
-            this.drawOnBoardBtn.Location = new System.Drawing.Point(500, 69);
+            this.drawOnBoardBtn.Location = new System.Drawing.Point(527, 70);
             this.drawOnBoardBtn.Name = "drawOnBoardBtn";
             this.drawOnBoardBtn.Size = new System.Drawing.Size(121, 23);
             this.drawOnBoardBtn.TabIndex = 19;
@@ -231,17 +236,51 @@
             this.drawOnBoardBtn.UseVisualStyleBackColor = true;
             this.drawOnBoardBtn.Click += new System.EventHandler(this.drawOnBoardBtn_Click);
             // 
+            // batchCalibrateBtn
+            // 
+            this.batchCalibrateBtn.Location = new System.Drawing.Point(419, 70);
+            this.batchCalibrateBtn.Name = "batchCalibrateBtn";
+            this.batchCalibrateBtn.Size = new System.Drawing.Size(102, 23);
+            this.batchCalibrateBtn.TabIndex = 20;
+            this.batchCalibrateBtn.Text = "Batch Calibrate";
+            this.batchCalibrateBtn.UseVisualStyleBackColor = true;
+            this.batchCalibrateBtn.Click += new System.EventHandler(this.batchCalibrateBtn_Click);
+            // 
+            // perspectiveBtn
+            // 
+            this.perspectiveBtn.Location = new System.Drawing.Point(419, 100);
+            this.perspectiveBtn.Name = "perspectiveBtn";
+            this.perspectiveBtn.Size = new System.Drawing.Size(102, 23);
+            this.perspectiveBtn.TabIndex = 21;
+            this.perspectiveBtn.Text = "Perspective";
+            this.perspectiveBtn.UseVisualStyleBackColor = true;
+            this.perspectiveBtn.Click += new System.EventHandler(this.perspectiveBtn_Click);
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Panel #3",
+            "Checkerboard #6",
+            "Checkerboard #10"});
+            this.comboBox1.Location = new System.Drawing.Point(528, 100);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(121, 21);
+            this.comboBox1.TabIndex = 22;
+            this.comboBox1.Text = "Panel #3";
+            // 
             // featureTemplateBox
             // 
-            this.featureTemplateBox.Location = new System.Drawing.Point(132, 244);
+            this.featureTemplateBox.Location = new System.Drawing.Point(132, 260);
             this.featureTemplateBox.Name = "featureTemplateBox";
             this.featureTemplateBox.Size = new System.Drawing.Size(281, 20);
             this.featureTemplateBox.TabIndex = 20;
+            this.featureTemplateBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\qr_steelcase.png";
             // 
             // featureTemplateLabel
             // 
             this.featureTemplateLabel.AutoSize = true;
-            this.featureTemplateLabel.Location = new System.Drawing.Point(27, 247);
+            this.featureTemplateLabel.Location = new System.Drawing.Point(24, 263);
             this.featureTemplateLabel.Name = "featureTemplateLabel";
             this.featureTemplateLabel.Size = new System.Drawing.Size(93, 13);
             this.featureTemplateLabel.TabIndex = 21;
@@ -249,7 +288,7 @@
             // 
             // featureDetectionBtn
             // 
-            this.featureDetectionBtn.Location = new System.Drawing.Point(420, 240);
+            this.featureDetectionBtn.Location = new System.Drawing.Point(420, 256);
             this.featureDetectionBtn.Name = "featureDetectionBtn";
             this.featureDetectionBtn.Size = new System.Drawing.Size(98, 23);
             this.featureDetectionBtn.TabIndex = 22;
@@ -261,7 +300,10 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(702, 388);
+            this.ClientSize = new System.Drawing.Size(663, 377);
+            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.perspectiveBtn);
+            this.Controls.Add(this.batchCalibrateBtn);
             this.Controls.Add(this.featureDetectionBtn);
             this.Controls.Add(this.featureTemplateLabel);
             this.Controls.Add(this.featureTemplateBox);
@@ -315,7 +357,8 @@
         private System.Windows.Forms.TextBox featureTemplateBox;
         private System.Windows.Forms.Label featureTemplateLabel;
         private System.Windows.Forms.Button featureDetectionBtn;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
-    }
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;        private System.Windows.Forms.Button batchCalibrateBtn;
+        private System.Windows.Forms.Button perspectiveBtn;
+        private System.Windows.Forms.ComboBox comboBox1;    }
 }
 
