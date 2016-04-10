@@ -47,6 +47,10 @@
             this.viewWithCalibrationBtn = new System.Windows.Forms.Button();
             this.calibrateFisheyeNoOutputBtn = new System.Windows.Forms.Button();
             this.drawOnBoardBtn = new System.Windows.Forms.Button();
+            this.featureTemplateBox = new System.Windows.Forms.TextBox();
+            this.featureTemplateLabel = new System.Windows.Forms.Label();
+            this.featureDetectionBtn = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // inputBox
@@ -78,7 +82,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 239);
+            this.label2.Location = new System.Drawing.Point(24, 300);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 3;
@@ -86,7 +90,7 @@
             // 
             // redBtn
             // 
-            this.redBtn.Location = new System.Drawing.Point(132, 234);
+            this.redBtn.Location = new System.Drawing.Point(132, 295);
             this.redBtn.Name = "redBtn";
             this.redBtn.Size = new System.Drawing.Size(75, 23);
             this.redBtn.TabIndex = 4;
@@ -96,7 +100,7 @@
             // 
             // blueBtn
             // 
-            this.blueBtn.Location = new System.Drawing.Point(213, 234);
+            this.blueBtn.Location = new System.Drawing.Point(213, 295);
             this.blueBtn.Name = "blueBtn";
             this.blueBtn.Size = new System.Drawing.Size(75, 23);
             this.blueBtn.TabIndex = 5;
@@ -107,14 +111,15 @@
             // warningLabel
             // 
             this.warningLabel.AutoSize = true;
-            this.warningLabel.Location = new System.Drawing.Point(208, 291);
+            this.warningLabel.Location = new System.Drawing.Point(417, 305);
             this.warningLabel.Name = "warningLabel";
-            this.warningLabel.Size = new System.Drawing.Size(0, 13);
+            this.warningLabel.Size = new System.Drawing.Size(56, 13);
             this.warningLabel.TabIndex = 6;
+            this.warningLabel.Text = "StPaQuAs";
             // 
             // detectEdgesBtn
             // 
-            this.detectEdgesBtn.Location = new System.Drawing.Point(132, 281);
+            this.detectEdgesBtn.Location = new System.Drawing.Point(132, 342);
             this.detectEdgesBtn.Name = "detectEdgesBtn";
             this.detectEdgesBtn.Size = new System.Drawing.Size(87, 23);
             this.detectEdgesBtn.TabIndex = 7;
@@ -124,7 +129,7 @@
             // 
             // panelBtn
             // 
-            this.panelBtn.Location = new System.Drawing.Point(294, 234);
+            this.panelBtn.Location = new System.Drawing.Point(294, 295);
             this.panelBtn.Name = "panelBtn";
             this.panelBtn.Size = new System.Drawing.Size(75, 23);
             this.panelBtn.TabIndex = 8;
@@ -164,9 +169,9 @@
             // 
             this.classifierBtn.Location = new System.Drawing.Point(419, 191);
             this.classifierBtn.Name = "classifierBtn";
-            this.classifierBtn.Size = new System.Drawing.Size(75, 23);
+            this.classifierBtn.Size = new System.Drawing.Size(99, 23);
             this.classifierBtn.TabIndex = 13;
-            this.classifierBtn.Text = "Detect";
+            this.classifierBtn.Text = "Detect Object";
             this.classifierBtn.UseVisualStyleBackColor = true;
             this.classifierBtn.Click += new System.EventHandler(this.classifierBtn_Click);
             // 
@@ -226,11 +231,40 @@
             this.drawOnBoardBtn.UseVisualStyleBackColor = true;
             this.drawOnBoardBtn.Click += new System.EventHandler(this.drawOnBoardBtn_Click);
             // 
+            // featureTemplateBox
+            // 
+            this.featureTemplateBox.Location = new System.Drawing.Point(132, 244);
+            this.featureTemplateBox.Name = "featureTemplateBox";
+            this.featureTemplateBox.Size = new System.Drawing.Size(281, 20);
+            this.featureTemplateBox.TabIndex = 20;
+            // 
+            // featureTemplateLabel
+            // 
+            this.featureTemplateLabel.AutoSize = true;
+            this.featureTemplateLabel.Location = new System.Drawing.Point(27, 247);
+            this.featureTemplateLabel.Name = "featureTemplateLabel";
+            this.featureTemplateLabel.Size = new System.Drawing.Size(93, 13);
+            this.featureTemplateLabel.TabIndex = 21;
+            this.featureTemplateLabel.Text = "Feature Template:";
+            // 
+            // featureDetectionBtn
+            // 
+            this.featureDetectionBtn.Location = new System.Drawing.Point(420, 240);
+            this.featureDetectionBtn.Name = "featureDetectionBtn";
+            this.featureDetectionBtn.Size = new System.Drawing.Size(98, 23);
+            this.featureDetectionBtn.TabIndex = 22;
+            this.featureDetectionBtn.Text = "Detect Features";
+            this.featureDetectionBtn.UseVisualStyleBackColor = true;
+            this.featureDetectionBtn.Click += new System.EventHandler(this.featureDetectionBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(702, 388);
+            this.Controls.Add(this.featureDetectionBtn);
+            this.Controls.Add(this.featureTemplateLabel);
+            this.Controls.Add(this.featureTemplateBox);
             this.Controls.Add(this.drawOnBoardBtn);
             this.Controls.Add(this.calibrateFisheyeNoOutputBtn);
             this.Controls.Add(this.viewWithCalibrationBtn);
@@ -278,6 +312,10 @@
         private System.Windows.Forms.Button viewWithCalibrationBtn;
         private System.Windows.Forms.Button calibrateFisheyeNoOutputBtn;
         private System.Windows.Forms.Button drawOnBoardBtn;
+        private System.Windows.Forms.TextBox featureTemplateBox;
+        private System.Windows.Forms.Label featureTemplateLabel;
+        private System.Windows.Forms.Button featureDetectionBtn;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 

@@ -164,5 +164,17 @@ namespace Panel_QA_TestProgram
             }
         }
 
+        private void featureDetectionBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "" && featureTemplateBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.DetectFeatures(inputBox.Text, featureTemplateBox.Text);
+                warningLabel.Text = "";
+                newPanel = null;
+            } else {
+                warningLabel.Text = "You must enter a path to a file AND a template";
+            }
+        }
+
     }
 }

@@ -2,6 +2,7 @@
 
 #include "Panel.h"
 #include "Calibrate.h"
+#include "FeatureDetector.h"
 
 Panel::Panel()
 {
@@ -83,11 +84,11 @@ void showimgcontours(Mat &threshedimg, Mat &original)
 	vector<Vec4i> hierarchy;
 	Point2f rectPoints[4];
 	Scalar color = Scalar(255, 0, 0);
-	int largest_area = 0;
+	double largest_area = 0;
 	int largest_contour_index = 0;
 	findContours(threshedimg, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE);
 	//this will find largest contour
-	for (int i = 0; i< contours.size(); i++) // iterate through each contour. 
+	for (size_t i = 0; i< contours.size(); i++) // iterate through each contour. 
 	{
 		double a = contourArea(contours[i], false);  //  Find the area of contour
 		if (a>largest_area)
@@ -169,8 +170,8 @@ bool Panel::ShowImage(string sImgPath, string windowTitle)
 	}
 
 	// resize the image to have 1000 width, keeping the aspect ratio
-	float r = 750.0 / m_pPanel->m_Image.cols;
-	Size dim = Size(750.0, int(m_pPanel->m_Image.rows * r));
+	float r = 750.0f / m_pPanel->m_Image.cols;
+	Size dim = Size(750, int(m_pPanel->m_Image.rows * r));
 	resize(m_pPanel->m_Image, m_pPanel->m_Image, dim);
 
 	// Find the ROI
@@ -285,8 +286,8 @@ void Panel::ColorAtPoint(Point point)
 void Panel::PointLocation(Point point)
 {
 	Point corner_point;
-	corner_point.x = m_pPanel->corners[9].x;
-	corner_point.y = m_pPanel->corners[9].y;
+	corner_point.x = (int)m_pPanel->corners[9].x;
+	corner_point.y = (int)m_pPanel->corners[9].y;
 	double distance = norm(corner_point - point);
 	
 	line(m_pPanel->m_Image, point, corner_point, CV_RGB(255, 0, 0), 2);
@@ -304,11 +305,14 @@ void Panel::PointLocation(Point point)
 
 void Panel::MaskWithColor(string sImgPath, string color)
 {
+	Mat HSV, Mask, MaskResult;
+	// Show the original image
 	if(!ShowImage(sImgPath, "Original"))
 		return;
-
-	Mat HSV, Mask, BGR, MaskResult;
+	// Convert the color HSV Format
 	cvtColor(m_pPanel->m_Image, HSV, CV_BGR2HSV);
+	// The inRange() function will create a mask with 
+	// only the pixels of color in the range specified
 	if (color == "blue")
 	{
 		inRange(HSV, Scalar(105, 100, 30), Scalar(131, 255, 255), Mask);
@@ -322,12 +326,15 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	}
 	else if (color == "panel")
 	{
+		FindContours(m_pPanel->m_Image);
+		/*
 		int h1Lo = 0, s1Lo = 55, v1Lo = 115;
 		int h1Hi = 20, s1Hi = 120, v1Hi = 210;
 		int h2Lo = 0, s2Lo = 0, v2Lo = 0;
 		int h2Hi = 0, s2Hi = 0, v2Hi = 0;
 
-		/*
+		// test code
+		//
 		namedWindow("InRange Tester", CV_WINDOW_AUTOSIZE);
 		cvCreateTrackbar("Hue Lo 1:", "InRange Tester", &h1Lo, 180);
 		cvCreateTrackbar("Hue Hi 1:", "InRange Tester", &h1Hi, 180);
@@ -341,7 +348,7 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		cvCreateTrackbar("Sat Hi 2", "InRange Tester", &s2Hi, 255);
 		cvCreateTrackbar("Val Lo 2", "InRange Tester", &v2Lo, 255);
 		cvCreateTrackbar("Val Hi 2", "InRange Tester", &v2Hi, 255);
-		*/
+		//
 
 		Mat Mask1, Mask2;
 		// while (true)
@@ -360,9 +367,10 @@ void Panel::MaskWithColor(string sImgPath, string color)
 			// if (waitKey(30) == 27)
 			//	break;
 		}
+		*/
 	}
 	m_pPanel->m_Image.copyTo(MaskResult, Mask);
-
+	/*
 	if (color == "panel"){
 		morphIt(MaskResult);
 		blurthresh(MaskResult);
@@ -372,6 +380,7 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		// imshow("Masked Original", modified);
 		FindContours(modified);
 	}
+	*/
 
 	if (color == "red" || color == "blue")
 		DetectBlob(MaskResult);
@@ -428,7 +437,7 @@ Mat Panel::CannyDetection(Mat image)
 
 void Panel::FindContours(Mat image)
 {
-	int low = 60;
+	int low = 140;
 	Mat grayImage;
 	cvtColor(image, grayImage, CV_BGR2GRAY);
 	Mat dilated;
@@ -437,12 +446,13 @@ void Panel::FindContours(Mat image)
 	GaussianBlur(dilated, blurred, Size(7, 7), 0, 0);
 	Mat thresh;
 	threshold(blurred, thresh, low, 255, THRESH_BINARY);
-	// namedWindow("Threshold", CV_WINDOW_AUTOSIZE);
-	// imshow("Threshold", thresh);
+	namedWindow("Threshold", CV_WINDOW_AUTOSIZE);
+	imshow("Threshold", thresh);
 	showimgcontours(thresh, image);
 	// namedWindow("Contours", CV_WINDOW_AUTOSIZE);
 	// imshow("Contours", thresh);
-	// imshow("Largest Contour", image);
+	namedWindow("Largest Contour", CV_WINDOW_AUTOSIZE);
+	imshow("Largest Contour", image);
 }
 
 void Panel::DetectBlob(Mat image)
@@ -481,7 +491,7 @@ void Panel::DetectBlob(Mat image)
 	params.filterByConvexity = false;
 	params.filterByCircularity = false;
 	params.filterByInertia = false;
-	params.minArea = blobArea;
+	params.minArea = (float)blobArea;
 
 	// Set up the detector with default parameters.
 	detector = SimpleBlobDetector::create(params);
@@ -516,6 +526,14 @@ void Panel::CascadeClassify(string sImgPath, string sClassPath)
 	detectAndDisplay(m_pPanel->m_Image, sClassPath);
 }
 
+void Panel::DetectFeatures(string scenePath, string objPath)
+{
+	if (!ShowImage(scenePath, "Scene"))
+		return;
+
+	MyFeatureDetector detector(scenePath, objPath);
+}
+
 void Panel::DrawOnBoard(string sImgPath)
 {
 	m_pPanel = new Panel;
@@ -533,12 +551,12 @@ void Panel::DrawOnBoard(string sImgPath)
 		CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
 
 	Point corner1;
-	corner1.x = m_pPanel->corners[0].x;
-	corner1.y = m_pPanel->corners[0].y;
+	corner1.x = (int)m_pPanel->corners[0].x;
+	corner1.y = (int)m_pPanel->corners[0].y;
 	
 	Point corner2;
-	corner2.x = m_pPanel->corners[4].x;
-	corner2.y = m_pPanel->corners[4].y;
+	corner2.x = (int)m_pPanel->corners[4].x;
+	corner2.y = (int)m_pPanel->corners[4].y;
 
 	line(m_pPanel->m_Image, corner1, corner2, CV_RGB(0, 0, 255), 2);
 

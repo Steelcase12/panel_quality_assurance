@@ -75,6 +75,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PANEL_QA_CPP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -87,6 +88,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Calibrate.h" />
+    <ClInclude Include="FeatureDetector.h" />
     <ClInclude Include="Panel.h" />
   </ItemGroup>
   <ItemGroup>

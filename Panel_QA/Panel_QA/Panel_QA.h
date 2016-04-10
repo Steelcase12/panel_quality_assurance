@@ -30,6 +30,7 @@ namespace MYopencv {
 		void CalibrateCameraNoOutput(System::String^ filePath);
 		void CalibrateCameraFisheyeNoOutput(System::String^ filePath);
 		void CascadeClassify(System::String^ imgPath, System::String^ classifierPath);
+		void DetectFeatures(System::String^ scenePath, System::String^ objPath);
 	private:
 		Panel *panel;
 	};

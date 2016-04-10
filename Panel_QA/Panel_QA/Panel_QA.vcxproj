@@ -68,6 +68,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <AdditionalIncludeDirectories>$(OPENCV_DIR)\..\..\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CallingConvention>Cdecl</CallingConvention>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
