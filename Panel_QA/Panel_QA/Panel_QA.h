@@ -27,6 +27,7 @@ namespace MYopencv {
 		void DetectEdges(System::String^ imgPath);
 		void DrawOnBoard(System::String^ imgPath);
 		void Perspective(System::String^ imgPath, System::String^ selectedPath);
+		void Rectification(System::String^ imgPath, System::String^ selectedPath);
 		void CalibrateCamera(System::String^ filePath);
 		void CalibrateCameraNoOutput(System::String^ filePath);
 		void CalibrateCameraFisheyeNoOutput(System::String^ filePath);
