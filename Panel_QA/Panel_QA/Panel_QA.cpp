@@ -104,6 +104,14 @@ void MYPanel::CascadeClassify(System::String^ imgPath, System::String^ classPath
 	panel->CascadeClassify(strImgPath, strClassPath);
 }
 
+void MYPanel::DetectFeatures(System::String^ scenePath, System::String^ objPath)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strScenePath = convert->myStringToChar(scenePath);
+	string strObjPath = convert->myStringToChar(objPath);
+	panel->DetectFeatures(strScenePath, strObjPath);
+}
+
 // ++++++++++++ MYConversion Class ++++++++++++ 
 MYConversion::MYConversion() {}
 

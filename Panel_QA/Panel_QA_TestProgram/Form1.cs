@@ -81,8 +81,7 @@ namespace Panel_QA_TestProgram
 
         private void calibrateBtn_Click(object sender, EventArgs e)
         {
-            if (calibrationPath.Text != "")
-            {
+            if (calibrationPath.Text != "") {
                 newPanel = new MYPanel();
                 newPanel.CalibrateCamera(calibrationPath.Text);
                 warningLabel.Text = "";
@@ -94,15 +93,12 @@ namespace Panel_QA_TestProgram
 
         private void calibrateNoOutputBtn_Click(object sender, EventArgs e)
         {
-            if (calibrationPath.Text != "")
-            {
+            if (calibrationPath.Text != "") {
                 newPanel = new MYPanel();
                 newPanel.CalibrateCameraNoOutput(calibrationPath.Text);
                 warningLabel.Text = "";
                 newPanel = null;
-            }
-            else
-            {
+            } else {
                 warningLabel.Text = "You must enter a path to a file";
             }
         }
@@ -121,75 +117,72 @@ namespace Panel_QA_TestProgram
 
         private void viewWithCalibrationBtn_Click(object sender, EventArgs e)
         {
-            if (inputBox.Text != "")
-            {
+            if (inputBox.Text != "") {
                 newPanel = new MYPanel();
                 newPanel.ShowImageWithCalibration(inputBox.Text, "My Image");
                 newPanel = null;
                 warningLabel.Text = "";
-            }
-            else
-            {
+            } else {
                 warningLabel.Text = "You must enter a path to an image";
             }
         }
 
         private void calibrateFisheyeNoOutputBtn_Click(object sender, EventArgs e)
         {
-            if (calibrationPath.Text != "")
-            {
+            if (calibrationPath.Text != "") {
                 newPanel = new MYPanel();
                 newPanel.CalibrateCameraFisheyeNoOutput(calibrationPath.Text);
                 warningLabel.Text = "";
                 newPanel = null;
-            }
-            else
-            {
+            } else {
                 warningLabel.Text = "You must enter a path to a file";
             }
         }
 
         private void drawOnBoardBtn_Click(object sender, EventArgs e)
         {
-            if (inputBox.Text != "")
-            {
+            if (inputBox.Text != "") {
                 newPanel = new MYPanel();
                 newPanel.DrawOnBoard(inputBox.Text);
                 warningLabel.Text = "";
                 newPanel = null;
-            }
-            else
-            {
+            } else {
                 warningLabel.Text = "You must enter a path to an image";
             }
         }
 
         private void batchCalibrateBtn_Click(object sender, EventArgs e)
         {
-            if (inputBox.Text != "")
-            {
+            if (inputBox.Text != "") {
                 newPanel = new MYPanel();
                 newPanel.BatchCalibrate(inputBox.Text);
                 newPanel = null;
                 warningLabel.Text = "";
-            }
-            else
-            {
+            } else {
                 warningLabel.Text = "You must enter a path to a directory";
+            }
+            }
+
+        private void featureDetectionBtn_Click(object sender, EventArgs e)
+            {
+            if (inputBox.Text != "" && featureTemplateBox.Text != "") {
+                newPanel = new MYPanel();
+                newPanel.DetectFeatures(inputBox.Text, featureTemplateBox.Text);
+                warningLabel.Text = "";
+                newPanel = null;
+            } else {
+                warningLabel.Text = "You must enter a path to a file AND a template";
             }
         }
 
         private void perspectiveBtn_Click(object sender, EventArgs e)
         {
-            if (inputBox.Text != "")
-            {
+            if (inputBox.Text != "") {
                 newPanel = new MYPanel();
                 newPanel.Perspective(inputBox.Text, comboBox1.SelectedItem.ToString());
                 warningLabel.Text = "";
                 newPanel = null;
-            }
-            else
-            {
+            } else {
                 warningLabel.Text = "You must enter a path to an image";
             }
         }

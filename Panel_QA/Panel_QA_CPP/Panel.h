@@ -35,9 +35,7 @@ public:
 	void CalibrateCameraNoOutput(string filePath);
 	void CalibrateCameraFisheyeNoOutput(string filePath);
 	void CascadeClassify(string imgPath, string classPath);
-	void BatchCalibrate(string dirPath);
-
-private:
+	void BatchCalibrate(string dirPath);	void DetectFeatures(string scenePath, string objPath);private:
 	Panel *m_pPanel;
 	Mat m_Image;
 	// This is just for testing distance measurement
