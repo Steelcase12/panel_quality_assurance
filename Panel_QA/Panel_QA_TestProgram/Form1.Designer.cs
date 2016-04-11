@@ -13,8 +13,7 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -295,7 +294,7 @@
             // 
             // featureDetectionBtn
             // 
-            this.featureDetectionBtn.Location = new System.Drawing.Point(551, 259);            this.featureDetectionBtn.Name = "featureDetectionBtn";
+            this.featureDetectionBtn.Location = new System.Drawing.Point(551, 259); this.featureDetectionBtn.Name = "featureDetectionBtn";
             this.featureDetectionBtn.Size = new System.Drawing.Size(98, 23);
             this.featureDetectionBtn.TabIndex = 22;
             this.featureDetectionBtn.Text = "Detect Features";
@@ -375,7 +374,12 @@
         private System.Windows.Forms.TextBox featureTemplateBox;
         private System.Windows.Forms.Label featureTemplateLabel;
         private System.Windows.Forms.Button featureDetectionBtn;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;        private System.Windows.Forms.Button batchCalibrateBtn;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.Button batchCalibrateBtn;
         private System.Windows.Forms.Button perspectiveBtn;
-private System.Windows.Forms.Button rectificationBtn;private System.Windows.Forms.CheckBox featuresCheckBox;}
+        private System.Windows.Forms.Button rectificationBtn;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.CheckBox featuresCheckBox;
+    }
+}
 
