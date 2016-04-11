@@ -63,7 +63,8 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 0;
-            this.inputBox.Text = "C:\\Users\\Nick\\Pictures\\Training\\Calibrated_Checkerboards\\Checkerboard_010.jpg";            // 
+            this.inputBox.Text = "C:\\Users\\Nick\\Pictures\\Training\\Calibrated_Checkerboards\\Checkerboard_010.jpg";
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -294,7 +295,8 @@
             // 
             // featureDetectionBtn
             // 
-            this.featureDetectionBtn.Location = new System.Drawing.Point(551, 259); this.featureDetectionBtn.Name = "featureDetectionBtn";
+            this.featureDetectionBtn.Location = new System.Drawing.Point(550, 285);
+            this.featureDetectionBtn.Name = "featureDetectionBtn";
             this.featureDetectionBtn.Size = new System.Drawing.Size(98, 23);
             this.featureDetectionBtn.TabIndex = 22;
             this.featureDetectionBtn.Text = "Detect Features";
@@ -304,7 +306,7 @@
             // featuresCheckBox
             // 
             this.featuresCheckBox.AutoSize = true;
-            this.featuresCheckBox.Location = new System.Drawing.Point(421, 262);
+            this.featuresCheckBox.Location = new System.Drawing.Point(420, 289);
             this.featuresCheckBox.Name = "featuresCheckBox";
             this.featuresCheckBox.Size = new System.Drawing.Size(128, 17);
             this.featuresCheckBox.TabIndex = 23;
