@@ -50,6 +50,7 @@
             this.batchCalibrateBtn = new System.Windows.Forms.Button();
             this.perspectiveBtn = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.rectificationBtn = new System.Windows.Forms.Button();
             this.featureTemplateBox = new System.Windows.Forms.TextBox();
             this.featureTemplateLabel = new System.Windows.Forms.Label();
             this.featureDetectionBtn = new System.Windows.Forms.Button();
@@ -63,8 +64,7 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 0;
-            this.inputBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\panel2_qr_sc_color_double.png";
-            // 
+            this.inputBox.Text = "C:\\Users\\Nick\\Pictures\\Training\\Calibrated_Checkerboards\\Checkerboard_010.jpg";            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -87,7 +87,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(24, 300);
+            this.label2.Location = new System.Drawing.Point(24, 327);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(69, 13);
             this.label2.TabIndex = 3;
@@ -95,7 +95,7 @@
             // 
             // redBtn
             // 
-            this.redBtn.Location = new System.Drawing.Point(132, 295);
+            this.redBtn.Location = new System.Drawing.Point(132, 322);
             this.redBtn.Name = "redBtn";
             this.redBtn.Size = new System.Drawing.Size(75, 23);
             this.redBtn.TabIndex = 4;
@@ -105,7 +105,7 @@
             // 
             // blueBtn
             // 
-            this.blueBtn.Location = new System.Drawing.Point(213, 295);
+            this.blueBtn.Location = new System.Drawing.Point(213, 322);
             this.blueBtn.Name = "blueBtn";
             this.blueBtn.Size = new System.Drawing.Size(75, 23);
             this.blueBtn.TabIndex = 5;
@@ -116,7 +116,7 @@
             // warningLabel
             // 
             this.warningLabel.AutoSize = true;
-            this.warningLabel.Location = new System.Drawing.Point(417, 305);
+            this.warningLabel.Location = new System.Drawing.Point(417, 332);
             this.warningLabel.Name = "warningLabel";
             this.warningLabel.Size = new System.Drawing.Size(56, 13);
             this.warningLabel.TabIndex = 6;
@@ -124,7 +124,7 @@
             // 
             // detectEdgesBtn
             // 
-            this.detectEdgesBtn.Location = new System.Drawing.Point(132, 342);
+            this.detectEdgesBtn.Location = new System.Drawing.Point(132, 369);
             this.detectEdgesBtn.Name = "detectEdgesBtn";
             this.detectEdgesBtn.Size = new System.Drawing.Size(87, 23);
             this.detectEdgesBtn.TabIndex = 7;
@@ -134,7 +134,7 @@
             // 
             // panelBtn
             // 
-            this.panelBtn.Location = new System.Drawing.Point(294, 295);
+            this.panelBtn.Location = new System.Drawing.Point(294, 322);
             this.panelBtn.Name = "panelBtn";
             this.panelBtn.Size = new System.Drawing.Size(75, 23);
             this.panelBtn.TabIndex = 8;
@@ -144,7 +144,7 @@
             // 
             // calibrateNoOutputBtn
             // 
-            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(527, 143);
+            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(527, 173);
             this.calibrateNoOutputBtn.Name = "calibrateNoOutputBtn";
             this.calibrateNoOutputBtn.Size = new System.Drawing.Size(121, 23);
             this.calibrateNoOutputBtn.TabIndex = 9;
@@ -155,7 +155,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 225);
+            this.label3.Location = new System.Drawing.Point(24, 255);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(51, 13);
             this.label3.TabIndex = 11;
@@ -163,16 +163,14 @@
             // 
             // classifierBox
             // 
-            this.classifierBox.Location = new System.Drawing.Point(132, 222);
+            this.classifierBox.Location = new System.Drawing.Point(132, 252);
             this.classifierBox.Name = "classifierBox";
             this.classifierBox.Size = new System.Drawing.Size(281, 20);
             this.classifierBox.TabIndex = 12;
-            this.classifierBox.Text = "C:\\CPE 495 496\\Haar_Example\\opencv-haar-classifier-training\\classifier\\cascade.xm" +
-    "l";
             // 
             // classifierBtn
             // 
-            this.classifierBtn.Location = new System.Drawing.Point(419, 220);
+            this.classifierBtn.Location = new System.Drawing.Point(419, 250);
             this.classifierBtn.Name = "classifierBtn";
             this.classifierBtn.Size = new System.Drawing.Size(102, 23);
             this.classifierBtn.TabIndex = 13;
@@ -183,7 +181,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(27, 144);
+            this.label4.Location = new System.Drawing.Point(27, 174);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(84, 13);
             this.label4.TabIndex = 14;
@@ -191,15 +189,14 @@
             // 
             // calibrationPath
             // 
-            this.calibrationPath.Location = new System.Drawing.Point(132, 144);
+            this.calibrationPath.Location = new System.Drawing.Point(132, 174);
             this.calibrationPath.Name = "calibrationPath";
             this.calibrationPath.Size = new System.Drawing.Size(281, 20);
             this.calibrationPath.TabIndex = 15;
-            this.calibrationPath.Text = "C:\\Users\\Nick\\distortion\\Steelcase.xml";
             // 
             // calibrateBtn
             // 
-            this.calibrateBtn.Location = new System.Drawing.Point(419, 142);
+            this.calibrateBtn.Location = new System.Drawing.Point(419, 172);
             this.calibrateBtn.Name = "calibrateBtn";
             this.calibrateBtn.Size = new System.Drawing.Size(102, 23);
             this.calibrateBtn.TabIndex = 16;
@@ -219,7 +216,7 @@
             // 
             // calibrateFisheyeNoOutputBtn
             // 
-            this.calibrateFisheyeNoOutputBtn.Location = new System.Drawing.Point(527, 172);
+            this.calibrateFisheyeNoOutputBtn.Location = new System.Drawing.Point(527, 202);
             this.calibrateFisheyeNoOutputBtn.Name = "calibrateFisheyeNoOutputBtn";
             this.calibrateFisheyeNoOutputBtn.Size = new System.Drawing.Size(121, 34);
             this.calibrateFisheyeNoOutputBtn.TabIndex = 18;
@@ -270,18 +267,27 @@
             this.comboBox1.TabIndex = 22;
             this.comboBox1.Text = "Panel #3";
             // 
+            // rectificationBtn
+            // 
+            this.rectificationBtn.Location = new System.Drawing.Point(419, 130);
+            this.rectificationBtn.Name = "rectificationBtn";
+            this.rectificationBtn.Size = new System.Drawing.Size(102, 23);
+            this.rectificationBtn.TabIndex = 23;
+            this.rectificationBtn.Text = "Rectification";
+            this.rectificationBtn.UseVisualStyleBackColor = true;
+            this.rectificationBtn.Click += new System.EventHandler(this.rectificationBtn_Click);
+            // 
             // featureTemplateBox
             // 
-            this.featureTemplateBox.Location = new System.Drawing.Point(132, 260);
+            this.featureTemplateBox.Location = new System.Drawing.Point(132, 287);
             this.featureTemplateBox.Name = "featureTemplateBox";
             this.featureTemplateBox.Size = new System.Drawing.Size(281, 20);
             this.featureTemplateBox.TabIndex = 20;
-            this.featureTemplateBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\qr_steelcase.png";
             // 
             // featureTemplateLabel
             // 
             this.featureTemplateLabel.AutoSize = true;
-            this.featureTemplateLabel.Location = new System.Drawing.Point(24, 263);
+            this.featureTemplateLabel.Location = new System.Drawing.Point(24, 290);
             this.featureTemplateLabel.Name = "featureTemplateLabel";
             this.featureTemplateLabel.Size = new System.Drawing.Size(93, 13);
             this.featureTemplateLabel.TabIndex = 21;
@@ -289,8 +295,7 @@
             // 
             // featureDetectionBtn
             // 
-            this.featureDetectionBtn.Location = new System.Drawing.Point(551, 259);
-            this.featureDetectionBtn.Name = "featureDetectionBtn";
+            this.featureDetectionBtn.Location = new System.Drawing.Point(551, 259);            this.featureDetectionBtn.Name = "featureDetectionBtn";
             this.featureDetectionBtn.Size = new System.Drawing.Size(98, 23);
             this.featureDetectionBtn.TabIndex = 22;
             this.featureDetectionBtn.Text = "Detect Features";
@@ -311,7 +316,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(663, 377);
+            this.ClientSize = new System.Drawing.Size(663, 431);
+            this.Controls.Add(this.rectificationBtn);
             this.Controls.Add(this.featuresCheckBox);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.perspectiveBtn);
@@ -371,8 +377,5 @@
         private System.Windows.Forms.Button featureDetectionBtn;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;        private System.Windows.Forms.Button batchCalibrateBtn;
         private System.Windows.Forms.Button perspectiveBtn;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.CheckBox featuresCheckBox;
-    }
-}
+private System.Windows.Forms.Button rectificationBtn;private System.Windows.Forms.CheckBox featuresCheckBox;}
 

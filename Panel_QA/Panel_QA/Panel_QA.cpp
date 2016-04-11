@@ -81,6 +81,14 @@ void MYPanel::Perspective(System::String^ imgPath, System::String^ selectedItem)
 	panel->Perspective((string)strImgPath, (string)strSelectedItem);
 }
 
+void MYPanel::Rectification(System::String^ imgPath, System::String^ selectedItem)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	string strSelectedItem = convert->myStringToChar(selectedItem);
+	panel->Rectification((string)strImgPath, (string)strSelectedItem);
+}
+
 void MYPanel::BatchCalibrate(System::String^ dirPath)
 {
 	MYConversion ^convert = gcnew MYConversion();

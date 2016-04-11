@@ -30,6 +30,7 @@ public:
 	void DetectEdges(string imgPath);
 	void DrawOnBoard(string imgPath);
 	void Perspective(string imgPath, string selectedItem);
+	void Rectification(string imgPath, string selectedItem);
 	void CalibrateCamera(string filePath);
 	void CalibrateCameraNoOutput(string filePath);
 	void CalibrateCameraFisheyeNoOutput(string filePath);

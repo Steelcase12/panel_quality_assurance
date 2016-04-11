@@ -161,10 +161,10 @@ namespace Panel_QA_TestProgram
             } else {
                 warningLabel.Text = "You must enter a path to a directory";
             }
-        }
+            }
 
         private void featureDetectionBtn_Click(object sender, EventArgs e)
-        {
+            {
             if (inputBox.Text != "" && featureTemplateBox.Text != "") {
                 newPanel = new MYPanel();
                 newPanel.DetectFeatures(inputBox.Text, featureTemplateBox.Text, featuresCheckBox.Checked);
@@ -186,5 +186,21 @@ namespace Panel_QA_TestProgram
                 warningLabel.Text = "You must enter a path to an image";
             }
         }
+
+        private void rectificationBtn_Click(object sender, EventArgs e)
+        {
+            if (inputBox.Text != "")
+            {
+                newPanel = new MYPanel();
+                newPanel.Rectification(inputBox.Text, comboBox1.SelectedItem.ToString());
+                warningLabel.Text = "";
+                newPanel = null;
+            }
+            else
+            {
+                warningLabel.Text = "You must enter a path to an image";
+            }
+        }
+
     }
 }
