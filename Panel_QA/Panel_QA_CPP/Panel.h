@@ -34,12 +34,13 @@ public:
 	void CalibrateCameraNoOutput(string filePath);
 	void CalibrateCameraFisheyeNoOutput(string filePath);
 	void CascadeClassify(string imgPath, string classPath);
-	void BatchCalibrate(string dirPath);	void DetectFeatures(string scenePath, string objPath);private:
+	void BatchCalibrate(string dirPath);	
+	void DetectFeatures(string scenePath, string objPath, bool exceedsBorder);
+private:
 	Panel *m_pPanel;
 	Mat m_Image;
 	// This is just for testing distance measurement
 	vector<Point2f> corners;
-	void FixPath(string& path);
 	Mat CannyDetection(Mat image);
 	void FindContours(Mat image);
 	void DetectBlob(Mat image);

@@ -7,6 +7,7 @@
 #include "opencv2/features2d.hpp"
 #include "opencv2/calib3d.hpp"
 #include <iostream>
+#include "include.h"
 
 using namespace cv;
 using namespace std;
@@ -14,23 +15,35 @@ using namespace std;
 class MyFeatureDetector
 {
 public:
-	MyFeatureDetector(string scene, string obj);
+	MyFeatureDetector();
 	~MyFeatureDetector();
 	void SlidingWindow(Mat object);
 	void FindObject(Mat objectP, Mat scene, int minHessian, Scalar color, int row, int col);
+	bool Detect(string scene, string obj, Mat &bound_image, bool exceedsBorder);
 private:
 	Mat full_scene, outImg;
 	// Top and Bottom points of new ROI
 	int topPoint = 0;
 	int bottomPoint = 0;
+	int leftPoint = 0;
+	int rightPoint = 0;
 	// Sliding window parameters
 	int n_rows, n_cols;
 	// Step of each window
 	int row_step, col_step;
 };
 
-MyFeatureDetector::MyFeatureDetector(string scene, string obj) {
+MyFeatureDetector::MyFeatureDetector() 
+{
+}
 
+MyFeatureDetector::~MyFeatureDetector()
+{
+
+}
+
+bool MyFeatureDetector::Detect(string scene, string obj, Mat &bound_image, bool exceedsBorder)
+{
 	// Load images
 	full_scene = imread(scene);
 	if (!full_scene.data) {
@@ -56,9 +69,9 @@ MyFeatureDetector::MyFeatureDetector(string scene, string obj) {
 	//	bottom of the image
 	outImg = full_scene;
 	n_rows = full_scene.cols;
-	row_step = n_rows / 2;
-	n_cols = full_scene.rows / 3;
-	col_step = n_cols / 2;
+	n_cols = full_scene.rows / 2;
+	row_step = n_cols;
+	col_step = n_rows;
 	SlidingWindow(object);
 
 	// When only detecting one feature in an image,
@@ -81,27 +94,46 @@ MyFeatureDetector::MyFeatureDetector(string scene, string obj) {
 	// The below lines will print out the image after the ROI
 	//	(determined by feature detection) is applied. The ROI 
 	//  is what is being passed back to the main function
-	Rect roi(Point(0, topPoint), Point(full_scene.cols, bottomPoint));
-	Mat bound_image = full_scene(roi);
-	namedWindow("Bound Image", CV_WINDOW_AUTOSIZE);
-	imshow("Bound Image", bound_image);
+	if (topPoint && bottomPoint) {
+		if (exceedsBorder){
+			leftPoint = 0;
+			rightPoint = full_scene.cols;
+		}
+		if (topPoint < 0) topPoint = 0;
+		if (leftPoint < 0) leftPoint = 0;
+		if (bottomPoint > full_scene.rows) bottomPoint = full_scene.rows;
+		if (rightPoint > full_scene.cols) rightPoint = full_scene.cols;
+		Rect roi(Point(leftPoint, topPoint), Point(rightPoint, bottomPoint));
+		bound_image = full_scene(roi);
+		namedWindow("Bound Image", CV_WINDOW_KEEPRATIO);
+		imshow("Bound Image", bound_image);
+	} 
+	else if (topPoint){
+		ShowMessage("Only top feature found.");
+		return false;
+	}
+	else if (bottomPoint){
+		ShowMessage("Only bottom feature found.");
+		return false;
+	}
+	else {
+		ShowMessage("No features found.");
+		return false;
+	}
 
 	// Use the waitkey below when a pause is needed for 
 	//	debugging. It will ensure the windows created stay
 	//	up until a key is pressed.
 	// waitkey(0);
-}
 
-MyFeatureDetector::~MyFeatureDetector()
-{
-
+	return true;
 }
 
 void MyFeatureDetector::SlidingWindow(Mat object)
 {
 	// Un-comment the below line when debugging 
 	//	SlidingWindow(). It will show the image with
-	//  all of the sliding windows on it. 
+	//  all of the sliding windows on it.
 	Mat drawGrid = full_scene.clone();
 	// Cycle row step
 	for (int row = 0; row <= full_scene.rows - n_cols; row += row_step)
@@ -125,31 +157,30 @@ void MyFeatureDetector::SlidingWindow(Mat object)
 			// Begin Sliding Window Debugging Code
 			///////////////////////////////////////
 
-			// Mat drawResults = full_scene.clone();
+			/*Mat drawResults = full_scene.clone();
 
-			/* Draw only rectangle
+			// Draw only rectangle
 			rectangle(drawResults, windows, Scalar(255), 1, 8, 0);
 			// Draw grid
-			// rectangle(drawGrid, windows, Scalar(255), 1, 8, 0);
+			rectangle(drawGrid, windows, Scalar(255), 1, 8, 0);
 
-			/* Show rectangle
-			namedWindow("Step 2 draw Rectangle", WINDOW_AUTOSIZE);
+			// Show rectangle
+			namedWindow("Step 2 draw Rectangle", CV_WINDOW_KEEPRATIO);
 			imshow("Step 2 draw Rectangle", drawResults);
 			waitKey(50);
 			imwrite("Step2.jpg", drawResults);
 
-			/* Show grid
-			namedWindow("Step 3 Show Grid", WINDOW_AUTOSIZE);
+			// Show grid
+			namedWindow("Step 3 Show Grid", CV_WINDOW_KEEPRATIO);
 			imshow("Step 3 Show Grid", drawGrid);
 			waitKey(50);
 			imwrite("Step3.jpg", drawGrid);
-			*/
 
 			// Show roi
 			// namedWindow("Step 4 Draw selected Roi", WINDOW_AUTOSIZE);
 			// imshow("Step 4 Draw selected Roi", roi);
 			// waitKey(100);
-			// imwrite("Step4.JPG", roi);
+			// imwrite("Step4.JPG", roi);*/
 
 			////////////////////////////////////////
 			// End of Sliding Window Debugging Code
@@ -238,6 +269,8 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 	//  then checking from object to scene. The matches that are in
 	//  both are considered as good.
 	////////////////////////////////////////////////////////////////
+
+	// Ratio Test 
 	/*
 	double max_dist = 0; double min_dist = 150;
 	double dist;
@@ -274,8 +307,8 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 
 	drawKeypoints(objectP,keypointsO,objectP,Scalar(0,0,255),DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
 
-	namedWindow("SURF");
-	imshow("SURF",objectP);
+	namedWindow("BRISK");
+	imshow("BRISK",objectP);
 	*/
 
 	//-- Localize the object
@@ -317,16 +350,27 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 		line(outImg, Point((int)scene_corners[3].x + col, (int)scene_corners[3].y + row),
 			Point((int)scene_corners[0].x + col, (int)scene_corners[0].y + row), color, 2);
 
-		if (topPoint == NULL)
+		if (row == 0){
 			if (scene_corners[2].y < scene_corners[3].y)
 				topPoint = (int)scene_corners[2].y + row;
 			else
 				topPoint = (int)scene_corners[3].y + row;
-		else
-			if (scene_corners[0].y < scene_corners[1].y)
+			if (scene_corners[0].x < scene_corners[3].x)
+				leftPoint = (int)scene_corners[0].x + col;
+			else
+				leftPoint = (int)scene_corners[3].x + col;
+		}
+		else{
+			if (scene_corners[0].y > scene_corners[1].y)
 				bottomPoint = (int)scene_corners[0].y + row;
 			else
 				bottomPoint = (int)scene_corners[1].y + row;
+			if (scene_corners[1].x > scene_corners[2].x)
+				rightPoint = (int)scene_corners[1].x + col;
+			else
+				rightPoint = (int)scene_corners[2].x + col;
+		}
+		
 	}
 	// else 
 	//	cout << "OBJECT NOT FOUND!" << endl;
@@ -339,9 +383,9 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 	// cout << "Algorithm duration: " << duration << " seconds" << endl << "--------------------------------------" << endl;
 
 	// drawing the results
-	// namedWindow("matches", CV_WINDOW_KEEPRATIO);
-	// Mat img_matches;
-	// drawMatches(object, keypointsO, full_scene, keypointsS, good_matches, img_matches);
-	// imshow("matches", img_matches);
-	// waitKey(100);
+	/*namedWindow("matches", CV_WINDOW_KEEPRATIO);
+	Mat img_matches;
+	drawMatches(object, keypointsO, full_scene, keypointsS, good_matches, img_matches);
+	imshow("matches", img_matches);
+	waitKey(100);*/
 }

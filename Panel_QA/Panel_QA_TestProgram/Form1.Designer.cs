@@ -54,6 +54,7 @@
             this.featureTemplateLabel = new System.Windows.Forms.Label();
             this.featureDetectionBtn = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.featuresCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // inputBox
@@ -62,7 +63,7 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 0;
-            this.inputBox.Text = "C:\\Users\\Nick\\Pictures\\Training\\Calibrated_Checkerboards\\Checkerboard_010.jpg";
+            this.inputBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\panel2_qr_sc_color_double.png";
             // 
             // label1
             // 
@@ -288,7 +289,7 @@
             // 
             // featureDetectionBtn
             // 
-            this.featureDetectionBtn.Location = new System.Drawing.Point(420, 256);
+            this.featureDetectionBtn.Location = new System.Drawing.Point(551, 259);
             this.featureDetectionBtn.Name = "featureDetectionBtn";
             this.featureDetectionBtn.Size = new System.Drawing.Size(98, 23);
             this.featureDetectionBtn.TabIndex = 22;
@@ -296,11 +297,22 @@
             this.featureDetectionBtn.UseVisualStyleBackColor = true;
             this.featureDetectionBtn.Click += new System.EventHandler(this.featureDetectionBtn_Click);
             // 
+            // featuresCheckBox
+            // 
+            this.featuresCheckBox.AutoSize = true;
+            this.featuresCheckBox.Location = new System.Drawing.Point(421, 262);
+            this.featuresCheckBox.Name = "featuresCheckBox";
+            this.featuresCheckBox.Size = new System.Drawing.Size(128, 17);
+            this.featuresCheckBox.TabIndex = 23;
+            this.featuresCheckBox.Text = "Part Exceeds Feature";
+            this.featuresCheckBox.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(663, 377);
+            this.Controls.Add(this.featuresCheckBox);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.perspectiveBtn);
             this.Controls.Add(this.batchCalibrateBtn);
@@ -359,6 +371,8 @@
         private System.Windows.Forms.Button featureDetectionBtn;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;        private System.Windows.Forms.Button batchCalibrateBtn;
         private System.Windows.Forms.Button perspectiveBtn;
-        private System.Windows.Forms.ComboBox comboBox1;    }
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.CheckBox featuresCheckBox;
+    }
 }
 

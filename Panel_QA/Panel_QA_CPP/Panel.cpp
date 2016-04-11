@@ -1,5 +1,6 @@
 // This is the main DLL file.
 
+#include "include.h"
 #include "Panel.h"
 #include "Calibrate.h"
 #include "iomanip"
@@ -17,14 +18,6 @@ Panel::~Panel()
 // Camera Calibration Constants
 Mat mainMap1, mainMap2;
 Mat mainCameraMatrix, mainDistCoeffs;
-
-// Helper function to display a message box
-void ShowMessage(string message)
-{
-	char buff[100];
-	sprintf_s(buff, "%s", message.c_str());
-	MessageBoxA(NULL, (LPCSTR)buff, (LPCSTR)"Panel_QA_CPP.dll", MB_OK);
-}
 
 ///////////////////////////////////////////////////////////////////////
 // Helper Function for Cascade Classifier				       ////////
@@ -123,16 +116,6 @@ void showimgcontours(Mat &threshedimg, Mat &original)
 //////////////////////////////////////////////////////////////////////////////
 ///// End of Helper functions for Finding Contours					 /////////
 //////////////////////////////////////////////////////////////////////////////
-
-// Helper function to replace characters in a string
-void strReplace(string& source, string const& find, string const& replace)
-{
-	for (string::size_type i = 0; (i = source.find(find, i)) != string::npos;)
-	{
-		source.replace(i, find.length(), replace);
-		i += replace.length();
-	}
-}
 
 // On click listener to display the HSV value of the point clicked
 static void onMouseColor(int event, int x, int y, int f, void *ptr)
@@ -256,11 +239,6 @@ void Panel::BatchCalibrate(string sdirPath)
 		ss.str("");
 	}
 	cout << "BATCHED";
-}
-
-void Panel::FixPath(string &path)
-{
-	strReplace(path, "\\" , "\\\\");
 }
 
 string Panel::ColorName(Vec3b color)
@@ -470,18 +448,18 @@ void Panel::FindContours(Mat image)
 	int low = 140;
 	Mat grayImage;
 	cvtColor(image, grayImage, CV_BGR2GRAY);
-	Mat dilated;
-	dilate(grayImage, dilated, Mat());
+	// Mat dilated;
+	// dilate(grayImage, dilated, Mat());
 	Mat blurred;
-	GaussianBlur(dilated, blurred, Size(7, 7), 0, 0);
+	GaussianBlur(grayImage, blurred, Size(7, 7), 0, 0);
 	Mat thresh;
 	threshold(blurred, thresh, low, 255, THRESH_BINARY);
-	namedWindow("Threshold", CV_WINDOW_AUTOSIZE);
+	namedWindow("Threshold", CV_WINDOW_KEEPRATIO);
 	imshow("Threshold", thresh);
 	showimgcontours(thresh, image);
 	// namedWindow("Contours", CV_WINDOW_AUTOSIZE);
 	// imshow("Contours", thresh);
-	namedWindow("Largest Contour", CV_WINDOW_AUTOSIZE);
+	namedWindow("Largest Contour", CV_WINDOW_KEEPRATIO);
 	imshow("Largest Contour", image);
 }
 
@@ -556,12 +534,17 @@ void Panel::CascadeClassify(string sImgPath, string sClassPath)
 	detectAndDisplay(m_pPanel->m_Image, sClassPath);
 }
 
-void Panel::DetectFeatures(string scenePath, string objPath)
+void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
 {
 	if (!ShowImage(scenePath, "Scene"))
 		return;
 
-	MyFeatureDetector detector(scenePath, objPath);
+	MyFeatureDetector detector;
+	Mat boundImg;
+	if (!detector.Detect(scenePath, objPath, boundImg, exceedsBorder))
+		return;
+
+	FindContours(boundImg);
 }
 
 void Panel::DrawOnBoard(string sImgPath)
@@ -721,9 +704,9 @@ void Panel::Perspective(string sImgPath, string sSelectedItem)
 	panel_pts.push_back(corner3);
 	panel_pts.push_back(corner4);
 	rect_pts.push_back(Point2f(corner1.x, corner1.y));
-	rect_pts.push_back(Point2f(corner1.x + width, corner1.y));
-	rect_pts.push_back(Point2f(corner1.x + width, corner1.y + length));
-	rect_pts.push_back(Point2f(corner1.x, corner1.y + length));
+	rect_pts.push_back(Point2f(corner1.x + (float)width, corner1.y));
+	rect_pts.push_back(Point2f(corner1.x + (float)width, corner1.y + (float)length));
+	rect_pts.push_back(Point2f(corner1.x, corner1.y + (float)length));
 	
 	// Draw new rectangle
 	//line(m_pPanel->m_Image, rect_pts[0], rect_pts[1], CV_RGB(255, 0, 0), 2);
@@ -737,7 +720,7 @@ void Panel::Perspective(string sImgPath, string sSelectedItem)
 	Mat transformed = Mat::zeros(m_pPanel->m_Image.cols + offsetSize, m_pPanel->m_Image.rows + offsetSize, CV_8UC3);
 	warpPerspective(m_pPanel->m_Image, transformed, transmtx, transformed.size());
 
-	Mat subImg(transformed, Rect(corner1.x, corner1.y, width, length));
+	Mat subImg(transformed, Rect((int)corner1.x, (int)corner1.y, (int)width, (int)length));
 
 	namedWindow("Original", WINDOW_NORMAL);
 	imshow("Original", m_pPanel->m_Image);

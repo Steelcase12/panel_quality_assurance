@@ -70,7 +70,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PANEL_QA_CPP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -80,8 +80,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>false</EnableCOMDATFolding>
+      <OptimizeReferences>false</OptimizeReferences>
       <NoEntryPoint>
       </NoEntryPoint>
     </Link>
@@ -89,6 +89,7 @@
   <ItemGroup>
     <ClInclude Include="Calibrate.h" />
     <ClInclude Include="FeatureDetector.h" />
+    <ClInclude Include="include.h" />
     <ClInclude Include="Panel.h" />
   </ItemGroup>
   <ItemGroup>
