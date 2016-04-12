@@ -63,7 +63,8 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 0;
-            this.inputBox.Text = "C:\\Users\\Nick\\Pictures\\Training\\Calibrated_Checkerboards\\Checkerboard_010.jpg";
+            this.inputBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\panel3_qr_sc_color_double_contra" +
+    "st.png";
             // 
             // label1
             // 
@@ -283,6 +284,7 @@
             this.featureTemplateBox.Name = "featureTemplateBox";
             this.featureTemplateBox.Size = new System.Drawing.Size(281, 20);
             this.featureTemplateBox.TabIndex = 20;
+            this.featureTemplateBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\qr_steelcase.png";
             // 
             // featureTemplateLabel
             // 

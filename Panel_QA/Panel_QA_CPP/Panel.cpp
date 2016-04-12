@@ -48,6 +48,60 @@ void detectAndDisplay(Mat image, string panel_cascade_name)
 }
 
 ///////////////////////////////////////////////////////////////////////
+///// Helper functions for Computing Hough Line Intersections /////////
+///////////////////////////////////////////////////////////////////////
+vector<Point2f> lineToPointPair(Vec2f line)
+{
+	vector<Point2f> points;
+
+	float r = line[0], t = line[1];
+	double cos_t = cos(t), sin_t = sin(t);
+	double x0 = r*cos_t, y0 = r*sin_t;
+	double alpha = 1000;
+
+	points.push_back(Point2f(x0 + alpha*(-sin_t), y0 + alpha*cos_t));
+	points.push_back(Point2f(x0 - alpha*(-sin_t), y0 - alpha*cos_t));
+
+	return points;
+}
+
+bool acceptLinePair(Vec2f line1, Vec2f line2, float minTheta)
+{
+	float theta1 = line1[1], theta2 = line2[1];
+
+	if (theta1 < minTheta)
+	{
+		theta1 += CV_PI; // dealing with 0 and 180 ambiguities...
+	}
+
+	if (theta2 < minTheta)
+	{
+		theta2 += CV_PI; // dealing with 0 and 180 ambiguities...
+	}
+
+	return abs(theta1 - theta2) > minTheta;
+}
+
+// the long nasty wikipedia line-intersection equation...bleh...
+Point2f computeIntersect(Vec2f line1, Vec2f line2)
+{
+	vector<Point2f> p1 = lineToPointPair(line1);
+	vector<Point2f> p2 = lineToPointPair(line2);
+
+	float denom = (p1[0].x - p1[1].x)*(p2[0].y - p2[1].y) - (p1[0].y - p1[1].y)*(p2[0].x - p2[1].x);
+	Point2f intersect(((p1[0].x*p1[1].y - p1[0].y*p1[1].x)*(p2[0].x - p2[1].x) -
+		(p1[0].x - p1[1].x)*(p2[0].x*p2[1].y - p2[0].y*p2[1].x)) / denom,
+		((p1[0].x*p1[1].y - p1[0].y*p1[1].x)*(p2[0].y - p2[1].y) -
+		(p1[0].y - p1[1].y)*(p2[0].x*p2[1].y - p2[0].y*p2[1].x)) / denom);
+
+	return intersect;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+///// End of Helper functions for Computing Hough Line Intersections /////////
+//////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////
 // End of Helper Function for Cascade Classifier			   ////////
 ///////////////////////////////////////////////////////////////////////
 
@@ -409,12 +463,14 @@ Mat Panel::CannyDetection(Mat image)
 	cvtColor(image, greyImage, CV_BGR2GRAY);
 
 	Mat thresh, blurredThresh, edges, edgesGray;
-	int low = 80, high = 255;
-	int sigmaX = 2, sigmaY = 2; 
-	int cannyLow = 100, ratio = 1, aperture = 3;
+	int low = 105, high = 255;
+	int sigmaX = 10, sigmaY = 2; 
+	int cannyLow = 85, ratio = 3, aperture = 3;
+	int houghLength = 164;
+	vector<Vec2f> lines;
 	/*	This code is for testing different values of various functions
 		Uncomment if you want to test different values than the ones given
-	*/
+
 	namedWindow("Sliders", CV_WINDOW_AUTOSIZE);
 	cvCreateTrackbar("Threshhold", "Sliders", &low, 255);
 	//cvCreateTrackbar("High", "Sliders", &high, 255);
@@ -422,24 +478,76 @@ Mat Panel::CannyDetection(Mat image)
 	cvCreateTrackbar("SigmaY", "Sliders", &sigmaY, 500);
 	cvCreateTrackbar("Low Threshold", "Sliders", &cannyLow, 100);
 	cvCreateTrackbar("Ratio", "Sliders", &ratio, 5);
+	cvCreateTrackbar("Hough Line length", "Sliders", &houghLength, 200);
 
 	while (true)
-	{
+	{	*/
 		threshold(greyImage, thresh, low, 255, THRESH_BINARY);
-		namedWindow("Threshhold", CV_WINDOW_AUTOSIZE);
-		imshow("Threshhold", thresh);
+		// namedWindow("Threshhold", CV_WINDOW_AUTOSIZE);
+		// imshow("Threshhold", thresh);
+
+		Mat dilated;
+		dilate(thresh, dilated, Mat());
+		// namedWindow("Dilated", CV_WINDOW_AUTOSIZE);
+		// imshow("Dilated", dilated);
 
 		GaussianBlur(thresh, blurredThresh, Size(7, 7), sigmaX, sigmaY);
-		namedWindow("Blurred", CV_WINDOW_AUTOSIZE);
-		imshow("Blurred", blurredThresh);
+		// namedWindow("Blurred", CV_WINDOW_AUTOSIZE);
+		// imshow("Blurred", blurredThresh);
 
 		Canny(blurredThresh, edges, cannyLow, cannyLow*ratio, 3);
-		namedWindow("Canny Edges", CV_WINDOW_AUTOSIZE);
-		imshow("Canny Edges", edges);
+		// namedWindow("Canny Edges", CV_WINDOW_AUTOSIZE);
+		// imshow("Canny Edges", edges);
 
+		HoughLines(edges, lines, 1, CV_PI / 180, houghLength, 0, 0);
+
+		cvtColor(edges, edgesGray, CV_GRAY2BGR);
+		for (size_t i = 0; i < lines.size(); i++)
+		{
+			float rho = lines[i][0], theta = lines[i][1];
+			Point pt1, pt2;
+			double a = cos(theta), b = sin(theta);
+			double x0 = a*rho, y0 = b*rho;
+			pt1.x = cvRound(x0 + 1000 * (-b));
+			pt1.y = cvRound(y0 + 1000 * (a));
+			pt2.x = cvRound(x0 - 1000 * (-b));
+			pt2.y = cvRound(y0 - 1000 * (a));
+			line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
+		}
+
+		imshow("Hough Lines", edgesGray);
+
+		// compute the intersection from the lines detected...
+		vector<Point2f> intersections;
+		for (size_t i = 0; i < lines.size(); i++)
+		{
+			for (size_t j = 0; j < lines.size(); j++)
+			{
+				Vec2f line1 = lines[i];
+				Vec2f line2 = lines[j];
+				if (acceptLinePair(line1, line2, CV_PI / 32))
+				{
+					Point2f intersection = computeIntersect(line1, line2);
+					intersections.push_back(intersection);
+				}
+			}
+		}
+
+		if (intersections.size() > 0)
+		{
+			vector<Point2f>::iterator i;
+			for (i = intersections.begin(); i != intersections.end(); ++i)
+			{
+				cout << "Intersection is " << i->x << ", " << i->y << endl;
+				circle(image, *i, 1, Scalar(0, 255, 0), 3);
+			}
+		}
+
+		imshow("Intersections", image);
+		/*
 		if (waitKey(30) == 27)
 			break;
-	}
+	}*/
 	return edges;
 }
 
@@ -544,7 +652,9 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
 	if (!detector.Detect(scenePath, objPath, boundImg, exceedsBorder))
 		return;
 
-	FindContours(boundImg);
+	// FindContours(boundImg);
+	// Canny Edge and Hough Line Detection
+	Mat edges = CannyDetection(boundImg);
 }
 
 void Panel::DrawOnBoard(string sImgPath)
