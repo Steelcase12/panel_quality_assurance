@@ -19,10 +19,9 @@ Panel::~Panel()
 Mat mainMap1, mainMap2;
 Mat mainCameraMatrix, mainDistCoeffs;
 
-///////////////////////////////////////////////////////////////////////
-// Helper Function for Cascade Classifier				       ////////
-///////////////////////////////////////////////////////////////////////
-
+////////////////////////////////////////////////////////////
+// Helper Function for Cascade Classifier				  
+////////////////////////////////////////////////////////////
 void detectAndDisplay(Mat image, string panel_cascade_name)
 {
 	CascadeClassifier panel_cascade;
@@ -47,42 +46,39 @@ void detectAndDisplay(Mat image, string panel_cascade_name)
 	imshow("Classifier Result", image);
 }
 
-///////////////////////////////////////////////////////////////////////
-///// Helper functions for Computing Hough Line Intersections /////////
-///////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+// Helper functions for Computing Hough Line Intersections 
+////////////////////////////////////////////////////////////
 vector<Point2f> lineToPointPair(Vec2f line)
 {
 	vector<Point2f> points;
 
 	float r = line[0], t = line[1];
-	double cos_t = cos(t), sin_t = sin(t);
-	double x0 = r*cos_t, y0 = r*sin_t;
-	double alpha = 1000;
+	float cos_t = cos(t), sin_t = sin(t);
+	float x0 = r*cos_t, y0 = r*sin_t;
+	float alpha = 1000;
 
-	points.push_back(Point2f(x0 + alpha*(-sin_t), y0 + alpha*cos_t));
-	points.push_back(Point2f(x0 - alpha*(-sin_t), y0 - alpha*cos_t));
+	points.push_back(Point2f(x0 + alpha*(-sin_t), y0 + (alpha*cos_t)));
+	points.push_back(Point2f(x0 - alpha*(-sin_t), y0 - (alpha*cos_t)));
 
 	return points;
 }
-
 bool acceptLinePair(Vec2f line1, Vec2f line2, float minTheta)
 {
 	float theta1 = line1[1], theta2 = line2[1];
 
 	if (theta1 < minTheta)
 	{
-		theta1 += CV_PI; // dealing with 0 and 180 ambiguities...
+		theta1 += (float)CV_PI; // dealing with 0 and 180 ambiguities...
 	}
 
 	if (theta2 < minTheta)
 	{
-		theta2 += CV_PI; // dealing with 0 and 180 ambiguities...
+		theta2 += (float)CV_PI; // dealing with 0 and 180 ambiguities...
 	}
 
 	return abs(theta1 - theta2) > minTheta;
 }
-
-// the long nasty wikipedia line-intersection equation...bleh...
 Point2f computeIntersect(Vec2f line1, Vec2f line2)
 {
 	vector<Point2f> p1 = lineToPointPair(line1);
@@ -97,34 +93,9 @@ Point2f computeIntersect(Vec2f line1, Vec2f line2)
 	return intersect;
 }
 
-//////////////////////////////////////////////////////////////////////////////
-///// End of Helper functions for Computing Hough Line Intersections /////////
-//////////////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////
-// End of Helper Function for Cascade Classifier			   ////////
-///////////////////////////////////////////////////////////////////////
-
-///////////////////////////////////////////////////////////////////////
-///// Helper functions for Finding Contours                   /////////
-///////////////////////////////////////////////////////////////////////
-void morphIt(Mat &img)
-{
-	cvtColor(img, img, CV_RGB2GRAY);
-	threshold(img, img, 50.0, 255.0, THRESH_BINARY);
-	erode(img, img, Mat());
-	dilate(img, img, Mat());
-}
-
-void blurthresh(Mat &img)
-	{
-	int kblur = 1;
-	int threshval = 0;
-	//medianBlur(img,img,kblur%2+3+kblur);
-	blur(img, img, Size(kblur, kblur), Point(-1, -1), BORDER_DEFAULT);
-	// threshold(img, img, threshval, 255, THRESH_BINARY_INV);
-	}
-
+////////////////////////////////////////////////////////////
+// showimgcontours Description                
+////////////////////////////////////////////////////////////
 void showimgcontours(Mat &threshedimg, Mat &original)
 {
 	vector<vector<Point> > contours;
@@ -167,11 +138,10 @@ void showimgcontours(Mat &threshedimg, Mat &original)
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////
-///// End of Helper functions for Finding Contours					 /////////
-//////////////////////////////////////////////////////////////////////////////
-
-// On click listener to display the HSV value of the point clicked
+/////////////////////////////////////////////////////////////////////////
+// onMouseColor() Description
+//	On click listener to display the HSV value of the point clicked
+/////////////////////////////////////////////////////////////////////////
 static void onMouseColor(int event, int x, int y, int f, void *ptr)
 {
 	if (event == EVENT_LBUTTONDOWN)
@@ -182,7 +152,10 @@ static void onMouseColor(int event, int x, int y, int f, void *ptr)
 	}
 }
 
+/////////////////////////////////////////////////////////////////////////
+// onMouseLocation() Description
 // On click listener to display the location of the point clicked
+/////////////////////////////////////////////////////////////////////////
 static void onMouseLocation(int event, int x, int y, int f, void *ptr)
 {
 	if (event == EVENT_LBUTTONDOWN)
@@ -195,7 +168,7 @@ static void onMouseLocation(int event, int x, int y, int f, void *ptr)
 
 // Function to display the specified image and add an 
 //	on click listener (onMouse())
-bool Panel::ShowImage(string sImgPath, string windowTitle)
+bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 {
 	m_pPanel = new Panel;
 	// read specified image
@@ -208,26 +181,28 @@ bool Panel::ShowImage(string sImgPath, string windowTitle)
 	}
 
 	// resize the image to have 1000 width, keeping the aspect ratio
-	float r = 750.0f / m_pPanel->m_Image.cols;
-	Size dim = Size(750, int(m_pPanel->m_Image.rows * r));
-	resize(m_pPanel->m_Image, m_pPanel->m_Image, dim);
+	// float r = 750.0f / m_pPanel->m_Image.cols;
+	// Size dim = Size(750, int(m_pPanel->m_Image.rows * r));
+	// resize(m_pPanel->m_Image, m_pPanel->m_Image, dim);
 
 	// Find the ROI
-	const Rect roi(0,0,650,m_pPanel->m_Image.rows);
-	m_pPanel->m_Image(roi);
+	// const Rect roi(0,0,650,m_pPanel->m_Image.rows);
+	// m_pPanel->m_Image(roi);
 
 	// Show the image
-	namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
-	imshow(windowTitle, m_pPanel->m_Image);
+	if (showImg){
+		namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
+		imshow(windowTitle, m_pPanel->m_Image);
+	}
 	// Set mouse callback to show the color of the point clicked
-	setMouseCallback(windowTitle, onMouseColor, static_cast<void*>(&m_pPanel));
+	// setMouseCallback(windowTitle, onMouseColor, static_cast<void*>(&m_pPanel));
 
 	return true;
 }
 
 // Function to display the specified image and add an 
 //	on click listener (onMouse())
-bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle)
+bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat calibratedImg, bool showImg)
 {
 	m_pPanel = new Panel;
 	// read specified image
@@ -254,7 +229,8 @@ bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle)
 
 	// Show the image
 	namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
-	imshow(windowTitle, rview);
+	if (showImg)
+		imshow(windowTitle, rview);
 
 	// Save image
 	imwrite("Calibrated_Image.jpg", rview);
@@ -265,7 +241,10 @@ bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle)
 	return true;
 }
 
+/////////////////////////////////////////////////////////////////////////
+// Panel::BatchCalibrate() Description
 // Must have folder named Calibrated_Folder prexisting in build folder 
+/////////////////////////////////////////////////////////////////////////
 void Panel::BatchCalibrate(string sdirPath)
 {
 	String path(sdirPath + "/*.jpg");
@@ -295,6 +274,9 @@ void Panel::BatchCalibrate(string sdirPath)
 	cout << "BATCHED";
 }
 
+///////////////////////////////////////////////////////
+// Panel::ColorName() Description
+///////////////////////////////////////////////////////
 string Panel::ColorName(Vec3b color)
 {
 	uchar hue = color.val[0];
@@ -322,6 +304,9 @@ string Panel::ColorName(Vec3b color)
 	return "Unknown";
 }
 
+///////////////////////////////////////////////////////
+// Panel::ColorAtPoint() Description
+///////////////////////////////////////////////////////
 void Panel::ColorAtPoint(Point point)
 {
 	Mat HSV;
@@ -345,6 +330,9 @@ void Panel::ColorAtPoint(Point point)
 		") \nRGB Value: " + RGBcolorStr + "\nHSV Value: " + HSVcolorStr + "\nColor: " + m_pPanel->ColorName(HSVpix));
 }
 
+///////////////////////////////////////////////////////
+// Panel::PointLocation() Description
+///////////////////////////////////////////////////////
 void Panel::PointLocation(Point point)
 {
 	Point corner_point;
@@ -365,6 +353,9 @@ void Panel::PointLocation(Point point)
 	imshow("Original", m_pPanel->m_Image);
 }
 
+///////////////////////////////////////////////////////
+// Panel::MaskWithColor() Description
+///////////////////////////////////////////////////////
 void Panel::MaskWithColor(string sImgPath, string color)
 {
 	Mat HSV, Mask, MaskResult;
@@ -432,22 +423,14 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		*/
 	}
 	m_pPanel->m_Image.copyTo(MaskResult, Mask);
-	/*
-	if (color == "panel"){
-		morphIt(MaskResult);
-		blurthresh(MaskResult);
-		// imshow("Morphed and Blurred", MaskResult);
-		Mat modified;
-		m_pPanel->m_Image.copyTo(modified, MaskResult);
-		// imshow("Masked Original", modified);
-		FindContours(modified);
-	}
-	*/
 
 	if (color == "red" || color == "blue")
 		DetectBlob(MaskResult);
 }
 
+///////////////////////////////////////////////////////
+// Panel::DetectEdges() Description
+///////////////////////////////////////////////////////
 void Panel::DetectEdges(string sImgPath)
 {
 	if (!ShowImage(sImgPath, "Original"))
@@ -457,7 +440,10 @@ void Panel::DetectEdges(string sImgPath)
 	Mat edges = CannyDetection(m_pPanel->m_Image);
 }
 
-Mat Panel::CannyDetection(Mat image)
+///////////////////////////////////////////////////////
+// Panel::CannyDetection() Description
+///////////////////////////////////////////////////////
+Mat Panel::CannyDetection(Mat image, bool showImg)
 {
 	Mat greyImage;
 	cvtColor(image, greyImage, CV_BGR2GRAY);
@@ -483,8 +469,10 @@ Mat Panel::CannyDetection(Mat image)
 	while (true)
 	{	*/
 		threshold(greyImage, thresh, low, 255, THRESH_BINARY);
-		// namedWindow("Threshhold", CV_WINDOW_AUTOSIZE);
-		// imshow("Threshhold", thresh);
+		if (showImg){
+			namedWindow("Threshhold", CV_WINDOW_AUTOSIZE);
+			imshow("Threshhold", thresh);
+		}
 
 		Mat dilated;
 		dilate(thresh, dilated, Mat());
@@ -515,7 +503,10 @@ Mat Panel::CannyDetection(Mat image)
 			line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
 		}
 
-		imshow("Hough Lines", edgesGray);
+		if (showImg){
+			namedWindow("Hough Lines", CV_WINDOW_KEEPRATIO);
+			imshow("Hough Lines", edgesGray);
+		}
 
 		// compute the intersection from the lines detected...
 		vector<Point2f> intersections;
@@ -525,7 +516,7 @@ Mat Panel::CannyDetection(Mat image)
 			{
 				Vec2f line1 = lines[i];
 				Vec2f line2 = lines[j];
-				if (acceptLinePair(line1, line2, CV_PI / 32))
+				if (acceptLinePair(line1, line2, (float)CV_PI / 32))
 				{
 					Point2f intersection = computeIntersect(line1, line2);
 					intersections.push_back(intersection);
@@ -543,7 +534,10 @@ Mat Panel::CannyDetection(Mat image)
 			}
 		}
 
-		imshow("Intersections", image);
+		if (showImg){
+			namedWindow("Intersections", CV_WINDOW_KEEPRATIO);
+			imshow("Intersections", image);
+		}
 		/*
 		if (waitKey(30) == 27)
 			break;
@@ -551,6 +545,9 @@ Mat Panel::CannyDetection(Mat image)
 	return edges;
 }
 
+///////////////////////////////////////////////////////
+// Panel::FindContours() Description
+///////////////////////////////////////////////////////
 void Panel::FindContours(Mat image)
 {
 	int low = 140;
@@ -571,6 +568,9 @@ void Panel::FindContours(Mat image)
 	imshow("Largest Contour", image);
 }
 
+///////////////////////////////////////////////////////
+// Panel::DetectBlob() Description
+///////////////////////////////////////////////////////
 void Panel::DetectBlob(Mat image)
 {
 	Mat grayImage, dilatedEroded, dilated, blurred;
@@ -634,6 +634,9 @@ void Panel::DetectBlob(Mat image)
 		*/
 }
 
+///////////////////////////////////////////////////////
+// Panel::CascadeClassify() Description
+///////////////////////////////////////////////////////
 void Panel::CascadeClassify(string sImgPath, string sClassPath)
 {
 	if (!ShowImage(sImgPath, "Original"))
@@ -642,21 +645,30 @@ void Panel::CascadeClassify(string sImgPath, string sClassPath)
 	detectAndDisplay(m_pPanel->m_Image, sClassPath);
 }
 
+///////////////////////////////////////////////////////
+// Panel::DetectFeatures() Description
+///////////////////////////////////////////////////////
 void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
 {
-	if (!ShowImage(scenePath, "Scene"))
+	if (!ShowImage(scenePath, "Scene", false))
 		return;
+
+	// Mat calibrated;
+	// ShowImageWithCalibration(scenePath, "Calibrated", calibrated, false);
 
 	MyFeatureDetector detector;
 	Mat boundImg;
-	if (!detector.Detect(scenePath, objPath, boundImg, exceedsBorder))
+	if (!detector.Detect(m_pPanel->m_Image, objPath, boundImg, exceedsBorder, false))
 		return;
 
 	// FindContours(boundImg);
 	// Canny Edge and Hough Line Detection
-	Mat edges = CannyDetection(boundImg);
+	Mat edges = CannyDetection(boundImg, false);
 }
 
+///////////////////////////////////////////////////////
+// Panel::DrawOnBoard() Description
+///////////////////////////////////////////////////////
 void Panel::DrawOnBoard(string sImgPath)
 {
 	m_pPanel = new Panel;
@@ -699,6 +711,9 @@ void Panel::DrawOnBoard(string sImgPath)
 
 }
 
+///////////////////////////////////////////////////////
+// Panel::Perspective() Description
+///////////////////////////////////////////////////////
 void Panel::Perspective(string sImgPath, string sSelectedItem)
 {
 	m_pPanel = new Panel;
@@ -842,6 +857,9 @@ void Panel::Perspective(string sImgPath, string sSelectedItem)
 //	imwrite("PersCorrCheck10.jpg", subImg);
 }
 
+///////////////////////////////////////////////////////
+// Panel::Rectification() Description
+///////////////////////////////////////////////////////
 void Panel::Rectification(string sImgPath, string sSelectedItem)
 {
 	m_pPanel = new Panel;
@@ -959,9 +977,9 @@ void Panel::Rectification(string sImgPath, string sSelectedItem)
 	panel_pts.push_back(corner3);
 	panel_pts.push_back(corner4);
 	rect_pts.push_back(Point2f(0, 0));
-	rect_pts.push_back(Point2f(length, 0));
-	rect_pts.push_back(Point2f(0, width));
-	rect_pts.push_back(Point2f(length, width));
+	rect_pts.push_back(Point2f((float)length, 0));
+	rect_pts.push_back(Point2f(0, (float)width));
+	rect_pts.push_back(Point2f((float)length, (float)width));
 
 	// Draw new rectangle
 	//line(m_pPanel->m_Image, rect_pts[0], rect_pts[1], CV_RGB(255, 0, 0), 2);
@@ -987,6 +1005,9 @@ void Panel::Rectification(string sImgPath, string sSelectedItem)
 //	imwrite("PersCorrCheck10.jpg", subImg);
 }
 
+///////////////////////////////////////////////////////
+// Panel::CalibrateCamera() Description
+///////////////////////////////////////////////////////
 void Panel::CalibrateCamera(string sFilePath)
 {
 	help();
@@ -1179,6 +1200,9 @@ void Panel::CalibrateCamera(string sFilePath)
 
 }
 
+///////////////////////////////////////////////////////
+// Panel::CalibrateCameraNoOutput() Description
+///////////////////////////////////////////////////////
 void Panel::CalibrateCameraNoOutput(string sFilePath)
 {
 	help();
@@ -1382,6 +1406,9 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 
 }
 
+///////////////////////////////////////////////////////
+// Panel::CalibrateCameraFisheyeNoOutput() Description
+///////////////////////////////////////////////////////
 void Panel::CalibrateCameraFisheyeNoOutput(string sFilePath)
 {
 	help();

@@ -27,7 +27,7 @@ void MYPanel::ShowImageWithCalibration(System::String^ imgPath, System::String^ 
 	MYConversion ^convert = gcnew MYConversion();
 	string strImgPath = convert->myStringToChar(imgPath);
 	string strWindowTitle = convert->myStringToChar(windowTitle);
-	panel->ShowImageWithCalibration((string)strImgPath, (string)strWindowTitle);
+	panel->ShowImageWithCalibration((string)strImgPath, (string)strWindowTitle, Mat());
 }
 
 void MYPanel::MaskWithColor(System::String^ imgPath, System::String^ color)

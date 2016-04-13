@@ -19,7 +19,7 @@ public:
 	~MyFeatureDetector();
 	void SlidingWindow(Mat object);
 	void FindObject(Mat objectP, Mat scene, int minHessian, Scalar color, int row, int col);
-	bool Detect(string scene, string obj, Mat &bound_image, bool exceedsBorder);
+	bool Detect(Mat scene, string obj, Mat &bound_image, bool exceedsBorder, bool showImg = true);
 private:
 	Mat full_scene, outImg;
 	// Top and Bottom points of new ROI
@@ -42,14 +42,10 @@ MyFeatureDetector::~MyFeatureDetector()
 
 }
 
-bool MyFeatureDetector::Detect(string scene, string obj, Mat &bound_image, bool exceedsBorder)
+bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exceedsBorder, bool showImg)
 {
 	// Load images
-	full_scene = imread(scene);
-	if (!full_scene.data) {
-		std::cout << " --(!) Error reading image " << scene << std::endl;
-		// Error
-	}
+	full_scene = scene;
 
 	Mat object = imread(obj);
 	if (!object.data) {
@@ -105,8 +101,10 @@ bool MyFeatureDetector::Detect(string scene, string obj, Mat &bound_image, bool 
 		if (rightPoint > full_scene.cols) rightPoint = full_scene.cols;
 		Rect roi(Point(leftPoint, topPoint), Point(rightPoint, bottomPoint));
 		bound_image = full_scene(roi);
-		namedWindow("Bound Image", CV_WINDOW_KEEPRATIO);
-		imshow("Bound Image", bound_image);
+		if (showImg){
+			namedWindow("Bound Image", CV_WINDOW_KEEPRATIO);
+			imshow("Bound Image", bound_image);
+		}
 	} 
 	else if (topPoint){
 		ShowMessage("Only top feature found.");
