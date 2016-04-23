@@ -1,5 +1,9 @@
 // This is the main DLL file.
 
+// #define DEBUG_CANNY 1
+// #define DEBUG_COLOR_MASK 1
+// #define DEBUG_BLOB_DETECTION 1
+
 #include "include.h"
 #include "Panel.h"
 #include "Calibrate.h"
@@ -358,7 +362,7 @@ void Panel::PointLocation(Point point)
 ///////////////////////////////////////////////////////
 void Panel::MaskWithColor(string sImgPath, string color)
 {
-	Mat HSV, Mask, MaskResult;
+	Mat HSV, Mask, Mask1, Mask2, MaskResult;
 	// Show the original image
 	if(!ShowImage(sImgPath, "Original"))
 		return;
@@ -372,7 +376,6 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	}
 	else if (color == "red")
 	{
-		Mat Mask1, Mask2;
 		inRange(HSV, Scalar(0, 100, 30), Scalar(10, 255, 255), Mask1);
 		inRange(HSV, Scalar(160, 100, 30), Scalar(180, 255, 255), Mask2);
 		bitwise_or(Mask1, Mask2, Mask);
@@ -380,14 +383,12 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	else if (color == "panel")
 	{
 		FindContours(m_pPanel->m_Image);
-		/*
+		// test code
 		int h1Lo = 0, s1Lo = 55, v1Lo = 115;
 		int h1Hi = 20, s1Hi = 120, v1Hi = 210;
 		int h2Lo = 0, s2Lo = 0, v2Lo = 0;
 		int h2Hi = 0, s2Hi = 0, v2Hi = 0;
-
-		// test code
-		//
+#ifdef DEBUG_COLOR_MASK
 		namedWindow("InRange Tester", CV_WINDOW_AUTOSIZE);
 		cvCreateTrackbar("Hue Lo 1:", "InRange Tester", &h1Lo, 180);
 		cvCreateTrackbar("Hue Hi 1:", "InRange Tester", &h1Hi, 180);
@@ -401,28 +402,25 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		cvCreateTrackbar("Sat Hi 2", "InRange Tester", &s2Hi, 255);
 		cvCreateTrackbar("Val Lo 2", "InRange Tester", &v2Lo, 255);
 		cvCreateTrackbar("Val Hi 2", "InRange Tester", &v2Hi, 255);
-		//
 
 		Mat Mask1, Mask2;
-		// while (true)
+		while (true)
 		{
+#endif
+
 			inRange(HSV, Scalar(h1Lo, s1Lo, v1Lo), Scalar(h1Hi, s1Hi, v1Hi), Mask1);
 			inRange(HSV, Scalar(h2Lo, s2Lo, v2Lo), Scalar(h2Hi, s2Hi, v2Hi), Mask2);
 			bitwise_or(Mask1, Mask2, Mask);
 
-			m_pPanel->m_Image.copyTo(MaskResult, Mask);
-
-			// namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
-			// imshow("Mask Result", MaskResult);
-
-			// CannyDetection(Result);
-
-			// if (waitKey(30) == 27)
-			//	break;
+#ifdef DEBUG_COLOR_MASK
+			if (waitKey(30) == 27)
+				break;
 		}
-		*/
+#endif
 	}
 	m_pPanel->m_Image.copyTo(MaskResult, Mask);
+	namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
+	imshow("Mask Result", MaskResult);
 
 	if (color == "red" || color == "blue")
 		DetectBlob(MaskResult);
@@ -448,45 +446,32 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 	Mat greyImage;
 	cvtColor(image, greyImage, CV_BGR2GRAY);
 
-	Mat thresh, blurredThresh, edges, edgesGray;
-	int low = 105, high = 255;
-	int sigmaX = 10, sigmaY = 2; 
-	int cannyLow = 85, ratio = 3, aperture = 3;
-	int houghLength = 164;
+	Mat eroded, dilated, thresh, blurredThresh, edges, edgesGray;
+	int low = 105, high = 255; // int low = 134, high = 255;
+	int sigmaX = 10, sigmaY = 2; // int sigmaX = 7, sigmaY = 2; 
+	int cannyLow = 85, ratio = 3, aperture = 3; // int cannyLow = 100, ratio = 3, aperture = 3;
+	int houghLength = 164; 	// int houghLength = 105;
 	vector<Vec2f> lines;
-	/*	This code is for testing different values of various functions
-		Uncomment if you want to test different values than the ones given
-
-	namedWindow("Sliders", CV_WINDOW_AUTOSIZE);
+	//	This code is for testing different values of various functions
+	//   used with Canny, Blurring, and Hough Lines
+#ifdef DEBUG_CANNY
+	namedWindow("Sliders", CV_WINDOW_KEEPRATIO);
 	cvCreateTrackbar("Threshhold", "Sliders", &low, 255);
 	//cvCreateTrackbar("High", "Sliders", &high, 255);
-	cvCreateTrackbar("SigmaX", "Sliders", &sigmaX, 500);
-	cvCreateTrackbar("SigmaY", "Sliders", &sigmaY, 500);
-	cvCreateTrackbar("Low Threshold", "Sliders", &cannyLow, 100);
+	cvCreateTrackbar("SigmaX", "Sliders", &sigmaX, 100);
+	cvCreateTrackbar("SigmaY", "Sliders", &sigmaY, 100);
+	cvCreateTrackbar("Low Threshold", "Sliders", &cannyLow, 500);
 	cvCreateTrackbar("Ratio", "Sliders", &ratio, 5);
-	cvCreateTrackbar("Hough Line length", "Sliders", &houghLength, 200);
+	cvCreateTrackbar("Hough Line length", "Sliders", &houghLength, 2000);
 
 	while (true)
-	{	*/
+	{
+#endif
 		threshold(greyImage, thresh, low, 255, THRESH_BINARY);
-		if (showImg){
-			namedWindow("Threshhold", CV_WINDOW_AUTOSIZE);
-			imshow("Threshhold", thresh);
-		}
-
-		Mat dilated;
-		dilate(thresh, dilated, Mat());
-		// namedWindow("Dilated", CV_WINDOW_AUTOSIZE);
-		// imshow("Dilated", dilated);
-
+		erode(thresh, eroded, Mat());
+		dilate(eroded, dilated, Mat());
 		GaussianBlur(thresh, blurredThresh, Size(7, 7), sigmaX, sigmaY);
-		// namedWindow("Blurred", CV_WINDOW_AUTOSIZE);
-		// imshow("Blurred", blurredThresh);
-
 		Canny(blurredThresh, edges, cannyLow, cannyLow*ratio, 3);
-		// namedWindow("Canny Edges", CV_WINDOW_AUTOSIZE);
-		// imshow("Canny Edges", edges);
-
 		HoughLines(edges, lines, 1, CV_PI / 180, houghLength, 0, 0);
 
 		cvtColor(edges, edgesGray, CV_GRAY2BGR);
@@ -503,11 +488,7 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
 		}
 
-		if (showImg){
-			namedWindow("Hough Lines", CV_WINDOW_KEEPRATIO);
-			imshow("Hough Lines", edgesGray);
-		}
-
+#ifndef DEBUG_CANNY
 		// compute the intersection from the lines detected...
 		vector<Point2f> intersections;
 		for (size_t i = 0; i < lines.size(); i++)
@@ -530,7 +511,7 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			for (i = intersections.begin(); i != intersections.end(); ++i)
 			{
 				cout << "Intersection is " << i->x << ", " << i->y << endl;
-				circle(image, *i, 1, Scalar(0, 255, 0), 3);
+				circle(image, *i, 5, Scalar(0, 255, 0), 3);
 			}
 		}
 
@@ -538,10 +519,24 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			namedWindow("Intersections", CV_WINDOW_KEEPRATIO);
 			imshow("Intersections", image);
 		}
-		/*
+#endif //ifndef DEBUG_CANNY
+
+#ifdef DEBUG_CANNY
+		namedWindow("Threshhold", CV_WINDOW_KEEPRATIO);
+		imshow("Threshhold", thresh);
+		namedWindow("Dilated", CV_WINDOW_KEEPRATIO);
+		imshow("Dilated", dilated);
+		namedWindow("Blurred", CV_WINDOW_KEEPRATIO);
+		imshow("Blurred", blurredThresh);
+		namedWindow("Canny Edges", CV_WINDOW_KEEPRATIO);
+		imshow("Canny Edges", edges);
+		namedWindow("Hough Lines", CV_WINDOW_KEEPRATIO);
+		imshow("Hough Lines", edgesGray);
+
 		if (waitKey(30) == 27)
 			break;
-	}*/
+	}
+#endif
 	return edges;
 }
 
@@ -585,21 +580,27 @@ void Panel::DetectBlob(Mat image)
 	int low = 60;
 	int blobArea = 325;
 	int sigmaX = 0, sigmaY = 0;
-	/*	This is Test Code
-		Uncomment this and the waiteKey() code and add closing bracket after
-		break to run this portion of code withs trackbars
+#ifdef DEBUG_BLOB_DETECTION
+	//	This is Test Code
+	//	Uncomment #define DEBUG_BLOB_DETECTION at the 
+	//	top of this file to debug blob detection
 
 	namedWindow("Blob", CV_WINDOW_NORMAL);
 	cvCreateTrackbar("Blob Area", "Blob", &blobArea, 2000);
 	cvCreateTrackbar("Threshhold", "Blob", &low, 255);
 	while (true)
 	{
-	*/
+#endif
 	dilate(grayImage, dilated, Mat());
 
 	GaussianBlur(dilated, blurred, Size(7, 7), 0, 0);
-
 	threshold(blurred, thresh, low, 255, THRESH_BINARY);
+#ifdef DEBUG_BLOB_DETECTION
+	namedWindow("Dilated and Blurred", CV_WINDOW_KEEPRATIO);
+	imshow("Dilated and Blurred", blurred);
+	namedWindow("Threshold", CV_WINDOW_AUTOSIZE);
+	imshow("Threshold", thresh);
+#endif
 
 	// Filter by Area.
 	params.filterByArea = true;
@@ -627,11 +628,11 @@ void Panel::DetectBlob(Mat image)
 		ShowMessage("Tag detected");
 	else
 		ShowMessage("No tag detected");
-		/*
+#ifdef DEBUG_BLOB_DETECTION
 		if (waitKey(30) == 27)
 			break;
 			}
-		*/
+#endif
 }
 
 ///////////////////////////////////////////////////////
@@ -648,7 +649,7 @@ void Panel::CascadeClassify(string sImgPath, string sClassPath)
 ///////////////////////////////////////////////////////
 // Panel::DetectFeatures() Description
 ///////////////////////////////////////////////////////
-void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
+void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder, bool outerEdges)
 {
 	if (!ShowImage(scenePath, "Scene", false))
 		return;
@@ -658,12 +659,12 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
 
 	MyFeatureDetector detector;
 	Mat boundImg;
-	if (!detector.Detect(m_pPanel->m_Image, objPath, boundImg, exceedsBorder, false))
+	if (!detector.Detect(m_pPanel->m_Image, objPath, boundImg, exceedsBorder, outerEdges, true))
 		return;
 
 	// FindContours(boundImg);
 	// Canny Edge and Hough Line Detection
-	Mat edges = CannyDetection(boundImg, false);
+	Mat edges = CannyDetection(boundImg, true);
 }
 
 ///////////////////////////////////////////////////////

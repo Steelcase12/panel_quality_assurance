@@ -36,7 +36,7 @@ public:
 	void CalibrateCameraFisheyeNoOutput(string filePath);
 	void CascadeClassify(string imgPath, string classPath);
 	void BatchCalibrate(string dirPath);	
-	void DetectFeatures(string scenePath, string objPath, bool exceedsBorder);
+	void DetectFeatures(string scenePath, string objPath, bool exceedsBorder, bool outerEdges);
 private:
 	Panel *m_pPanel;
 	Mat m_Image;

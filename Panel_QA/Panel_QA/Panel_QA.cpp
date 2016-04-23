@@ -104,12 +104,12 @@ void MYPanel::CascadeClassify(System::String^ imgPath, System::String^ classPath
 	panel->CascadeClassify(strImgPath, strClassPath);
 }
 
-void MYPanel::DetectFeatures(System::String^ scenePath, System::String^ objPath, bool exceedsBorder)
+void MYPanel::DetectFeatures(System::String^ scenePath, System::String^ objPath, bool exceedsBorder, bool outerEdges)
 {
 	MYConversion ^convert = gcnew MYConversion();
 	string strScenePath = convert->myStringToChar(scenePath);
 	string strObjPath = convert->myStringToChar(objPath);
-	panel->DetectFeatures(strScenePath, strObjPath, exceedsBorder);
+	panel->DetectFeatures(strScenePath, strObjPath, exceedsBorder, outerEdges);
 }
 
 // ++++++++++++ MYConversion Class ++++++++++++ 

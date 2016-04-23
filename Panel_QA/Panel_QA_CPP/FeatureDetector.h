@@ -1,5 +1,7 @@
 #pragma once
 #pragma comment(lib,"user32.lib")
+// #define DEBUG_FEATURES 1
+// #define DEBUG_SLIDING_WINDOW 1
 
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
@@ -19,7 +21,7 @@ public:
 	~MyFeatureDetector();
 	void SlidingWindow(Mat object);
 	void FindObject(Mat objectP, Mat scene, int minHessian, Scalar color, int row, int col);
-	bool Detect(Mat scene, string obj, Mat &bound_image, bool exceedsBorder, bool showImg = true);
+	bool Detect(Mat scene, string obj, Mat &bound_image, bool exceedsBorder, bool outerEdges, bool showImg = true);
 private:
 	Mat full_scene, outImg;
 	// Top and Bottom points of new ROI
@@ -31,6 +33,10 @@ private:
 	int n_rows, n_cols;
 	// Step of each window
 	int row_step, col_step;
+	// Variable which tells the detector to use the top
+	// of the top feature and the bottom of the bottom
+	// feature as the border of the new ROI
+	bool m_outerEdges;
 };
 
 MyFeatureDetector::MyFeatureDetector() 
@@ -39,11 +45,11 @@ MyFeatureDetector::MyFeatureDetector()
 
 MyFeatureDetector::~MyFeatureDetector()
 {
-
 }
 
-bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exceedsBorder, bool showImg)
+bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exceedsBorder, bool outerEdges, bool showImg)
 {
+	m_outerEdges = outerEdges;
 	// Load images
 	full_scene = scene;
 
@@ -69,6 +75,8 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exc
 	row_step = n_cols;
 	col_step = n_rows;
 	SlidingWindow(object);
+	// Uncomment to only find a single object in the whole image
+	// FindObject(object, scene, 100, Scalar(255, 0, 0), 0, 0);
 
 	// When only detecting one feature in an image,
 	//	comment out SlidingWindow() above and un-comment
@@ -80,12 +88,16 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exc
 	// FindObject(object, full_scene, 100, Scalar(255, 0, 0));
 
 	// The below lines are for debugging the points that are
-	//	derived by feature detection to be used as the top 
+	//	derived by feature detection to be used as the top
 	//	and bottom boundaries of the ROI return value
-	/*namedWindow("Match", CV_WINDOW_KEEPRATIO);
+#ifdef DEBUG_FEATURES
+	namedWindow("Match", CV_WINDOW_KEEPRATIO);
 	line(outImg, Point(0, topPoint), Point(outImg.cols, topPoint), Scalar(255, 0, 0), 4);
 	line(outImg, Point(0, bottomPoint), Point(outImg.cols, bottomPoint), Scalar(255, 0, 0), 4);
-	imshow("Match", outImg);*/
+	line(outImg, Point(leftPoint, 0), Point(leftPoint, outImg.rows), Scalar(255, 0, 0), 4);
+	line(outImg, Point(rightPoint, 0), Point(rightPoint, outImg.rows), Scalar(255, 0, 0), 4);
+	imshow("Match", outImg);
+#endif
 
 	// The below lines will print out the image after the ROI
 	//	(determined by feature detection) is applied. The ROI 
@@ -95,10 +107,12 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exc
 			leftPoint = 0;
 			rightPoint = full_scene.cols;
 		}
+		// Checks to ensure points don't exceed image border, this causes a crash
 		if (topPoint < 0) topPoint = 0;
 		if (leftPoint < 0) leftPoint = 0;
 		if (bottomPoint > full_scene.rows) bottomPoint = full_scene.rows;
 		if (rightPoint > full_scene.cols) rightPoint = full_scene.cols;
+		// Set the Region of Interest
 		Rect roi(Point(leftPoint, topPoint), Point(rightPoint, bottomPoint));
 		bound_image = full_scene(roi);
 		if (showImg){
@@ -154,19 +168,20 @@ void MyFeatureDetector::SlidingWindow(Mat object)
 			///////////////////////////////////////
 			// Begin Sliding Window Debugging Code
 			///////////////////////////////////////
-
-			/*Mat drawResults = full_scene.clone();
+#ifdef DEBUG_SLIDING_WINDOW
+			Mat drawResults = full_scene.clone();
 
 			// Draw only rectangle
 			rectangle(drawResults, windows, Scalar(255), 1, 8, 0);
 			// Draw grid
-			rectangle(drawGrid, windows, Scalar(255), 1, 8, 0);
+			rectangle(drawGrid, windows, Scalar(255), 10, 8, 0);
 
 			// Show rectangle
 			namedWindow("Step 2 draw Rectangle", CV_WINDOW_KEEPRATIO);
 			imshow("Step 2 draw Rectangle", drawResults);
 			waitKey(50);
 			imwrite("Step2.jpg", drawResults);
+
 
 			// Show grid
 			namedWindow("Step 3 Show Grid", CV_WINDOW_KEEPRATIO);
@@ -179,6 +194,7 @@ void MyFeatureDetector::SlidingWindow(Mat object)
 			// imshow("Step 4 Draw selected Roi", roi);
 			// waitKey(100);
 			// imwrite("Step4.JPG", roi);*/
+#endif
 
 			////////////////////////////////////////
 			// End of Sliding Window Debugging Code
@@ -348,21 +364,32 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 		line(outImg, Point((int)scene_corners[3].x + col, (int)scene_corners[3].y + row),
 			Point((int)scene_corners[0].x + col, (int)scene_corners[0].y + row), color, 2);
 
+		// See declaration of m_outerEdges for explanation
+		int top1, top2, bot1, bot2;
+		if (m_outerEdges){
+			top1 = 0; top2 = 1;
+			bot1 = 2; bot2 = 3;
+		}
+		else {
+			top1 = 2; top2 = 3;
+			bot1 = 0; bot2 = 1;
+		}
+
 		if (row == 0){
-			if (scene_corners[2].y < scene_corners[3].y)
-				topPoint = (int)scene_corners[2].y + row;
+			if (scene_corners[top1].y < scene_corners[top2].y)
+				topPoint = (int)scene_corners[top1].y + row;
 			else
-				topPoint = (int)scene_corners[3].y + row;
+				topPoint = (int)scene_corners[top2].y + row;
 			if (scene_corners[0].x < scene_corners[3].x)
 				leftPoint = (int)scene_corners[0].x + col;
 			else
 				leftPoint = (int)scene_corners[3].x + col;
 		}
 		else{
-			if (scene_corners[0].y > scene_corners[1].y)
-				bottomPoint = (int)scene_corners[0].y + row;
+			if (scene_corners[bot1].y > scene_corners[bot2].y)
+				bottomPoint = (int)scene_corners[bot1].y + row;
 			else
-				bottomPoint = (int)scene_corners[1].y + row;
+				bottomPoint = (int)scene_corners[bot2].y + row;
 			if (scene_corners[1].x > scene_corners[2].x)
 				rightPoint = (int)scene_corners[1].x + col;
 			else
@@ -381,9 +408,11 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 	// cout << "Algorithm duration: " << duration << " seconds" << endl << "--------------------------------------" << endl;
 
 	// drawing the results
-	/*namedWindow("matches", CV_WINDOW_KEEPRATIO);
+#ifdef DEBUG_FEATURES
+	namedWindow("matches", CV_WINDOW_KEEPRATIO);
 	Mat img_matches;
 	drawMatches(object, keypointsO, full_scene, keypointsS, good_matches, img_matches);
 	imshow("matches", img_matches);
-	waitKey(100);*/
+	waitKey(100);
+#endif
 }
