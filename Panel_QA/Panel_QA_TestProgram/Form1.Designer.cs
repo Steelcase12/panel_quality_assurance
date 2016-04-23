@@ -64,7 +64,7 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 0;
-            this.inputBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\Glue_Booth\\1PY5S643.jpg";
+            this.inputBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\Glue_Booth\\img3.jpg";
             // 
             // label1
             // 
@@ -284,7 +284,7 @@
             this.featureTemplateBox.Name = "featureTemplateBox";
             this.featureTemplateBox.Size = new System.Drawing.Size(281, 20);
             this.featureTemplateBox.TabIndex = 20;
-            this.featureTemplateBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\Glue_Booth\\pupil_markers.png";
+            this.featureTemplateBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\Glue_Booth\\qr_steelcase.png";
             // 
             // featureTemplateLabel
             // 

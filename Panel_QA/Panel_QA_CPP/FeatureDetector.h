@@ -1,6 +1,6 @@
 #pragma once
 #pragma comment(lib,"user32.lib")
-// #define DEBUG_FEATURES 1
+#define DEBUG_FEATURES 1
 // #define DEBUG_SLIDING_WINDOW 1
 
 #include "opencv2/highgui.hpp"
@@ -9,6 +9,7 @@
 #include "opencv2/features2d.hpp"
 #include "opencv2/calib3d.hpp"
 #include <iostream>
+#include <algorithm>
 #include "include.h"
 
 using namespace cv;
@@ -24,6 +25,7 @@ public:
 	bool Detect(Mat scene, string obj, Mat &bound_image, bool exceedsBorder, bool outerEdges, bool showImg = true);
 private:
 	Mat full_scene, outImg;
+	Rect m_roi;
 	// Top and Bottom points of new ROI
 	int topPoint = 0;
 	int bottomPoint = 0;
@@ -102,31 +104,44 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exc
 	// The below lines will print out the image after the ROI
 	//	(determined by feature detection) is applied. The ROI 
 	//  is what is being passed back to the main function
-	if (topPoint && bottomPoint) {
+	if (topPoint || bottomPoint) {
 		if (exceedsBorder){
 			leftPoint = 0;
 			rightPoint = full_scene.cols;
 		}
-		// Checks to ensure points don't exceed image border, this causes a crash
-		if (topPoint < 0) topPoint = 0;
-		if (leftPoint < 0) leftPoint = 0;
-		if (bottomPoint > full_scene.rows) bottomPoint = full_scene.rows;
-		if (rightPoint > full_scene.cols) rightPoint = full_scene.cols;
-		// Set the Region of Interest
-		Rect roi(Point(leftPoint, topPoint), Point(rightPoint, bottomPoint));
-		bound_image = full_scene(roi);
+		if (topPoint && bottomPoint){
+			// Checks to ensure points don't exceed image border, this causes a crash
+			if (topPoint < 0) topPoint = 0;
+			if (leftPoint < 0) leftPoint = 0;
+			if (bottomPoint > full_scene.rows) bottomPoint = full_scene.rows;
+			if (rightPoint > full_scene.cols) rightPoint = full_scene.cols;
+			// Set the Region of Interest
+			m_roi = Rect(Point(leftPoint, topPoint), Point(rightPoint, bottomPoint));
+			ShowMessage("Top and Bottom Features Found.");
+		}
+		// Only top template found
+		else if (topPoint){
+			// Checks to ensure points don't exceed image border, this causes a crash
+			if (topPoint < 0) topPoint = 0;
+			if (leftPoint < 0) leftPoint = 0;
+			// Set the Region of Interest
+			m_roi = Rect(Point(leftPoint, topPoint), Point(full_scene.rows, full_scene.cols));
+			ShowMessage("Only Top Feature Found.");
+		}
+		// Only bottom template found
+		else if (bottomPoint){
+			// Checks to ensure points don't exceed image border, this causes a crash
+			if (bottomPoint > full_scene.rows) bottomPoint = full_scene.rows;
+			if (rightPoint > full_scene.cols) rightPoint = full_scene.cols;
+			// Set the Region of Interest
+			m_roi = Rect(Point(0, 0), Point(rightPoint, bottomPoint));
+			ShowMessage("Only Bottom Feature Found.");
+		}
+		bound_image = full_scene(m_roi);
 		if (showImg){
 			namedWindow("Bound Image", CV_WINDOW_KEEPRATIO);
 			imshow("Bound Image", bound_image);
 		}
-	} 
-	else if (topPoint){
-		ShowMessage("Only top feature found.");
-		return false;
-	}
-	else if (bottomPoint){
-		ShowMessage("Only bottom feature found.");
-		return false;
 	}
 	else {
 		ShowMessage("No features found.");
@@ -364,36 +379,36 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 		line(outImg, Point((int)scene_corners[3].x + col, (int)scene_corners[3].y + row),
 			Point((int)scene_corners[0].x + col, (int)scene_corners[0].y + row), color, 2);
 
-		// See declaration of m_outerEdges for explanation
-		int top1, top2, bot1, bot2;
-		if (m_outerEdges){
-			top1 = 0; top2 = 1;
-			bot1 = 2; bot2 = 3;
-		}
-		else {
-			top1 = 2; top2 = 3;
-			bot1 = 0; bot2 = 1;
-		}
+		///////////////////////////////////////////////////////
+		// This portion of the code is the logic control 
+		//  for finding the corners of the feature detected
+		///////////////////////////////////////////////////////
+		// See declaration of m_outerEdges for its explanation
 
+		// This is the top of the Sliding Window
 		if (row == 0){
-			if (scene_corners[top1].y < scene_corners[top2].y)
-				topPoint = (int)scene_corners[top1].y + row;
-			else
-				topPoint = (int)scene_corners[top2].y + row;
-			if (scene_corners[0].x < scene_corners[3].x)
-				leftPoint = (int)scene_corners[0].x + col;
-			else
-				leftPoint = (int)scene_corners[3].x + col;
+			// Find the lowest value for topPoint
+			int temp1 = (scene_corners[0].y < scene_corners[1].y) ? (int)scene_corners[0].y : (int)scene_corners[1].y;
+			int temp2 = (scene_corners[2].y < temp1) ? scene_corners[2].y : temp1;
+			topPoint = (scene_corners[3].y < temp2) ? scene_corners[3].y : temp2;
+			// Find the lowest value for leftPoint
+			int temp3 = (scene_corners[0].x < scene_corners[1].x) ? (int)scene_corners[0].x : (int)scene_corners[1].x;
+			int temp4 = (scene_corners[2].x < temp3) ? (int)scene_corners[2].x : temp3;
+			leftPoint = (scene_corners[3].x < temp4) ? (int)scene_corners[3].x : temp4;
+			leftPoint += col;
 		}
+		// This is the bottom of the Sliding Window
 		else{
-			if (scene_corners[bot1].y > scene_corners[bot2].y)
-				bottomPoint = (int)scene_corners[bot1].y + row;
-			else
-				bottomPoint = (int)scene_corners[bot2].y + row;
-			if (scene_corners[1].x > scene_corners[2].x)
-				rightPoint = (int)scene_corners[1].x + col;
-			else
-				rightPoint = (int)scene_corners[2].x + col;
+			// Find the highest value for bottomPoint
+			int temp1 = (scene_corners[0].y > scene_corners[1].y) ? (int)scene_corners[0].y : (int)scene_corners[1].y;
+			int temp2 = (scene_corners[2].y > temp1) ? scene_corners[2].y : temp1;
+			bottomPoint = (scene_corners[3].y > temp2) ? scene_corners[3].y : temp2;
+			bottomPoint += row;
+			// Find the highest value for rightPoint
+			int temp3 = (scene_corners[0].x > scene_corners[1].x) ? (int)scene_corners[0].x : (int)scene_corners[1].x;
+			int temp4 = (scene_corners[2].x > temp3) ? (int)scene_corners[2].x : temp3;
+			rightPoint = (scene_corners[3].x > temp4) ? (int)scene_corners[3].x : temp4;
+			rightPoint += col;
 		}
 		
 	}
