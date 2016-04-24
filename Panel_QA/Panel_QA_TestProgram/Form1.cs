@@ -167,8 +167,7 @@ namespace Panel_QA_TestProgram
             {
             if (inputBox.Text != "" && featureTemplateBox.Text != "") {
                 newPanel = new MYPanel();
-                newPanel.DetectFeatures(inputBox.Text, featureTemplateBox.Text, 
-                    featuresCheckBox.Checked, featuresCheckBox.Checked);
+                newPanel.DetectFeatures(inputBox.Text, featureTemplateBox.Text, featuresCheckBox.Checked);
                 warningLabel.Text = "";
                 newPanel = null;
             } else {

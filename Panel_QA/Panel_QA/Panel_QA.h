@@ -33,7 +33,7 @@ namespace MYopencv {
 		void CalibrateCameraFisheyeNoOutput(System::String^ filePath);
 		void CascadeClassify(System::String^ imgPath, System::String^ classifierPath);
 		void BatchCalibrate(System::String^ dirPath);		
-		void DetectFeatures(System::String^ scenePath, System::String^ objPath, bool exceedsBorder, bool outerEdges);	
+		void DetectFeatures(System::String^ scenePath, System::String^ objPath, bool exceedsBorder);	
 	private:
 		Panel *panel;
 	};

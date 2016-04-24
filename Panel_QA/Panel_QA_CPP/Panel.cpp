@@ -649,7 +649,7 @@ void Panel::CascadeClassify(string sImgPath, string sClassPath)
 ///////////////////////////////////////////////////////
 // Panel::DetectFeatures() Description
 ///////////////////////////////////////////////////////
-void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder, bool outerEdges)
+void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
 {
 	if (!ShowImage(scenePath, "Scene", false))
 		return;
@@ -659,7 +659,7 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder,
 
 	MyFeatureDetector detector;
 	Mat boundImg;
-	if (!detector.Detect(m_pPanel->m_Image, objPath, boundImg, exceedsBorder, outerEdges, true))
+	if (!detector.Detect(m_pPanel->m_Image, objPath, boundImg, exceedsBorder, true))
 		return;
 
 	// FindContours(boundImg);

@@ -55,7 +55,6 @@
             this.featureDetectionBtn = new System.Windows.Forms.Button();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.featuresCheckBox = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // inputBox
@@ -308,29 +307,18 @@
             // featuresCheckBox
             // 
             this.featuresCheckBox.AutoSize = true;
-            this.featuresCheckBox.Location = new System.Drawing.Point(420, 282);
+            this.featuresCheckBox.Location = new System.Drawing.Point(420, 288);
             this.featuresCheckBox.Name = "featuresCheckBox";
             this.featuresCheckBox.Size = new System.Drawing.Size(128, 17);
             this.featuresCheckBox.TabIndex = 23;
             this.featuresCheckBox.Text = "Part Exceeds Feature";
             this.featuresCheckBox.UseVisualStyleBackColor = true;
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(420, 301);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(131, 17);
-            this.checkBox1.TabIndex = 24;
-            this.checkBox1.Text = "Outer Edge of Feature";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(663, 431);
-            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.rectificationBtn);
             this.Controls.Add(this.featuresCheckBox);
             this.Controls.Add(this.comboBox1);
@@ -395,7 +383,6 @@
         private System.Windows.Forms.Button rectificationBtn;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.CheckBox featuresCheckBox;
-        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 
