@@ -702,199 +702,11 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
 }
 
 ///////////////////////////////////////////////////////
-// Panel::DrawOnBoard() Description
+// Panel::PixelsToLength() Description
 ///////////////////////////////////////////////////////
-void Panel::DrawOnBoard(string sImgPath)
+void Panel::PixelsToLength(string sImgPath)
 {
-	m_pPanel->m_Image = imread(sImgPath);
-	
-	namedWindow("Original", WINDOW_AUTOSIZE);
-	imshow("Original", m_pPanel->m_Image);
-
-	// setMouseCallback("Original", onMouseLocation, static_cast<void*>(&m_pPanel));
-
-	bool found = false;
-
-	found = findChessboardCorners(m_pPanel->m_Image, Size(9, 6), m_pPanel->corners,
-		CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
-
-	if (found){	Point corner1;
-		corner1.x = (int)m_pPanel->corners[0].x;
-		corner1.y = (int)m_pPanel->corners[0].y;
-	
-		Point corner2;
-		corner2.x = (int)m_pPanel->corners[4].x;
-		corner2.y = (int)m_pPanel->corners[4].y;
-
-		line(m_pPanel->m_Image, corner1, corner2, CV_RGB(0, 0, 255), 2);
-
-		Mat imgGray;
-		cvtColor(m_pPanel->m_Image, imgGray, COLOR_BGR2GRAY);
-		cornerSubPix(imgGray, m_pPanel->corners, Size(11, 11), Size(-1, -1),
-			TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
-		cout << "Corner 1: " << corner1 << endl;
-		cout << "Corner 2: " << corner2 << endl;
-		cout << "Subtraction: " << corner2 - corner1 << endl;
-		cout << "Distance in pixels: " << norm(corner2 - corner1) << endl;
-		cout << "Distance in cm " << norm(corner2 - corner1) * .2932 << endl << endl;
-	}
-	else{
-		cout << "Checkerboard not found" << endl;
-	}
-
-}
-
-///////////////////////////////////////////////////////
-// Panel::Perspective() Description
-///////////////////////////////////////////////////////
-void Panel::Perspective(string sImgPath, string sSelectedItem)
-{	
-	cout << sSelectedItem << endl;
-
-	m_pPanel->m_Image = imread(sImgPath);
-
-	Point2f corner1;
-	Point2f corner2;
-	Point2f corner3;
-	Point2f corner4;
-
-	double width = 0;
-	double length = 0;
-	double ratio = 0; 
-
-	if (sSelectedItem == "Checkerboard #10"){
-		bool found = false;
-
-		found = findChessboardCorners(m_pPanel->m_Image, Size(9, 6), m_pPanel->corners,
-			CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
-
-		Mat imgGray;
-		cvtColor(m_pPanel->m_Image, imgGray, COLOR_BGR2GRAY);
-		cornerSubPix(imgGray, m_pPanel->corners, Size(11, 11), Size(-1, -1),
-			TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
-
-		corner1.x = m_pPanel->corners[8].x;
-		corner1.y = m_pPanel->corners[8].y;
-
-		corner2.x = m_pPanel->corners[53].x;
-		corner2.y = m_pPanel->corners[53].y;
-
-		corner3.x = m_pPanel->corners[45].x;
-		corner3.y = m_pPanel->corners[45].y;
-
-		corner4.x = m_pPanel->corners[0].x;
-		corner4.y = m_pPanel->corners[0].y;
-
-		// Draw rectangle around checkerboard
-
-		line(m_pPanel->m_Image, corner1, corner2, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner2, corner3, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner3, corner4, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner4, corner1, CV_RGB(0, 0, 255), 2);
-
-		//circle(m_pPanel->m_Image, corner1, 10, CV_RGB(0, 0, 255), 2);
-		//circle(m_pPanel->m_Image, corner2, 10, CV_RGB(0, 255, 0), 2);
-		//circle(m_pPanel->m_Image, corner3, 10, CV_RGB(255, 0, 0), 2);
-		//circle(m_pPanel->m_Image, corner4, 10, CV_RGB(100, 100, 100), 2);
-
-		ratio = 8.0 / 5.0;
-		width = norm(corner2 - corner1);
-		length = ratio * width;
-
-	}
-	else if (sSelectedItem == "Checkerboard #6"){
-		bool found = false;
-
-		found = findChessboardCorners(m_pPanel->m_Image, Size(9, 6), m_pPanel->corners,
-			CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
-
-		Mat imgGray;
-		cvtColor(m_pPanel->m_Image, imgGray, COLOR_BGR2GRAY);
-		cornerSubPix(imgGray, m_pPanel->corners, Size(11, 11), Size(-1, -1),
-			TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
-
-		corner1.x = m_pPanel->corners[8].x;
-		corner1.y = m_pPanel->corners[8].y;
-
-		corner2.x = m_pPanel->corners[53].x;
-		corner2.y = m_pPanel->corners[53].y;
-
-		corner3.x = m_pPanel->corners[45].x;
-		corner3.y = m_pPanel->corners[45].y;
-
-		corner4.x = m_pPanel->corners[0].x;
-		corner4.y = m_pPanel->corners[0].y;
-
-		// Draw rectangle around checkerboard
-
-		line(m_pPanel->m_Image, corner1, corner2, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner2, corner3, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner3, corner4, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner4, corner1, CV_RGB(0, 0, 255), 2);
-
-		ratio = 8.0 / 5.0;
-		width = norm(corner2 - corner1);
-		length = ratio * width;
-	}
-	else if (sSelectedItem == "Panel #3"){
-		corner1 = Point2f(1035, 475);
-		corner2 = Point2f(1227, 392);
-		corner3 = Point2f(1558, 788);
-		corner4 = Point2f(1342, 904);
-
-		// Draw rectangle around panel
-
-		line(m_pPanel->m_Image, corner1, corner2, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner2, corner3, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner3, corner4, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner4, corner1, CV_RGB(0, 0, 255), 2);
-
-		width = norm(corner3 - corner4);
-		length = norm(corner2 - corner3);
-	}
-
-	vector<Point2f> panel_pts;
-	vector<Point2f> rect_pts;
-	panel_pts.push_back(corner1);
-	panel_pts.push_back(corner2);
-	panel_pts.push_back(corner3);
-	panel_pts.push_back(corner4);
-	rect_pts.push_back(Point2f(corner1.x, corner1.y));
-	rect_pts.push_back(Point2f(corner1.x + (float)width, corner1.y));
-	rect_pts.push_back(Point2f(corner1.x + (float)width, corner1.y + (float)length));
-	rect_pts.push_back(Point2f(corner1.x, corner1.y + (float)length));
-	
-	// Draw new rectangle
-	//line(m_pPanel->m_Image, rect_pts[0], rect_pts[1], CV_RGB(255, 0, 0), 2);
-	//line(m_pPanel->m_Image, rect_pts[1], rect_pts[2], CV_RGB(255, 0, 0), 2);
-	//line(m_pPanel->m_Image, rect_pts[2], rect_pts[3], CV_RGB(255, 0, 0), 2);
-	//line(m_pPanel->m_Image, rect_pts[3], rect_pts[0], CV_RGB(255, 0, 0), 2);
-
-	// Perspective Transorm
-	Mat transmtx = getPerspectiveTransform(panel_pts, rect_pts);
-	int offsetSize = 500;
-	Mat transformed = Mat::zeros(m_pPanel->m_Image.cols + offsetSize, m_pPanel->m_Image.rows + offsetSize, CV_8UC3);
-	warpPerspective(m_pPanel->m_Image, transformed, transmtx, transformed.size());
-
-	Mat subImg(transformed, Rect((int)corner1.x, (int)corner1.y, (int)width, (int)length));
-
-	namedWindow("Original", WINDOW_NORMAL);
-	imshow("Original", m_pPanel->m_Image);
-	namedWindow("Warped", WINDOW_AUTOSIZE);
-	imshow("Warped", transformed);
-	namedWindow("SubImage", WINDOW_AUTOSIZE);
-	imshow("SubImage", subImg);
-
-//	imwrite("PersCorrCheck10.jpg", subImg);
-}
-
-///////////////////////////////////////////////////////
-// Panel::Rectification() Description
-///////////////////////////////////////////////////////
-void Panel::Rectification(string sImgPath, string sSelectedItem)
-{
-	cout << sSelectedItem << endl;
-
+	cout << "Pixels to Length" << endl << endl;
 	m_pPanel->m_Image = imread(sImgPath);
 
 	Point2f corner1;
@@ -906,98 +718,45 @@ void Panel::Rectification(string sImgPath, string sSelectedItem)
 	double length = 0;
 	double ratio = 0;
 
-	// Not fixed for rectification
-	if (sSelectedItem == "Checkerboard #10"){
-		bool found = false;
+	bool found = false;
 
-		found = findChessboardCorners(m_pPanel->m_Image, Size(9, 6), m_pPanel->corners,
-			CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
+	found = findChessboardCorners(m_pPanel->m_Image, Size(9, 6), m_pPanel->corners,
+		CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
 
-		Mat imgGray;
-		cvtColor(m_pPanel->m_Image, imgGray, COLOR_BGR2GRAY);
-		cornerSubPix(imgGray, m_pPanel->corners, Size(11, 11), Size(-1, -1),
-			TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
+	cout << found << endl;
 
-		corner1.x = m_pPanel->corners[8].x;
-		corner1.y = m_pPanel->corners[8].y;
+	Mat imgGray;
+	cvtColor(m_pPanel->m_Image, imgGray, COLOR_BGR2GRAY);
+	cornerSubPix(imgGray, m_pPanel->corners, Size(11, 11), Size(-1, -1),
+		TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
 
-		corner2.x = m_pPanel->corners[53].x;
-		corner2.y = m_pPanel->corners[53].y;
+	corner1.x = m_pPanel->corners[45].x;
+	corner1.y = m_pPanel->corners[45].y;
 
-		corner3.x = m_pPanel->corners[45].x;
-		corner3.y = m_pPanel->corners[45].y;
+	corner2.x = m_pPanel->corners[0].x;
+	corner2.y = m_pPanel->corners[0].y;
 
-		corner4.x = m_pPanel->corners[0].x;
-		corner4.y = m_pPanel->corners[0].y;
+	corner3.x = m_pPanel->corners[8].x;
+	corner3.y = m_pPanel->corners[8].y;
 
-		// Draw rectangle around checkerboard
+	corner4.x = m_pPanel->corners[53].x;
+	corner4.y = m_pPanel->corners[53].y;
 
-		line(m_pPanel->m_Image, corner1, corner2, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner2, corner3, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner3, corner4, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner4, corner1, CV_RGB(0, 0, 255), 2);
+	// Draw rectangle around checkerboard
 
-		//circle(m_pPanel->m_Image, corner1, 10, CV_RGB(0, 0, 255), 2);
-		//circle(m_pPanel->m_Image, corner2, 10, CV_RGB(0, 255, 0), 2);
-		//circle(m_pPanel->m_Image, corner3, 10, CV_RGB(255, 0, 0), 2);
-		//circle(m_pPanel->m_Image, corner4, 10, CV_RGB(100, 100, 100), 2);
+	line(m_pPanel->m_Image, corner1, corner2, CV_RGB(0, 0, 255), 2);
+	line(m_pPanel->m_Image, corner2, corner3, CV_RGB(0, 0, 255), 2);
+	line(m_pPanel->m_Image, corner3, corner4, CV_RGB(0, 0, 255), 2);
+	line(m_pPanel->m_Image, corner4, corner1, CV_RGB(0, 0, 255), 2);
 
-		ratio = 8.0 / 5.0;
-		width = norm(corner2 - corner1);
-		length = ratio * width;
+	circle(m_pPanel->m_Image, corner1, 10, CV_RGB(0, 0, 255), 2);
+	circle(m_pPanel->m_Image, corner2, 10, CV_RGB(0, 255, 0), 2);
+	circle(m_pPanel->m_Image, corner3, 10, CV_RGB(255, 0, 0), 2);
+	circle(m_pPanel->m_Image, corner4, 10, CV_RGB(100, 100, 100), 2);
 
-	}
-	else if (sSelectedItem == "Checkerboard #6"){
-		bool found = false;
-
-		found = findChessboardCorners(m_pPanel->m_Image, Size(9, 6), m_pPanel->corners,
-			CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
-
-		Mat imgGray;
-		cvtColor(m_pPanel->m_Image, imgGray, COLOR_BGR2GRAY);
-		cornerSubPix(imgGray, m_pPanel->corners, Size(11, 11), Size(-1, -1),
-			TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 30, 0.1));
-
-		corner1.x = m_pPanel->corners[45].x;
-		corner1.y = m_pPanel->corners[45].y;
-
-		corner2.x = m_pPanel->corners[53].x;
-		corner2.y = m_pPanel->corners[53].y;
-
-		corner3.x = m_pPanel->corners[0].x;
-		corner3.y = m_pPanel->corners[0].y;
-
-		corner4.x = m_pPanel->corners[8].x;
-		corner4.y = m_pPanel->corners[8].y;
-
-		// Draw rectangle around checkerboard
-
-		line(m_pPanel->m_Image, corner1, corner2, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner2, corner4, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner4, corner3, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner3, corner1, CV_RGB(0, 0, 255), 2);
-
-		ratio = 8.0 / 5.0;
-		width = norm(corner3 - corner1);
-		length = ratio * width;
-	}
-	// Not fixed for rectification
-	else if (sSelectedItem == "Panel #3"){
-		corner1 = Point2f(1035, 475);
-		corner2 = Point2f(1227, 392);
-		corner3 = Point2f(1558, 788);
-		corner4 = Point2f(1342, 904);
-
-		// Draw rectangle around panel
-
-		line(m_pPanel->m_Image, corner1, corner2, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner2, corner3, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner3, corner4, CV_RGB(0, 0, 255), 2);
-		line(m_pPanel->m_Image, corner4, corner1, CV_RGB(0, 0, 255), 2);
-
-		width = norm(corner2 - corner1);
-		length = norm(corner2 - corner3);
-	}
+	ratio = 8.0 / 5.0;
+	width = norm(corner3 - corner4);
+	length = ratio * width;
 
 	vector<Point2f> panel_pts;
 	vector<Point2f> rect_pts;
@@ -1011,10 +770,10 @@ void Panel::Rectification(string sImgPath, string sSelectedItem)
 	rect_pts.push_back(Point2f((float)length, (float)width));
 
 	// Draw new rectangle
-	//line(m_pPanel->m_Image, rect_pts[0], rect_pts[1], CV_RGB(255, 0, 0), 2);
-	//line(m_pPanel->m_Image, rect_pts[1], rect_pts[2], CV_RGB(255, 0, 0), 2);
-	//line(m_pPanel->m_Image, rect_pts[2], rect_pts[3], CV_RGB(255, 0, 0), 2);
-	//line(m_pPanel->m_Image, rect_pts[3], rect_pts[0], CV_RGB(255, 0, 0), 2);
+	line(m_pPanel->m_Image, rect_pts[0], rect_pts[1], CV_RGB(255, 0, 0), 2);
+	line(m_pPanel->m_Image, rect_pts[1], rect_pts[2], CV_RGB(255, 0, 0), 2);
+	line(m_pPanel->m_Image, rect_pts[2], rect_pts[3], CV_RGB(255, 0, 0), 2);
+	line(m_pPanel->m_Image, rect_pts[3], rect_pts[0], CV_RGB(255, 0, 0), 2);
 
 	// Perspective Transorm
 	Mat transmtx = getPerspectiveTransform(panel_pts, rect_pts);
@@ -1441,7 +1200,6 @@ void Panel::LoadCalibration(string sFilePath)
 
 	//! [file_read]
 	
-	Settings s;
 	Mat import_distortion_coefficients;
 	Mat import_camera_matrix;
 	Mat import_image_points;
@@ -1478,207 +1236,3 @@ void Panel::LoadCalibration(string sFilePath)
 	cout << "Calibration Loaded" << endl << endl;
 
 }
-
-///////////////////////////////////////////////////////
-// Panel::CalibrateCameraFisheyeNoOutput() Description
-///////////////////////////////////////////////////////
-void Panel::CalibrateCameraFisheyeNoOutput(string sFilePath)
-{
-	help();
-
-	cout << "NO OUTPUT" << endl;
-
-	//! [file_read]
-	Settings s;
-	const string inputSettingsFile = sFilePath;
-	FileStorage fs(inputSettingsFile, FileStorage::READ); // Read the settings
-	if (!fs.isOpened())
-	{
-		cout << "Could not open the configuration file: \"" << inputSettingsFile << "\"" << endl;
-		//		return -1;
-	}
-	fs["Settings"] >> s;
-	fs.release();                                         // close Settings file
-	//! [file_read]
-
-	//FileStorage fout("settings.yml", FileStorage::WRITE); // write config as YAML
-	//fout << "Settings" << s;
-
-	if (!s.goodInput)
-	{
-		cout << "Invalid input detected. Application stopping. " << endl;
-		//		return -1;
-	}
-
-	vector<vector<Point2f> > imagePoints;
-	Mat cameraMatrix, distCoeffs;
-	Size imageSize;
-	int mode = s.inputType == Settings::IMAGE_LIST ? CAPTURING : DETECTION;
-	clock_t prevTimestamp = 0;
-	const Scalar RED(0, 0, 255), GREEN(0, 255, 0);
-	const char ESC_KEY = 27;
-
-	//! [get_input]
-	for (;;)
-	{
-		Mat view;
-		bool blinkOutput = false;
-
-		view = s.nextImage();
-
-		//-----  If no more image, or got enough, then stop calibration and show result -------------
-		if (mode == CAPTURING && imagePoints.size() >= (size_t)s.nrFrames)
-		{
-			if (runCalibrationFisheyeAndSave(s, imageSize, cameraMatrix, distCoeffs, imagePoints))
-				mode = CALIBRATED;
-			else
-				mode = DETECTION;
-		}
-		if (view.empty())          // If there are no more images stop the loop
-		{
-			// if calibration threshold was not reached yet, calibrate now
-			if (mode != CALIBRATED && !imagePoints.empty())
-				runCalibrationFisheyeAndSave(s, imageSize, cameraMatrix, distCoeffs, imagePoints);
-			break;
-		}
-		//! [get_input]
-
-		imageSize = view.size();  // Format input image.
-		if (s.flipVertical)    flip(view, view, 0);
-
-		//! [find_pattern]
-		vector<Point2f> pointBuf;
-
-		bool found;
-		switch (s.calibrationPattern) // Find feature points on the input format
-		{
-		case Settings::CHESSBOARD:
-			found = findChessboardCorners(view, s.boardSize, pointBuf,
-				CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
-			break;
-		case Settings::CIRCLES_GRID:
-			found = findCirclesGrid(view, s.boardSize, pointBuf);
-			break;
-		case Settings::ASYMMETRIC_CIRCLES_GRID:
-			found = findCirclesGrid(view, s.boardSize, pointBuf, CALIB_CB_ASYMMETRIC_GRID);
-			break;
-		default:
-			found = false;
-			break;
-		}
-		//! [find_pattern]
-		//! [pattern_found]
-		if (found)                // If done with success,
-		{
-			// improve the found corners' coordinate accuracy for chessboard
-			if (s.calibrationPattern == Settings::CHESSBOARD)
-			{
-				Mat viewGray;
-				cvtColor(view, viewGray, COLOR_BGR2GRAY);
-				cornerSubPix(viewGray, pointBuf, Size(11, 11),
-					Size(-1, -1), TermCriteria(TermCriteria::EPS + TermCriteria::COUNT, 30, 0.1));
-			}
-
-			if (mode == CAPTURING &&  // For camera only take new samples after delay time
-				(!s.inputCapture.isOpened() || clock() - prevTimestamp > s.delay*1e-3*CLOCKS_PER_SEC))
-			{
-				imagePoints.push_back(pointBuf);
-				prevTimestamp = clock();
-				blinkOutput = s.inputCapture.isOpened();
-			}
-
-			// Draw the corners.
-			drawChessboardCorners(view, s.boardSize, Mat(pointBuf), found);
-		}
-		//! [pattern_found]
-		//----------------------------- Output Text ------------------------------------------------
-		//! [output_text]
-		string msg = (mode == CAPTURING) ? "100/100" :
-			mode == CALIBRATED ? "Calibrated" : "Press 'g' to start";
-		int baseLine = 0;
-		Size textSize = getTextSize(msg, 1, 1, 1, &baseLine);
-		Point textOrigin(view.cols - 2 * textSize.width - 10, view.rows - 2 * baseLine - 10);
-
-		if (mode == CAPTURING)
-		{
-			if (s.showUndistorsed)
-				msg = format("%d/%d Undist", (int)imagePoints.size(), s.nrFrames);
-			else
-				msg = format("%d/%d", (int)imagePoints.size(), s.nrFrames);
-		}
-
-		putText(view, msg, textOrigin, 1, 1, mode == CALIBRATED ? GREEN : RED);
-
-		if (blinkOutput)
-			bitwise_not(view, view);
-		//! [output_text]
-		//------------------------- Video capture  output  undistorted ------------------------------
-		//! [output_undistorted]
-		if (mode == CALIBRATED && s.showUndistorsed)
-		{
-			Mat temp = view.clone();
-			fisheye::undistortImage(temp, view, cameraMatrix, distCoeffs);
-		}
-		//! [output_undistorted]
-
-		/*		//------------------------------ Show image and check for input commands -------------------
-		//! [await_input]
-		imshow("Image View", view);
-		char key = (char)waitKey(s.inputCapture.isOpened() ? 50 : s.delay);
-
-		if (key == ESC_KEY)
-		break;
-
-		if (key == 'u' && mode == CALIBRATED)
-		s.showUndistorsed = !s.showUndistorsed;
-
-		if (s.inputCapture.isOpened() && key == 'g')
-		{
-		mode = CAPTURING;
-		imagePoints.clear();
-		}
-		//! [await_input]
-		*/
-	}
-
-	/*	// -----------------------Show the undistorted image for the image list ------------------------
-	//! [show_results]
-	if (s.inputType == Settings::IMAGE_LIST && s.showUndistorsed)
-	{
-	Mat view, rview, map1, map2;
-
-	initUndistortRectifyMap(cameraMatrix, distCoeffs, Mat(),
-	getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, imageSize, 1, imageSize, 0),
-	imageSize, CV_16SC2, map1, map2);
-
-	for (size_t i = 0; i < s.imageList.size(); i++)
-	{
-	view = imread(s.imageList[i], 1);
-	if (view.empty())
-	continue;
-	remap(view, rview, map1, map2, INTER_LINEAR);
-	imshow("Image View", rview);
-	char c = (char)waitKey();
-	if (c == ESC_KEY || c == 'q' || c == 'Q')
-	break;
-	}
-	*/
-	// -----------------------Calculate Maps ------------------------
-
-	Mat R, P, view, rview, map1, map2;
-
-	fisheye::estimateNewCameraMatrixForUndistortRectify(cameraMatrix, distCoeffs, imageSize, Mat(), P);
-
-	R.convertTo(R, CV_64F);
-
-	fisheye::initUndistortRectifyMap(cameraMatrix, distCoeffs, R, P,
-		imageSize, CV_16SC2, map1, map2);
-
-	mainMap1 = map1;
-	mainMap2 = map2;
-
-
-	//	return 0;
-
-}
-

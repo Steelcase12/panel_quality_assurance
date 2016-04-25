@@ -91,40 +91,10 @@ namespace Panel_QA_TestProgram
             }
         }
 
-        private void classifierBtn_Click(object sender, EventArgs e)
-        {
-            if (inputBox.Text != "" && classifierBox.Text != "") {
-                newPanel.CascadeClassify(inputBox.Text, classifierBox.Text);
-                warningLabel.Text = "";
-            } else {
-                warningLabel.Text = "You must enter a path to a file";
-            }
-        }
-
         private void viewWithCalibrationBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
                 newPanel.ShowImageWithCalibration(inputBox.Text, "My Image");
-                warningLabel.Text = "";
-            } else {
-                warningLabel.Text = "You must enter a path to an image";
-            }
-        }
-
-        private void calibrateFisheyeNoOutputBtn_Click(object sender, EventArgs e)
-        {
-            if (calibrationPath.Text != "") {
-                newPanel.CalibrateCameraFisheyeNoOutput(calibrationPath.Text);
-                warningLabel.Text = "";
-            } else {
-                warningLabel.Text = "You must enter a path to a file";
-            }
-        }
-
-        private void drawOnBoardBtn_Click(object sender, EventArgs e)
-        {
-            if (inputBox.Text != "") {
-                newPanel.DrawOnBoard(inputBox.Text);
                 warningLabel.Text = "";
             } else {
                 warningLabel.Text = "You must enter a path to an image";
@@ -151,21 +121,11 @@ namespace Panel_QA_TestProgram
             }
         }
 
-        private void perspectiveBtn_Click(object sender, EventArgs e)
-        {
-            if (inputBox.Text != "") {
-                newPanel.Perspective(inputBox.Text, comboBox1.SelectedItem.ToString());
-                warningLabel.Text = "";
-            } else {
-                warningLabel.Text = "You must enter a path to an image";
-            }
-        }
-
-        private void rectificationBtn_Click(object sender, EventArgs e)
+        private void pixelsToLengthBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "")
             {
-                newPanel.Rectification(inputBox.Text, comboBox1.SelectedItem.ToString());
+                newPanel.PixelsToLength(inputBox.Text);
                 warningLabel.Text = "";
             }
             else
@@ -178,16 +138,13 @@ namespace Panel_QA_TestProgram
         {
             if (calibrationPath.Text != "")
             {
-                newPanel = new MYPanel();
                 newPanel.LoadCalibration(calibrationPath.Text);
                 warningLabel.Text = "";
-                newPanel = null;
             }
             else
             {
                 warningLabel.Text = "You must enter a path to a file";
             }
         }
-
     }
 }

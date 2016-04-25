@@ -66,34 +66,11 @@ void MYPanel::LoadCalibration(System::String^ imgPath)
 	panel->LoadCalibration((string)strImgPath);
 }
 
-void MYPanel::CalibrateCameraFisheyeNoOutput(System::String^ imgPath)
+void MYPanel::PixelsToLength(System::String^ imgPath)
 {
 	MYConversion ^convert = gcnew MYConversion();
 	string strImgPath = convert->myStringToChar(imgPath);
-	panel->CalibrateCameraFisheyeNoOutput((string)strImgPath);
-}
-
-void MYPanel::DrawOnBoard(System::String^ imgPath)
-{
-	MYConversion ^convert = gcnew MYConversion();
-	string strImgPath = convert->myStringToChar(imgPath);
-	panel->DrawOnBoard((string)strImgPath);
-}
-
-void MYPanel::Perspective(System::String^ imgPath, System::String^ selectedItem)
-{
-	MYConversion ^convert = gcnew MYConversion();
-	string strImgPath = convert->myStringToChar(imgPath);
-	string strSelectedItem = convert->myStringToChar(selectedItem);
-	panel->Perspective((string)strImgPath, (string)strSelectedItem);
-}
-
-void MYPanel::Rectification(System::String^ imgPath, System::String^ selectedItem)
-{
-	MYConversion ^convert = gcnew MYConversion();
-	string strImgPath = convert->myStringToChar(imgPath);
-	string strSelectedItem = convert->myStringToChar(selectedItem);
-	panel->Rectification((string)strImgPath, (string)strSelectedItem);
+	panel->PixelsToLength((string)strImgPath);
 }
 
 void MYPanel::BatchCalibrate(System::String^ dirPath)

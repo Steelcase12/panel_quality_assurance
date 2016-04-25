@@ -28,13 +28,10 @@ public:
 	void PointLocation(Point point);
 	void MaskWithColor(string imgPath, string color);
 	void DetectEdges(string imgPath);
-	void DrawOnBoard(string imgPath);
-	void Perspective(string imgPath, string selectedItem);
-	void Rectification(string imgPath, string selectedItem);
+	void PixelsToLength(string imgPath);
 	void CalibrateCamera(string filePath);
 	void CalibrateCameraNoOutput(string filePath);
 	void LoadCalibration(string filePath);
-	void CalibrateCameraFisheyeNoOutput(string filePath);
 	void CascadeClassify(string imgPath, string classPath);
 	void BatchCalibrate(string dirPath);	
 	void DetectFeatures(string scenePath, string objPath, bool exceedsBorder);

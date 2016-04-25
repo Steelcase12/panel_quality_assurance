@@ -25,13 +25,10 @@ namespace MYopencv {
 		void ShowImageWithCalibration(System::String^ imgPath, System::String^ windowTitle);
 		void MaskWithColor(System::String^ imgPath, System::String^ color);
 		void DetectEdges(System::String^ imgPath);
-		void DrawOnBoard(System::String^ imgPath);
-		void Perspective(System::String^ imgPath, System::String^ selectedPath);
-		void Rectification(System::String^ imgPath, System::String^ selectedPath);
+		void PixelsToLength(System::String^ imgPath);
 		void CalibrateCamera(System::String^ filePath);
 		void CalibrateCameraNoOutput(System::String^ filePath);
 		void LoadCalibration(System::String^ filePath);
-		void CalibrateCameraFisheyeNoOutput(System::String^ filePath);
 		void CascadeClassify(System::String^ imgPath, System::String^ classifierPath);
 		void BatchCalibrate(System::String^ dirPath);		
 		void DetectFeatures(System::String^ scenePath, System::String^ objPath, bool exceedsBorder);	
