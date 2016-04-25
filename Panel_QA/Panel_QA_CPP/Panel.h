@@ -33,6 +33,7 @@ public:
 	void Rectification(string imgPath, string selectedItem);
 	void CalibrateCamera(string filePath);
 	void CalibrateCameraNoOutput(string filePath);
+	void LoadCalibration(string filePath);
 	void CalibrateCameraFisheyeNoOutput(string filePath);
 	void CascadeClassify(string imgPath, string classPath);
 	void BatchCalibrate(string dirPath);	

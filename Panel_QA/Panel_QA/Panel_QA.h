@@ -30,6 +30,7 @@ namespace MYopencv {
 		void Rectification(System::String^ imgPath, System::String^ selectedPath);
 		void CalibrateCamera(System::String^ filePath);
 		void CalibrateCameraNoOutput(System::String^ filePath);
+		void LoadCalibration(System::String^ filePath);
 		void CalibrateCameraFisheyeNoOutput(System::String^ filePath);
 		void CascadeClassify(System::String^ imgPath, System::String^ classifierPath);
 		void BatchCalibrate(System::String^ dirPath);		

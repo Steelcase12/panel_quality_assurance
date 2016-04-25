@@ -225,7 +225,12 @@ bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat ca
 
 	// Calibrate
 	Mat rview;
-	remap(m_pPanel->m_Image, rview, mainMap1, mainMap2, INTER_LINEAR);
+	if (!mainMap1.empty()){
+		remap(m_pPanel->m_Image, rview, mainMap1, mainMap2, INTER_LINEAR);
+	}
+	else{
+		rview = m_pPanel->m_Image;
+	}
 
 	// Show the image
 	namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
@@ -1403,6 +1408,50 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 	mainCameraMatrix = cameraMatrix;
 	mainDistCoeffs = distCoeffs;
 	//	return 0;
+
+}
+
+void Panel::LoadCalibration(string sFilePath)
+{
+	cout << "Loading Calibration" << endl;
+
+	//! [file_read]
+	
+	Settings s;
+	Mat import_distortion_coefficients;
+	Mat import_camera_matrix;
+	Mat import_image_points;
+	Size import_image_size;
+
+	const string inputSettingsFile = sFilePath;
+	FileStorage fs(inputSettingsFile, FileStorage::READ); // Read the settings
+	if (!fs.isOpened())
+	{
+		cout << "Could not open the configuration file: \"" << inputSettingsFile << "\"" << endl;
+		//		return -1;
+	}
+	fs["distortion_coefficients"] >> import_distortion_coefficients;
+	fs["camera_matrix"] >> import_camera_matrix;
+	fs["image_width"] >> import_image_size.width;
+	fs["image_height"] >> import_image_size.height;
+	fs["image_points"] >> import_image_points;
+
+	fs.release();                                         // close Settings file
+	//! [file_read]
+
+	Mat view, rview, map1, map2;
+
+	initUndistortRectifyMap(import_camera_matrix, import_distortion_coefficients, Mat(),
+		getOptimalNewCameraMatrix(import_camera_matrix, import_distortion_coefficients, import_image_size, 1, import_image_size, 0),
+		import_image_size, CV_16SC2, map1, map2);
+
+	mainMap1 = map1;
+	mainMap2 = map2;
+
+	mainCameraMatrix = import_camera_matrix;
+	mainDistCoeffs = import_distortion_coefficients;
+
+	cout << "Calibration Loaded" << endl << endl;
 
 }
 

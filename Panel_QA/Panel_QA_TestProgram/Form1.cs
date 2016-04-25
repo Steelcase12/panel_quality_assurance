@@ -202,5 +202,20 @@ namespace Panel_QA_TestProgram
             }
         }
 
+        private void loadCalibrationBtn_Click(object sender, EventArgs e)
+        {
+            if (calibrationPath.Text != "")
+            {
+                newPanel = new MYPanel();
+                newPanel.LoadCalibration(calibrationPath.Text);
+                warningLabel.Text = "";
+                newPanel = null;
+            }
+            else
+            {
+                warningLabel.Text = "You must enter a path to a file";
+            }
+        }
+
     }
 }

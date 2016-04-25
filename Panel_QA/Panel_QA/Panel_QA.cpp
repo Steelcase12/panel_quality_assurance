@@ -59,6 +59,13 @@ void MYPanel::CalibrateCameraNoOutput(System::String^ imgPath)
 	panel->CalibrateCameraNoOutput((string)strImgPath);
 }
 
+void MYPanel::LoadCalibration(System::String^ imgPath)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	panel->LoadCalibration((string)strImgPath);
+}
+
 void MYPanel::CalibrateCameraFisheyeNoOutput(System::String^ imgPath)
 {
 	MYConversion ^convert = gcnew MYConversion();
