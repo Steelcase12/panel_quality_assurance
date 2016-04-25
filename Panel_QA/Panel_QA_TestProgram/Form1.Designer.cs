@@ -193,7 +193,6 @@
             this.calibrationPath.Name = "calibrationPath";
             this.calibrationPath.Size = new System.Drawing.Size(281, 20);
             this.calibrationPath.TabIndex = 15;
-            this.calibrationPath.Text = "C:\\Users\\Nick\\distortion\\Steelcase.xml";
             // 
             // calibrateBtn
             // 
@@ -307,7 +306,7 @@
             // featuresCheckBox
             // 
             this.featuresCheckBox.AutoSize = true;
-            this.featuresCheckBox.Location = new System.Drawing.Point(420, 289);
+            this.featuresCheckBox.Location = new System.Drawing.Point(420, 288);
             this.featuresCheckBox.Name = "featuresCheckBox";
             this.featuresCheckBox.Size = new System.Drawing.Size(128, 17);
             this.featuresCheckBox.TabIndex = 23;
