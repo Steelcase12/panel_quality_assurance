@@ -1,6 +1,6 @@
 // This is the main DLL file.
 
-// #define DEBUG_CANNY 1
+#define DEBUG_CANNY 1
 // #define DEBUG_COLOR_MASK 1
 // #define DEBUG_BLOB_DETECTION 1
 
@@ -12,11 +12,12 @@
 #include "FeatureDetector.h"
 Panel::Panel()
 {
+	m_pPanel = this;
 }
 
 Panel::~Panel()
 {
-	delete m_pPanel;
+	// delete m_pPanel;
 }
 
 // Camera Calibration Constants
@@ -174,7 +175,6 @@ static void onMouseLocation(int event, int x, int y, int f, void *ptr)
 //	on click listener (onMouse())
 bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 {
-	m_pPanel = new Panel;
 	// read specified image
 	m_pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
 
@@ -208,7 +208,6 @@ bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 //	on click listener (onMouse())
 bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat calibratedImg, bool showImg)
 {
-	m_pPanel = new Panel;
 	// read specified image
 	m_pPanel->m_Image = imread(sImgPath, IMREAD_COLOR);
 
@@ -434,8 +433,14 @@ void Panel::DetectEdges(string sImgPath)
 	if (!ShowImage(sImgPath, "Original"))
 		return;
 
+	Mat image;
+	if (m_roi.width)
+		image = m_pPanel->m_Image(m_roi);
+	else
+		image = m_pPanel->m_Image;
+
 	// Canny Edge and Hough Line Detection
-	Mat edges = CannyDetection(m_pPanel->m_Image);
+	Mat edges = CannyDetection(image, true);
 }
 
 ///////////////////////////////////////////////////////
@@ -450,7 +455,7 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 	int low = 105, high = 255; // int low = 134, high = 255;
 	int sigmaX = 10, sigmaY = 2; // int sigmaX = 7, sigmaY = 2; 
 	int cannyLow = 85, ratio = 3, aperture = 3; // int cannyLow = 100, ratio = 3, aperture = 3;
-	int houghLength = 164; 	// int houghLength = 105;
+	int houghLength = 155; 	// int houghLength = 105;
 	vector<Vec2f> lines;
 	//	This code is for testing different values of various functions
 	//   used with Canny, Blurring, and Hough Lines
@@ -462,7 +467,7 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 	cvCreateTrackbar("SigmaY", "Sliders", &sigmaY, 100);
 	cvCreateTrackbar("Low Threshold", "Sliders", &cannyLow, 500);
 	cvCreateTrackbar("Ratio", "Sliders", &ratio, 5);
-	cvCreateTrackbar("Hough Line length", "Sliders", &houghLength, 2000);
+	cvCreateTrackbar("Hough Line length", "Sliders", &houghLength, 1000);
 
 	while (true)
 	{
@@ -489,7 +494,9 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 		}
 
 #ifndef DEBUG_CANNY
-		// compute the intersection from the lines detected...
+		////////////////////////////////////////////////////////
+		// Compute the intersection from the lines detected
+		////////////////////////////////////////////////////////
 		vector<Point2f> intersections;
 		for (size_t i = 0; i < lines.size(); i++)
 		{
@@ -500,7 +507,8 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 				if (acceptLinePair(line1, line2, (float)CV_PI / 32))
 				{
 					Point2f intersection = computeIntersect(line1, line2);
-					intersections.push_back(intersection);
+					if (intersection.x >= 0 && intersection.y >= 0)
+						intersections.push_back(intersection);
 				}
 			}
 		}
@@ -511,14 +519,26 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			for (i = intersections.begin(); i != intersections.end(); ++i)
 			{
 				cout << "Intersection is " << i->x << ", " << i->y << endl;
-				circle(image, *i, 5, Scalar(0, 255, 0), 3);
+				circle(image, *i, 2, Scalar(0, 255, 0), 3);
 			}
+			// Find the minimum bounding rectangle
+			RotatedRect rect;
+			Point2f rectPoints[4];
+			Scalar color = Scalar(255, 0, 0);
+			rect = minAreaRect(intersections);
+			rect.points(rectPoints);
+			int j = 0;
+			for (j; j < 4; j++)
+				line(image, rectPoints[j], rectPoints[(j + 1) % 4], color, 1, 8);
 		}
 
 		if (showImg){
 			namedWindow("Intersections", CV_WINDOW_KEEPRATIO);
 			imshow("Intersections", image);
 		}
+		/////////////////////////////////////////////////////////////
+		// End of Computing the intersection from the lines detected
+		/////////////////////////////////////////////////////////////
 #endif //ifndef DEBUG_CANNY
 
 #ifdef DEBUG_CANNY
@@ -545,11 +565,13 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 ///////////////////////////////////////////////////////
 void Panel::FindContours(Mat image)
 {
-	int low = 140;
+	int low = 155;
 	Mat grayImage;
 	cvtColor(image, grayImage, CV_BGR2GRAY);
 	// Mat dilated;
 	// dilate(grayImage, dilated, Mat());
+	// Mat eroded;
+	// erode(grayImage, eroded, Mat());
 	Mat blurred;
 	GaussianBlur(grayImage, blurred, Size(7, 7), 0, 0);
 	Mat thresh;
@@ -658,13 +680,14 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
 	// ShowImageWithCalibration(scenePath, "Calibrated", calibrated, false);
 
 	MyFeatureDetector detector;
-	Mat boundImg;
-	if (!detector.Detect(m_pPanel->m_Image, objPath, boundImg, exceedsBorder, true))
+	if (!detector.Detect(m_pPanel->m_Image, objPath, m_roi, m_Homography, exceedsBorder, true))
 		return;
 
+	Mat boundImg;
+	boundImg = m_pPanel->m_Image(m_roi);
 	// FindContours(boundImg);
 	// Canny Edge and Hough Line Detection
-	Mat edges = CannyDetection(boundImg, true);
+	// Mat edges = CannyDetection(boundImg, true);
 }
 
 ///////////////////////////////////////////////////////
@@ -672,8 +695,6 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
 ///////////////////////////////////////////////////////
 void Panel::DrawOnBoard(string sImgPath)
 {
-	m_pPanel = new Panel;
-
 	m_pPanel->m_Image = imread(sImgPath);
 	
 	namedWindow("Original", WINDOW_AUTOSIZE);
@@ -716,9 +737,7 @@ void Panel::DrawOnBoard(string sImgPath)
 // Panel::Perspective() Description
 ///////////////////////////////////////////////////////
 void Panel::Perspective(string sImgPath, string sSelectedItem)
-{
-	m_pPanel = new Panel;
-	
+{	
 	cout << sSelectedItem << endl;
 
 	m_pPanel->m_Image = imread(sImgPath);
@@ -863,8 +882,6 @@ void Panel::Perspective(string sImgPath, string sSelectedItem)
 ///////////////////////////////////////////////////////
 void Panel::Rectification(string sImgPath, string sSelectedItem)
 {
-	m_pPanel = new Panel;
-
 	cout << sSelectedItem << endl;
 
 	m_pPanel->m_Image = imread(sImgPath);

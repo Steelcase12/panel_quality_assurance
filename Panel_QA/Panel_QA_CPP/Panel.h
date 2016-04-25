@@ -39,7 +39,9 @@ public:
 	void DetectFeatures(string scenePath, string objPath, bool exceedsBorder);
 private:
 	Panel *m_pPanel;
+	Rect m_roi;
 	Mat m_Image;
+	Mat m_Homography;
 	// This is just for testing distance measurement
 	vector<Point2f> corners;
 	Mat CannyDetection(Mat image, bool showImg = true);

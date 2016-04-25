@@ -11,7 +11,7 @@ MYPanel::MYPanel()
 
 MYPanel::~MYPanel()
 {
-	delete panel;
+	// delete panel;
 }
 
 void MYPanel::ShowImage(System::String^ imgPath, System::String^ windowTitle)

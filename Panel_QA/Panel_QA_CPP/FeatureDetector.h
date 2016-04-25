@@ -1,6 +1,8 @@
 #pragma once
 #pragma comment(lib,"user32.lib")
+// Uncomment this line to debug feature detection
 // #define DEBUG_FEATURES 1
+// Uncomment this line to debug the sliding window
 // #define DEBUG_SLIDING_WINDOW 1
 
 #include "opencv2/highgui.hpp"
@@ -22,10 +24,10 @@ public:
 	~MyFeatureDetector();
 	void SlidingWindow(Mat object);
 	void FindObject(Mat objectP, Mat scene, int minHessian, Scalar color, int row, int col);
-	bool Detect(Mat scene, string obj, Mat &bound_image, bool exceedsBorder, bool showImg = true);
+	bool Detect(Mat scene, string obj, Rect &roi, Mat &homography, bool exceedsBorder, bool showImg = true);
 private:
 	Mat full_scene, outImg;
-	Rect m_roi;
+	Mat m_Homography;
 	// Top and Bottom points of new ROI
 	int topPoint = 0;
 	int bottomPoint = 0;
@@ -49,7 +51,7 @@ MyFeatureDetector::~MyFeatureDetector()
 {
 }
 
-bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exceedsBorder, bool showImg)
+bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &homography, bool exceedsBorder, bool showImg)
 {
 	// Load images
 	full_scene = scene;
@@ -76,7 +78,10 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exc
 	row_step = n_cols;
 	col_step = n_rows;
 	SlidingWindow(object);
-	// Uncomment to only find a single object in the whole image
+	// Pass back the homography that we found in FindObject()
+	if (!m_Homography.empty())
+		homography = m_Homography;
+	// Uncomment to only find a single object in the scene
 	// FindObject(object, scene, 100, Scalar(255, 0, 0), 0, 0);
 
 	// When only detecting one feature in an image,
@@ -115,7 +120,7 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exc
 			if (bottomPoint > full_scene.rows) bottomPoint = full_scene.rows;
 			if (rightPoint > full_scene.cols) rightPoint = full_scene.cols;
 			// Set the Region of Interest
-			m_roi = Rect(Point(leftPoint, topPoint), Point(rightPoint, bottomPoint));
+			roi = Rect(Point(leftPoint, topPoint), Point(rightPoint, bottomPoint));
 #ifdef DEBUG_FEATURES
 			ShowMessage("Top and Bottom Features Found.");
 #endif
@@ -126,7 +131,7 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exc
 			if (topPoint < 0) topPoint = 0;
 			if (leftPoint < 0) leftPoint = 0;
 			// Set the Region of Interest
-			m_roi = Rect(Point(leftPoint, topPoint), Point(full_scene.rows, full_scene.cols));
+			roi = Rect(Point(leftPoint, topPoint), Point(full_scene.rows, full_scene.cols));
 #ifdef DEBUG_FEATURES
 			ShowMessage("Only Top Feature Found.");
 #endif
@@ -137,12 +142,13 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Mat &bound_image, bool exc
 			if (bottomPoint > full_scene.rows) bottomPoint = full_scene.rows;
 			if (rightPoint > full_scene.cols) rightPoint = full_scene.cols;
 			// Set the Region of Interest
-			m_roi = Rect(Point(0, 0), Point(rightPoint, bottomPoint));
+			roi = Rect(Point(0, 0), Point(rightPoint, bottomPoint));
 #ifdef DEBUG_FEATURES
 			ShowMessage("Only Bottom Feature Found.");
 #endif
 		}
-		bound_image = full_scene(m_roi);
+		Mat bound_image;
+		bound_image = full_scene(roi);
 		if (showImg){
 			namedWindow("Bound Image", CV_WINDOW_KEEPRATIO);
 			imshow("Bound Image", bound_image);
@@ -362,7 +368,7 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 
 		// TODO: Pass this image back to Panel.cpp to perspective
 		//  transform every image 
-		Mat H = findHomography(obj, scene_vec, CV_RANSAC);
+		m_Homography = findHomography(obj, scene_vec, CV_RANSAC);
 
 		//-- Get the corners from the image_1 ( the object to be "detected" )
 		std::vector<Point2f> obj_corners(4);
@@ -373,8 +379,8 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 		std::vector<Point2f> scene_corners(4);
 
 		// TODO: Use this function in Panel.cpp with the homography that we find
-		if (!H.empty())
-			perspectiveTransform(obj_corners, scene_corners, H);
+		if (!m_Homography.empty())
+			perspectiveTransform(obj_corners, scene_corners, m_Homography);
 
 		//-- Draw lines between the corners (the mapped object in the scene - image_2 )
 #ifdef DEBUG_FEATURES

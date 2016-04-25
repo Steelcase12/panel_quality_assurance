@@ -17,14 +17,13 @@ namespace Panel_QA_TestProgram
         public Form1()
         {
             InitializeComponent();
+            newPanel = new MYPanel();
         }
 
         private void goBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.ShowImage(inputBox.Text, "My Image");
-                newPanel = null;
                 warningLabel.Text = "";
             } else {
                 warningLabel.Text = "You must enter a path to an image";
@@ -34,10 +33,8 @@ namespace Panel_QA_TestProgram
         private void redBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.MaskWithColor(inputBox.Text, "red");
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to an image";
             }
@@ -46,10 +43,8 @@ namespace Panel_QA_TestProgram
         private void blueBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.MaskWithColor(inputBox.Text, "blue");
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to an image";
             }
@@ -58,10 +53,8 @@ namespace Panel_QA_TestProgram
         private void panelBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.MaskWithColor(inputBox.Text, "panel");
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to an image";
             }
@@ -70,10 +63,8 @@ namespace Panel_QA_TestProgram
         private void detectEdgesBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.DetectEdges(inputBox.Text);
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to an image";
             }
@@ -82,10 +73,8 @@ namespace Panel_QA_TestProgram
         private void calibrateBtn_Click(object sender, EventArgs e)
         {
             if (calibrationPath.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.CalibrateCamera(calibrationPath.Text);
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to a file";
             }
@@ -94,10 +83,9 @@ namespace Panel_QA_TestProgram
         private void calibrateNoOutputBtn_Click(object sender, EventArgs e)
         {
             if (calibrationPath.Text != "") {
-                newPanel = new MYPanel();
+
                 newPanel.CalibrateCameraNoOutput(calibrationPath.Text);
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to a file";
             }
@@ -106,10 +94,8 @@ namespace Panel_QA_TestProgram
         private void classifierBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "" && classifierBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.CascadeClassify(inputBox.Text, classifierBox.Text);
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to a file";
             }
@@ -118,9 +104,7 @@ namespace Panel_QA_TestProgram
         private void viewWithCalibrationBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.ShowImageWithCalibration(inputBox.Text, "My Image");
-                newPanel = null;
                 warningLabel.Text = "";
             } else {
                 warningLabel.Text = "You must enter a path to an image";
@@ -130,10 +114,8 @@ namespace Panel_QA_TestProgram
         private void calibrateFisheyeNoOutputBtn_Click(object sender, EventArgs e)
         {
             if (calibrationPath.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.CalibrateCameraFisheyeNoOutput(calibrationPath.Text);
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to a file";
             }
@@ -142,10 +124,8 @@ namespace Panel_QA_TestProgram
         private void drawOnBoardBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.DrawOnBoard(inputBox.Text);
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to an image";
             }
@@ -154,9 +134,7 @@ namespace Panel_QA_TestProgram
         private void batchCalibrateBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.BatchCalibrate(inputBox.Text);
-                newPanel = null;
                 warningLabel.Text = "";
             } else {
                 warningLabel.Text = "You must enter a path to a directory";
@@ -166,10 +144,8 @@ namespace Panel_QA_TestProgram
         private void featureDetectionBtn_Click(object sender, EventArgs e)
             {
             if (inputBox.Text != "" && featureTemplateBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.DetectFeatures(inputBox.Text, featureTemplateBox.Text, featuresCheckBox.Checked);
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to a file AND a template";
             }
@@ -178,10 +154,8 @@ namespace Panel_QA_TestProgram
         private void perspectiveBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel = new MYPanel();
                 newPanel.Perspective(inputBox.Text, comboBox1.SelectedItem.ToString());
                 warningLabel.Text = "";
-                newPanel = null;
             } else {
                 warningLabel.Text = "You must enter a path to an image";
             }
@@ -191,10 +165,8 @@ namespace Panel_QA_TestProgram
         {
             if (inputBox.Text != "")
             {
-                newPanel = new MYPanel();
                 newPanel.Rectification(inputBox.Text, comboBox1.SelectedItem.ToString());
                 warningLabel.Text = "";
-                newPanel = null;
             }
             else
             {
