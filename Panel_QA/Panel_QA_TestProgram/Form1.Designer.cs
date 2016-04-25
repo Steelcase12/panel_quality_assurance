@@ -29,6 +29,10 @@
         {
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.blueBtn = new System.Windows.Forms.Button();
+            this.redBtn = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.warningLabel = new System.Windows.Forms.Label();
             this.panelBtn = new System.Windows.Forms.Button();
             this.detectEdgesBtn = new System.Windows.Forms.Button();
             this.inputBox = new System.Windows.Forms.TextBox();
@@ -47,18 +51,24 @@
             this.label4 = new System.Windows.Forms.Label();
             this.calibrateNoOutputBtn = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.blueBtn = new System.Windows.Forms.Button();
-            this.redBtn = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.imagePath = new System.Windows.Forms.TextBox();
+            this.colorGroupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.detectTagBtn = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.warningLabel = new System.Windows.Forms.Label();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.colorGroupBox1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.blueBtn);
+            this.tabPage2.Controls.Add(this.redBtn);
+            this.tabPage2.Controls.Add(this.label2);
             this.tabPage2.Controls.Add(this.warningLabel);
             this.tabPage2.Controls.Add(this.panelBtn);
             this.tabPage2.Controls.Add(this.detectEdgesBtn);
@@ -80,14 +90,52 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(648, 250);
+            this.tabPage2.Size = new System.Drawing.Size(648, 318);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // blueBtn
+            // 
+            this.blueBtn.Location = new System.Drawing.Point(192, 131);
+            this.blueBtn.Name = "blueBtn";
+            this.blueBtn.Size = new System.Drawing.Size(75, 23);
+            this.blueBtn.TabIndex = 69;
+            this.blueBtn.Text = "Blue";
+            this.blueBtn.UseVisualStyleBackColor = true;
+            this.blueBtn.Click += new System.EventHandler(this.blueBtn_Click);
+            // 
+            // redBtn
+            // 
+            this.redBtn.Location = new System.Drawing.Point(111, 131);
+            this.redBtn.Name = "redBtn";
+            this.redBtn.Size = new System.Drawing.Size(75, 23);
+            this.redBtn.TabIndex = 68;
+            this.redBtn.Text = "Red";
+            this.redBtn.UseVisualStyleBackColor = true;
+            this.redBtn.Click += new System.EventHandler(this.redBtn_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 131);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(69, 13);
+            this.label2.TabIndex = 67;
+            this.label2.Text = "Detect Color:";
+            // 
+            // warningLabel
+            // 
+            this.warningLabel.AutoSize = true;
+            this.warningLabel.Location = new System.Drawing.Point(286, 220);
+            this.warningLabel.Name = "warningLabel";
+            this.warningLabel.Size = new System.Drawing.Size(56, 13);
+            this.warningLabel.TabIndex = 66;
+            this.warningLabel.Text = "StPaQuAs";
+            // 
             // panelBtn
             // 
-            this.panelBtn.Location = new System.Drawing.Point(401, 146);
+            this.panelBtn.Location = new System.Drawing.Point(273, 131);
             this.panelBtn.Name = "panelBtn";
             this.panelBtn.Size = new System.Drawing.Size(102, 23);
             this.panelBtn.TabIndex = 65;
@@ -97,7 +145,7 @@
             // 
             // detectEdgesBtn
             // 
-            this.detectEdgesBtn.Location = new System.Drawing.Point(509, 118);
+            this.detectEdgesBtn.Location = new System.Drawing.Point(509, 126);
             this.detectEdgesBtn.Name = "detectEdgesBtn";
             this.detectEdgesBtn.Size = new System.Drawing.Size(118, 23);
             this.detectEdgesBtn.TabIndex = 64;
@@ -107,14 +155,14 @@
             // 
             // inputBox
             // 
-            this.inputBox.Location = new System.Drawing.Point(114, 90);
+            this.inputBox.Location = new System.Drawing.Point(114, 98);
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 60;
             // 
             // viewWithCalibrationBtn
             // 
-            this.viewWithCalibrationBtn.Location = new System.Drawing.Point(509, 89);
+            this.viewWithCalibrationBtn.Location = new System.Drawing.Point(509, 97);
             this.viewWithCalibrationBtn.Name = "viewWithCalibrationBtn";
             this.viewWithCalibrationBtn.Size = new System.Drawing.Size(121, 23);
             this.viewWithCalibrationBtn.TabIndex = 63;
@@ -124,7 +172,7 @@
             // 
             // goBtn
             // 
-            this.goBtn.Location = new System.Drawing.Point(401, 88);
+            this.goBtn.Location = new System.Drawing.Point(401, 96);
             this.goBtn.Name = "goBtn";
             this.goBtn.Size = new System.Drawing.Size(102, 23);
             this.goBtn.TabIndex = 62;
@@ -135,7 +183,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 93);
+            this.label1.Location = new System.Drawing.Point(6, 101);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(64, 13);
             this.label1.TabIndex = 61;
@@ -153,7 +201,7 @@
             // 
             // pixelsToLengthBtn
             // 
-            this.pixelsToLengthBtn.Location = new System.Drawing.Point(401, 117);
+            this.pixelsToLengthBtn.Location = new System.Drawing.Point(401, 125);
             this.pixelsToLengthBtn.Name = "pixelsToLengthBtn";
             this.pixelsToLengthBtn.Size = new System.Drawing.Size(102, 23);
             this.pixelsToLengthBtn.TabIndex = 56;
@@ -245,45 +293,77 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.blueBtn);
-            this.tabPage1.Controls.Add(this.redBtn);
-            this.tabPage1.Controls.Add(this.label2);
+            this.tabPage1.Controls.Add(this.label3);
+            this.tabPage1.Controls.Add(this.imagePath);
+            this.tabPage1.Controls.Add(this.colorGroupBox1);
+            this.tabPage1.Controls.Add(this.detectTagBtn);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(648, 250);
+            this.tabPage1.Size = new System.Drawing.Size(648, 318);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // blueBtn
+            // label3
             // 
-            this.blueBtn.Location = new System.Drawing.Point(207, 23);
-            this.blueBtn.Name = "blueBtn";
-            this.blueBtn.Size = new System.Drawing.Size(75, 23);
-            this.blueBtn.TabIndex = 30;
-            this.blueBtn.Text = "Blue";
-            this.blueBtn.UseVisualStyleBackColor = true;
-            this.blueBtn.Click += new System.EventHandler(this.blueBtn_Click);
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(24, 24);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(64, 13);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Image Path:";
             // 
-            // redBtn
+            // imagePath
             // 
-            this.redBtn.Location = new System.Drawing.Point(126, 23);
-            this.redBtn.Name = "redBtn";
-            this.redBtn.Size = new System.Drawing.Size(75, 23);
-            this.redBtn.TabIndex = 29;
-            this.redBtn.Text = "Red";
-            this.redBtn.UseVisualStyleBackColor = true;
-            this.redBtn.Click += new System.EventHandler(this.redBtn_Click);
+            this.imagePath.Location = new System.Drawing.Point(94, 21);
+            this.imagePath.Name = "imagePath";
+            this.imagePath.Size = new System.Drawing.Size(350, 20);
+            this.imagePath.TabIndex = 4;
             // 
-            // label2
+            // colorGroupBox1
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 28);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(69, 13);
-            this.label2.TabIndex = 28;
-            this.label2.Text = "Detect Color:";
+            this.colorGroupBox1.Controls.Add(this.radioButton1);
+            this.colorGroupBox1.Controls.Add(this.radioButton2);
+            this.colorGroupBox1.Location = new System.Drawing.Point(94, 57);
+            this.colorGroupBox1.Name = "colorGroupBox1";
+            this.colorGroupBox1.Size = new System.Drawing.Size(126, 37);
+            this.colorGroupBox1.TabIndex = 3;
+            this.colorGroupBox1.TabStop = false;
+            this.colorGroupBox1.Text = "Color";
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Checked = true;
+            this.radioButton1.Location = new System.Drawing.Point(13, 14);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(45, 17);
+            this.radioButton1.TabIndex = 1;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "Red";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(65, 14);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(46, 17);
+            this.radioButton2.TabIndex = 2;
+            this.radioButton2.TabStop = true;
+            this.radioButton2.Text = "Blue";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            // 
+            // detectTagBtn
+            // 
+            this.detectTagBtn.Location = new System.Drawing.Point(242, 57);
+            this.detectTagBtn.Name = "detectTagBtn";
+            this.detectTagBtn.Size = new System.Drawing.Size(202, 37);
+            this.detectTagBtn.TabIndex = 0;
+            this.detectTagBtn.Text = "Detect Tag";
+            this.detectTagBtn.UseVisualStyleBackColor = true;
+            this.detectTagBtn.Click += new System.EventHandler(this.detectTagBtn_Click);
             // 
             // tabControl1
             // 
@@ -292,23 +372,14 @@
             this.tabControl1.Location = new System.Drawing.Point(4, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(656, 276);
+            this.tabControl1.Size = new System.Drawing.Size(656, 344);
             this.tabControl1.TabIndex = 0;
-            // 
-            // warningLabel
-            // 
-            this.warningLabel.AutoSize = true;
-            this.warningLabel.Location = new System.Drawing.Point(286, 220);
-            this.warningLabel.Name = "warningLabel";
-            this.warningLabel.Size = new System.Drawing.Size(56, 13);
-            this.warningLabel.TabIndex = 66;
-            this.warningLabel.Text = "StPaQuAs";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(663, 291);
+            this.ClientSize = new System.Drawing.Size(663, 368);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Panels Test Program";
@@ -316,6 +387,8 @@
             this.tabPage2.PerformLayout();
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            this.colorGroupBox1.ResumeLayout(false);
+            this.colorGroupBox1.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -326,9 +399,6 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Button blueBtn;
-        private System.Windows.Forms.Button redBtn;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.Button calibrateBtn;
         private System.Windows.Forms.Button loadCalibrationBtn;
@@ -348,6 +418,15 @@
         private System.Windows.Forms.Button detectEdgesBtn;
         private System.Windows.Forms.Button panelBtn;
         private System.Windows.Forms.Label warningLabel;
+        private System.Windows.Forms.Button blueBtn;
+        private System.Windows.Forms.Button redBtn;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button detectTagBtn;
+        private System.Windows.Forms.GroupBox colorGroupBox1;
+        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox imagePath;
     }
 }
 

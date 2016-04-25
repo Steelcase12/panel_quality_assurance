@@ -33,7 +33,7 @@ namespace Panel_QA_TestProgram
         private void redBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel.MaskWithColor(inputBox.Text, "red");
+                newPanel.MaskWithColor(inputBox.Text, "Red");
                 warningLabel.Text = "";
             } else {
                 warningLabel.Text = "You must enter a path to an image";
@@ -43,7 +43,7 @@ namespace Panel_QA_TestProgram
         private void blueBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel.MaskWithColor(inputBox.Text, "blue");
+                newPanel.MaskWithColor(inputBox.Text, "Blue");
                 warningLabel.Text = "";
             } else {
                 warningLabel.Text = "You must enter a path to an image";
@@ -144,6 +144,24 @@ namespace Panel_QA_TestProgram
             else
             {
                 warningLabel.Text = "You must enter a path to a file";
+            }
+        }
+
+        private void detectTagBtn_Click(object sender, EventArgs e)
+        {
+            if (imagePath.Text != "")
+            {
+                if (radioButton1.Checked)
+                {
+                    newPanel.MaskWithColor(imagePath.Text, radioButton1.Text);
+                } else if (radioButton2.Checked){
+                    newPanel.MaskWithColor(imagePath.Text, radioButton2.Text);
+                }
+                warningLabel.Text = "";
+            }
+            else
+            {
+                warningLabel.Text = "You must enter a path to an image";
             }
         }
     }
