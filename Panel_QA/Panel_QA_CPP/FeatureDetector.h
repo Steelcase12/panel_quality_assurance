@@ -121,9 +121,7 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &homography
 			if (rightPoint > full_scene.cols) rightPoint = full_scene.cols;
 			// Set the Region of Interest
 			roi = Rect(Point(leftPoint, topPoint), Point(rightPoint, bottomPoint));
-#ifdef DEBUG_FEATURES
-			ShowMessage("Top and Bottom Features Found.");
-#endif
+			ShowMessage("Top and bottom features found. \nBoundary successfully set.");
 		}
 		// Only top template found
 		else if (topPoint){
@@ -132,9 +130,7 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &homography
 			if (leftPoint < 0) leftPoint = 0;
 			// Set the Region of Interest
 			roi = Rect(Point(leftPoint, topPoint), Point(full_scene.rows, full_scene.cols));
-#ifdef DEBUG_FEATURES
-			ShowMessage("Only Top Feature Found.");
-#endif
+			ShowMessage("Only top feature found. \nThe boundary is set, but will be more refined if both features are found.");
 		}
 		// Only bottom template found
 		else if (bottomPoint){
@@ -143,14 +139,12 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &homography
 			if (rightPoint > full_scene.cols) rightPoint = full_scene.cols;
 			// Set the Region of Interest
 			roi = Rect(Point(0, 0), Point(rightPoint, bottomPoint));
-#ifdef DEBUG_FEATURES
-			ShowMessage("Only Bottom Feature Found.");
-#endif
+			ShowMessage("Only bottom feature found. \nThe boundary is set, but will be more refined if both features are found.");
 		}
 		Mat bound_image;
 		bound_image = full_scene(roi);
 		if (showImg){
-			namedWindow("Bound Image", CV_WINDOW_KEEPRATIO);
+			namedWindow("Bound Image", CV_WINDOW_NORMAL);
 			imshow("Bound Image", bound_image);
 		}
 	}

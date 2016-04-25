@@ -51,9 +51,11 @@ void detectAndDisplay(Mat image, string panel_cascade_name)
 	imshow("Classifier Result", image);
 }
 
-////////////////////////////////////////////////////////////
-// Helper functions for Computing Hough Line Intersections 
-////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// Helper functions for Computing Hough Line Intersections
+// Desctiption: These functions are called from Panel::CannyDetection().
+//  We did not write these so I'm not sure that I can provide much insight.  
+/////////////////////////////////////////////////////////////////////////////
 vector<Point2f> lineToPointPair(Vec2f line)
 {
 	vector<Point2f> points;
@@ -98,9 +100,14 @@ Point2f computeIntersect(Vec2f line1, Vec2f line2)
 	return intersect;
 }
 
-////////////////////////////////////////////////////////////
-// showimgcontours Description                
-////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+// showimgcontours() 
+// Description: This function finds the largest contour in original    
+//  and draws the minimum bounding rectangle on the same image. As
+//  you can see the original image is passed by reference so the 
+//  calling function receieves the modified image on which the 
+//  minimum area rectangle is drawn.
+////////////////////////////////////////////////////////////////////
 void showimgcontours(Mat &threshedimg, Mat &original)
 {
 	vector<vector<Point> > contours;
@@ -143,10 +150,13 @@ void showimgcontours(Mat &threshedimg, Mat &original)
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////
-// onMouseColor() Description
-//	On click listener to display the HSV value of the point clicked
-/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+// onMouseColor() 
+// Description: On click listener to display the HSV value of the point clicked.
+//  This callback can be set with the following function if you have need to
+//  debug HSV colors of an image:
+//  setMouseCallback(windowTitle, onMouseColor, static_cast<void*>(&m_pPanel));
+/////////////////////////////////////////////////////////////////////////////////
 static void onMouseColor(int event, int x, int y, int f, void *ptr)
 {
 	if (event == EVENT_LBUTTONDOWN)
@@ -157,22 +167,30 @@ static void onMouseColor(int event, int x, int y, int f, void *ptr)
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////
-// onMouseLocation() Description
-// On click listener to display the location of the point clicked
-/////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+// onMouseLocation() 
+// Description: On click listener to display the location of the point 
+//  clicked. This callback can be set with the following function if 
+//  you have need to debug (x,y) locations of an image.
+//  setMouseCallback("Original", onMouseLocation, static_cast<void*>(&m_pPanel));
+///////////////////////////////////////////////////////////////////////////////////
 static void onMouseLocation(int event, int x, int y, int f, void *ptr)
 {
 	if (event == EVENT_LBUTTONDOWN)
 	{
 		Panel *pPanel = static_cast<Panel*>(ptr);
 		Point clickPoint(x, y);
-		pPanel->PointLocation(clickPoint);
+		ShowMessage("Click Location: (" + to_string(clickPoint.x) + "," + to_string(clickPoint.y) + ")");
 	}
 }
 
-// Function to display the specified image and add an 
-//	on click listener (onMouse())
+/////////////////////////////////////////////////////////////////////////
+// Panel::ShowImage()
+// Description: Function mainly used to set the member variable m_Image.
+// The parameter sImgPath is the full path to the image. The function
+// can also be used to display the specified image if the parameter
+// showImg is set to true.
+/////////////////////////////////////////////////////////////////////////
 bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 {
 	// read specified image
@@ -189,10 +207,6 @@ bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 	// Size dim = Size(750, int(m_pPanel->m_Image.rows * r));
 	// resize(m_pPanel->m_Image, m_pPanel->m_Image, dim);
 
-	// Find the ROI
-	// const Rect roi(0,0,650,m_pPanel->m_Image.rows);
-	// m_pPanel->m_Image(roi);
-
 	// Show the image
 	if (showImg){
 		namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
@@ -204,8 +218,10 @@ bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 	return true;
 }
 
-// Function to display the specified image and add an 
-//	on click listener (onMouse())
+////////////////////////////////////////////////////////////////////
+// Panel::ShowImageWithCalibration
+// Description: Nick add description here
+////////////////////////////////////////////////////////////////////
 bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat calibratedImg, bool showImg)
 {
 	// read specified image
@@ -245,7 +261,8 @@ bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat ca
 }
 
 /////////////////////////////////////////////////////////////////////////
-// Panel::BatchCalibrate() Description
+// Panel::BatchCalibrate() 
+// Description: Nick add description here.
 // Must have folder named Calibrated_Folder prexisting in build folder 
 /////////////////////////////////////////////////////////////////////////
 void Panel::BatchCalibrate(string sdirPath)
@@ -277,9 +294,13 @@ void Panel::BatchCalibrate(string sdirPath)
 	cout << "BATCHED";
 }
 
-///////////////////////////////////////////////////////
-// Panel::ColorName() Description
-///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+// Panel::ColorName() 
+// Description: This function analyzes the BGR color that is
+//  passed in, converts it to HSV then returns the string of 
+//  the color that most closely matches it. It only caller is
+//  Panel::ColorAtPoint()
+/////////////////////////////////////////////////////////////////
 string Panel::ColorName(Vec3b color)
 {
 	uchar hue = color.val[0];
@@ -307,9 +328,14 @@ string Panel::ColorName(Vec3b color)
 	return "Unknown";
 }
 
-///////////////////////////////////////////////////////
-// Panel::ColorAtPoint() Description
-///////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+// Panel::ColorAtPoint() 
+// Description: This function analyzes the color at the
+//  point passed in and shows a message box containing
+//  the RGB color, HSV color, and string of the closest
+//  matching color in the ColorName() function. This 
+//  functions only caller is OnMouseColor()
+//////////////////////////////////////////////////////////
 void Panel::ColorAtPoint(Point point)
 {
 	Mat HSV;
@@ -331,29 +357,6 @@ void Panel::ColorAtPoint(Point point)
 	// Display the color strings
 	ShowMessage("Point: (" + to_string(point.x) + "," + to_string(point.y) +
 		") \nRGB Value: " + RGBcolorStr + "\nHSV Value: " + HSVcolorStr + "\nColor: " + m_pPanel->ColorName(HSVpix));
-}
-
-///////////////////////////////////////////////////////
-// Panel::PointLocation() Description
-///////////////////////////////////////////////////////
-void Panel::PointLocation(Point point)
-{
-	Point corner_point;
-	corner_point.x = (int)m_pPanel->corners[9].x;
-	corner_point.y = (int)m_pPanel->corners[9].y;
-	double distance = norm(corner_point - point);
-	
-	line(m_pPanel->m_Image, point, corner_point, CV_RGB(255, 0, 0), 2);
-	
-	// .2932 cm/pixels
-	cout << "Point1: (" + to_string(point.x) + "," + to_string(point.y) + ") " + 
-		"\nPoint2: (" + to_string(corner_point.x) + "," + to_string(corner_point.y) + ") " +
-		"\nDistance in pixels: " + to_string(distance) +
-		"\nDistance in cm: " + to_string(distance * .2932) +
-		"\n\n";
-
-	namedWindow("Original", WINDOW_AUTOSIZE);
-	imshow("Original", m_pPanel->m_Image);
 }
 
 ///////////////////////////////////////////////////////
@@ -585,9 +588,16 @@ void Panel::FindContours(Mat image)
 	imshow("Largest Contour", image);
 }
 
-///////////////////////////////////////////////////////
-// Panel::DetectBlob() Description
-///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// Panel::DetectBlob() 
+// Description: This is the function which finds the largest blob in an 
+//  image. It is used in this application to locate the tag after the 
+//  InRange function is applied to the original image. It has no return 
+//  value but displays a message indicating whether or not there was a 
+//  blob of size specified in the funtion definition below. This value 
+//  may need to be adjusted based on the camera angle and distance to the
+//  part. 
+/////////////////////////////////////////////////////////////////////////////
 void Panel::DetectBlob(Mat image)
 {
 	Mat grayImage, dilatedEroded, dilated, blurred;
@@ -668,26 +678,22 @@ void Panel::CascadeClassify(string sImgPath, string sClassPath)
 	detectAndDisplay(m_pPanel->m_Image, sClassPath);
 }
 
-///////////////////////////////////////////////////////
-// Panel::DetectFeatures() Description
-///////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////
+// Panel::DetectFeatures()
+// Description: This is the function which finds boundaries that contain
+//	the part we are looking for using BRISK feature detector. If one or
+//  two features are found the return value is true. If no features are 
+//  found, the return value is false. More information on feature 
+//  detection can be found in FeatureDetector.h
+/////////////////////////////////////////////////////////////////////////////
 void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
 {
 	if (!ShowImage(scenePath, "Scene", false))
 		return;
 
-	// Mat calibrated;
-	// ShowImageWithCalibration(scenePath, "Calibrated", calibrated, false);
-
 	MyFeatureDetector detector;
 	if (!detector.Detect(m_pPanel->m_Image, objPath, m_roi, m_Homography, exceedsBorder, true))
 		return;
-
-	Mat boundImg;
-	boundImg = m_pPanel->m_Image(m_roi);
-	// FindContours(boundImg);
-	// Canny Edge and Hough Line Detection
-	// Mat edges = CannyDetection(boundImg, true);
 }
 
 ///////////////////////////////////////////////////////
@@ -700,7 +706,7 @@ void Panel::DrawOnBoard(string sImgPath)
 	namedWindow("Original", WINDOW_AUTOSIZE);
 	imshow("Original", m_pPanel->m_Image);
 
-	setMouseCallback("Original", onMouseLocation, static_cast<void*>(&m_pPanel));
+	// setMouseCallback("Original", onMouseLocation, static_cast<void*>(&m_pPanel));
 
 	bool found = false;
 
