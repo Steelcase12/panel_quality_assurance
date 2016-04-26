@@ -1,7 +1,7 @@
 // This is the main DLL file.
 
 #define DEBUG_CANNY 1
-// #define DEBUG_COLOR_MASK 1
+#define DEBUG_COLOR_MASK 1
 // #define DEBUG_BLOB_DETECTION 1
 
 #include "include.h"
@@ -378,11 +378,11 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	cvtColor(m_pPanel->m_Image, HSV, CV_BGR2HSV);
 	// The inRange() function will create a mask with 
 	// only the pixels of color in the range specified
-	if (color == "blue")
+	if (color == "Blue")
 	{
 		inRange(HSV, Scalar(105, 100, 30), Scalar(131, 255, 255), Mask);
 	}
-	else if (color == "red")
+	else if (color == "Red")
 	{
 		inRange(HSV, Scalar(0, 100, 30), Scalar(10, 255, 255), Mask1);
 		inRange(HSV, Scalar(160, 100, 30), Scalar(180, 255, 255), Mask2);
@@ -421,7 +421,10 @@ void Panel::MaskWithColor(string sImgPath, string color)
 			bitwise_or(Mask1, Mask2, Mask);
 
 #ifdef DEBUG_COLOR_MASK
-			if (waitKey(30) == 27)
+			m_pPanel->m_Image.copyTo(MaskResult, Mask);
+			namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
+			imshow("Mask Result", MaskResult);
+			if (waitKey(10) == 27)
 				break;
 		}
 #endif
@@ -430,7 +433,7 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
 	imshow("Mask Result", MaskResult);
 
-	if (color == "red" || color == "blue")
+	if (color == "Red" || color == "Blue")
 		DetectBlob(MaskResult);
 }
 
