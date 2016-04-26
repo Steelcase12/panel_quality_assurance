@@ -29,9 +29,12 @@
         {
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.settingsLabel = new System.Windows.Forms.Label();
             this.blueBtn = new System.Windows.Forms.Button();
             this.redBtn = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.settingsBtn = new System.Windows.Forms.Button();
+            this.settingsInput = new System.Windows.Forms.TextBox();
             this.warningLabel = new System.Windows.Forms.Label();
             this.panelBtn = new System.Windows.Forms.Button();
             this.detectEdgesBtn = new System.Windows.Forms.Button();
@@ -51,16 +54,13 @@
             this.label4 = new System.Windows.Forms.Label();
             this.calibrateNoOutputBtn = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label3 = new System.Windows.Forms.Label();
             this.imagePath = new System.Windows.Forms.TextBox();
             this.colorGroupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.detectTagBtn = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.label3 = new System.Windows.Forms.Label();
-            this.settingsInput = new System.Windows.Forms.TextBox();
-            this.settingsBtn = new System.Windows.Forms.Button();
+            this.tagLabel = new System.Windows.Forms.Label();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.colorGroupBox1.SuspendLayout();
@@ -69,12 +69,12 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.settingsLabel);
             this.tabPage2.Controls.Add(this.blueBtn);
             this.tabPage2.Controls.Add(this.redBtn);
             this.tabPage2.Controls.Add(this.label2);
             this.tabPage2.Controls.Add(this.settingsBtn);
             this.tabPage2.Controls.Add(this.settingsInput);
-            this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.warningLabel);
             this.tabPage2.Controls.Add(this.panelBtn);
             this.tabPage2.Controls.Add(this.detectEdgesBtn);
@@ -96,10 +96,19 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(648, 318);
+            this.tabPage2.Size = new System.Drawing.Size(648, 282);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // settingsLabel
+            // 
+            this.settingsLabel.AutoSize = true;
+            this.settingsLabel.Location = new System.Drawing.Point(6, 224);
+            this.settingsLabel.Name = "settingsLabel";
+            this.settingsLabel.Size = new System.Drawing.Size(67, 13);
+            this.settingsLabel.TabIndex = 70;
+            this.settingsLabel.Text = "Settings File:";
             // 
             // blueBtn
             // 
@@ -130,10 +139,27 @@
             this.label2.TabIndex = 67;
             this.label2.Text = "Detect Color:";
             // 
+            // settingsBtn
+            // 
+            this.settingsBtn.Location = new System.Drawing.Point(406, 219);
+            this.settingsBtn.Name = "settingsBtn";
+            this.settingsBtn.Size = new System.Drawing.Size(100, 23);
+            this.settingsBtn.TabIndex = 69;
+            this.settingsBtn.Text = "Read Settings";
+            this.settingsBtn.UseVisualStyleBackColor = true;
+            this.settingsBtn.Click += new System.EventHandler(this.settingsBtn_Click);
+            // 
+            // settingsInput
+            // 
+            this.settingsInput.Location = new System.Drawing.Point(111, 221);
+            this.settingsInput.Name = "settingsInput";
+            this.settingsInput.Size = new System.Drawing.Size(281, 20);
+            this.settingsInput.TabIndex = 68;
+            // 
             // warningLabel
             // 
             this.warningLabel.AutoSize = true;
-            this.warningLabel.Location = new System.Drawing.Point(286, 220);
+            this.warningLabel.Location = new System.Drawing.Point(270, 260);
             this.warningLabel.Name = "warningLabel";
             this.warningLabel.Size = new System.Drawing.Size(56, 13);
             this.warningLabel.TabIndex = 66;
@@ -300,7 +326,7 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.label3);
+            this.tabPage1.Controls.Add(this.tagLabel);
             this.tabPage1.Controls.Add(this.imagePath);
             this.tabPage1.Controls.Add(this.colorGroupBox1);
             this.tabPage1.Controls.Add(this.detectTagBtn);
@@ -311,15 +337,6 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 24);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(64, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "Image Path:";
             // 
             // imagePath
             // 
@@ -379,40 +396,23 @@
             this.tabControl1.Location = new System.Drawing.Point(4, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(656, 344);
+            this.tabControl1.Size = new System.Drawing.Size(656, 308);
             this.tabControl1.TabIndex = 0;
             // 
-            // label3
+            // tagLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 228);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(67, 13);
-            this.label3.TabIndex = 67;
-            this.label3.Text = "Settings File:";
-            // 
-            // settingsInput
-            // 
-            this.settingsInput.Location = new System.Drawing.Point(114, 221);
-            this.settingsInput.Name = "settingsInput";
-            this.settingsInput.Size = new System.Drawing.Size(281, 20);
-            this.settingsInput.TabIndex = 68;
-            // 
-            // settingsBtn
-            // 
-            this.settingsBtn.Location = new System.Drawing.Point(401, 219);
-            this.settingsBtn.Name = "settingsBtn";
-            this.settingsBtn.Size = new System.Drawing.Size(100, 23);
-            this.settingsBtn.TabIndex = 69;
-            this.settingsBtn.Text = "Read Settings";
-            this.settingsBtn.UseVisualStyleBackColor = true;
-            this.settingsBtn.Click += new System.EventHandler(this.settingsBtn_Click);
+            this.tagLabel.AutoSize = true;
+            this.tagLabel.Location = new System.Drawing.Point(6, 24);
+            this.tagLabel.Name = "tagLabel";
+            this.tagLabel.Size = new System.Drawing.Size(64, 13);
+            this.tagLabel.TabIndex = 5;
+            this.tagLabel.Text = "Image Path:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(663, 316);
+            this.ClientSize = new System.Drawing.Size(663, 324);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Panels Test Program";
@@ -458,11 +458,11 @@
         private System.Windows.Forms.GroupBox colorGroupBox1;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox imagePath;
         private System.Windows.Forms.TextBox settingsInput;
-        private System.Windows.Forms.Label settingsLabel;
         private System.Windows.Forms.Button settingsBtn;
+        private System.Windows.Forms.Label settingsLabel;
+        private System.Windows.Forms.Label tagLabel;
     }
 }
 
