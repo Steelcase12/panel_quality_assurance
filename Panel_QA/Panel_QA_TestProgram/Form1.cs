@@ -146,5 +146,15 @@ namespace Panel_QA_TestProgram
                 warningLabel.Text = "You must enter a path to a file";
             }
         }
+
+        private void settingsBtn_Click(object sender, EventArgs e)
+        {
+            if (settingsBtn.Text != "") {
+                newPanel.ReadSettings(settingsInput.Text);
+                warningLabel.Text = "";
+            } else {
+                warningLabel.Text = "You must enter a path to a settings file";
+            }
+        }
     }
 }

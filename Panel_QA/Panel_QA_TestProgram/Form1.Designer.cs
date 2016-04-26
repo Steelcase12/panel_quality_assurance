@@ -29,6 +29,7 @@
         {
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.warningLabel = new System.Windows.Forms.Label();
             this.panelBtn = new System.Windows.Forms.Button();
             this.detectEdgesBtn = new System.Windows.Forms.Button();
             this.inputBox = new System.Windows.Forms.TextBox();
@@ -51,7 +52,9 @@
             this.redBtn = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.warningLabel = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.settingsInput = new System.Windows.Forms.TextBox();
+            this.settingsBtn = new System.Windows.Forms.Button();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -59,6 +62,9 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.settingsBtn);
+            this.tabPage2.Controls.Add(this.settingsInput);
+            this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.warningLabel);
             this.tabPage2.Controls.Add(this.panelBtn);
             this.tabPage2.Controls.Add(this.detectEdgesBtn);
@@ -80,10 +86,19 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(648, 250);
+            this.tabPage2.Size = new System.Drawing.Size(648, 275);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // warningLabel
+            // 
+            this.warningLabel.AutoSize = true;
+            this.warningLabel.Location = new System.Drawing.Point(284, 259);
+            this.warningLabel.Name = "warningLabel";
+            this.warningLabel.Size = new System.Drawing.Size(56, 13);
+            this.warningLabel.TabIndex = 66;
+            this.warningLabel.Text = "StPaQuAs";
             // 
             // panelBtn
             // 
@@ -107,16 +122,17 @@
             // 
             // inputBox
             // 
-            this.inputBox.Location = new System.Drawing.Point(114, 90);
+            this.inputBox.Location = new System.Drawing.Point(111, 90);
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 60;
+            this.inputBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\Glue_Booth\\img3.jpg";
             // 
             // viewWithCalibrationBtn
             // 
-            this.viewWithCalibrationBtn.Location = new System.Drawing.Point(509, 89);
+            this.viewWithCalibrationBtn.Location = new System.Drawing.Point(509, 87);
             this.viewWithCalibrationBtn.Name = "viewWithCalibrationBtn";
-            this.viewWithCalibrationBtn.Size = new System.Drawing.Size(121, 23);
+            this.viewWithCalibrationBtn.Size = new System.Drawing.Size(118, 23);
             this.viewWithCalibrationBtn.TabIndex = 63;
             this.viewWithCalibrationBtn.Text = "View With Calibration";
             this.viewWithCalibrationBtn.UseVisualStyleBackColor = true;
@@ -124,9 +140,9 @@
             // 
             // goBtn
             // 
-            this.goBtn.Location = new System.Drawing.Point(401, 88);
+            this.goBtn.Location = new System.Drawing.Point(401, 87);
             this.goBtn.Name = "goBtn";
-            this.goBtn.Size = new System.Drawing.Size(102, 23);
+            this.goBtn.Size = new System.Drawing.Size(105, 23);
             this.goBtn.TabIndex = 62;
             this.goBtn.Text = "Show Image";
             this.goBtn.UseVisualStyleBackColor = true;
@@ -143,9 +159,9 @@
             // 
             // batchCalibrateBtn
             // 
-            this.batchCalibrateBtn.Location = new System.Drawing.Point(506, 49);
+            this.batchCalibrateBtn.Location = new System.Drawing.Point(509, 45);
             this.batchCalibrateBtn.Name = "batchCalibrateBtn";
-            this.batchCalibrateBtn.Size = new System.Drawing.Size(102, 23);
+            this.batchCalibrateBtn.Size = new System.Drawing.Size(118, 27);
             this.batchCalibrateBtn.TabIndex = 59;
             this.batchCalibrateBtn.Text = "Batch Calibrate";
             this.batchCalibrateBtn.UseVisualStyleBackColor = true;
@@ -155,7 +171,7 @@
             // 
             this.pixelsToLengthBtn.Location = new System.Drawing.Point(401, 117);
             this.pixelsToLengthBtn.Name = "pixelsToLengthBtn";
-            this.pixelsToLengthBtn.Size = new System.Drawing.Size(102, 23);
+            this.pixelsToLengthBtn.Size = new System.Drawing.Size(105, 23);
             this.pixelsToLengthBtn.TabIndex = 56;
             this.pixelsToLengthBtn.Text = "Pixels to Length";
             this.pixelsToLengthBtn.UseVisualStyleBackColor = true;
@@ -165,7 +181,7 @@
             // 
             this.calibrateBtn.Location = new System.Drawing.Point(399, 19);
             this.calibrateBtn.Name = "calibrateBtn";
-            this.calibrateBtn.Size = new System.Drawing.Size(102, 23);
+            this.calibrateBtn.Size = new System.Drawing.Size(107, 23);
             this.calibrateBtn.TabIndex = 50;
             this.calibrateBtn.Text = "Calibrate";
             this.calibrateBtn.UseVisualStyleBackColor = true;
@@ -173,9 +189,9 @@
             // 
             // loadCalibrationBtn
             // 
-            this.loadCalibrationBtn.Location = new System.Drawing.Point(398, 47);
+            this.loadCalibrationBtn.Location = new System.Drawing.Point(401, 45);
             this.loadCalibrationBtn.Name = "loadCalibrationBtn";
-            this.loadCalibrationBtn.Size = new System.Drawing.Size(98, 27);
+            this.loadCalibrationBtn.Size = new System.Drawing.Size(105, 27);
             this.loadCalibrationBtn.TabIndex = 55;
             this.loadCalibrationBtn.Text = "Load Calibration";
             this.loadCalibrationBtn.UseVisualStyleBackColor = true;
@@ -216,6 +232,7 @@
             this.featureTemplateBox.Name = "featureTemplateBox";
             this.featureTemplateBox.Size = new System.Drawing.Size(281, 20);
             this.featureTemplateBox.TabIndex = 51;
+            this.featureTemplateBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\Glue_Booth\\qr_steelcase.png";
             // 
             // calibrationPath
             // 
@@ -235,9 +252,9 @@
             // 
             // calibrateNoOutputBtn
             // 
-            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(506, 18);
+            this.calibrateNoOutputBtn.Location = new System.Drawing.Point(509, 19);
             this.calibrateNoOutputBtn.Name = "calibrateNoOutputBtn";
-            this.calibrateNoOutputBtn.Size = new System.Drawing.Size(121, 23);
+            this.calibrateNoOutputBtn.Size = new System.Drawing.Size(118, 23);
             this.calibrateNoOutputBtn.TabIndex = 47;
             this.calibrateNoOutputBtn.Text = "Calibrate No Output";
             this.calibrateNoOutputBtn.UseVisualStyleBackColor = true;
@@ -292,23 +309,40 @@
             this.tabControl1.Location = new System.Drawing.Point(4, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(656, 276);
+            this.tabControl1.Size = new System.Drawing.Size(656, 301);
             this.tabControl1.TabIndex = 0;
             // 
-            // warningLabel
+            // label3
             // 
-            this.warningLabel.AutoSize = true;
-            this.warningLabel.Location = new System.Drawing.Point(286, 220);
-            this.warningLabel.Name = "warningLabel";
-            this.warningLabel.Size = new System.Drawing.Size(56, 13);
-            this.warningLabel.TabIndex = 66;
-            this.warningLabel.Text = "StPaQuAs";
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 228);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(67, 13);
+            this.label3.TabIndex = 67;
+            this.label3.Text = "Settings File:";
+            // 
+            // settingsInput
+            // 
+            this.settingsInput.Location = new System.Drawing.Point(114, 221);
+            this.settingsInput.Name = "settingsInput";
+            this.settingsInput.Size = new System.Drawing.Size(281, 20);
+            this.settingsInput.TabIndex = 68;
+            // 
+            // settingsBtn
+            // 
+            this.settingsBtn.Location = new System.Drawing.Point(401, 219);
+            this.settingsBtn.Name = "settingsBtn";
+            this.settingsBtn.Size = new System.Drawing.Size(100, 23);
+            this.settingsBtn.TabIndex = 69;
+            this.settingsBtn.Text = "Read Settings";
+            this.settingsBtn.UseVisualStyleBackColor = true;
+            this.settingsBtn.Click += new System.EventHandler(this.settingsBtn_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(663, 291);
+            this.ClientSize = new System.Drawing.Size(663, 316);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Panels Test Program";
@@ -348,6 +382,9 @@
         private System.Windows.Forms.Button detectEdgesBtn;
         private System.Windows.Forms.Button panelBtn;
         private System.Windows.Forms.Label warningLabel;
+        private System.Windows.Forms.TextBox settingsInput;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button settingsBtn;
     }
 }
 

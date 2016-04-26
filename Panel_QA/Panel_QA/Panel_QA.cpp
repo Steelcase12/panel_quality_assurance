@@ -96,6 +96,13 @@ void MYPanel::DetectFeatures(System::String^ scenePath, System::String^ objPath,
 	panel->DetectFeatures(strScenePath, strObjPath, exceedsBorder);
 }
 
+void MYPanel::ReadSettings(System::String^ sFilePath)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strScenePath = convert->myStringToChar(sFilePath);
+	panel->ReadSettings(strScenePath);
+}
+
 // ++++++++++++ MYConversion Class ++++++++++++ 
 MYConversion::MYConversion() {}
 

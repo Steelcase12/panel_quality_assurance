@@ -24,10 +24,11 @@ public:
 	~MyFeatureDetector();
 	void SlidingWindow(Mat object);
 	void FindObject(Mat objectP, Mat scene, int minHessian, Scalar color, int row, int col);
-	bool Detect(Mat scene, string obj, Rect &roi, Mat &homography, bool exceedsBorder, bool showImg = true);
+	bool Detect(Mat scene, string obj, Rect &roi, Mat &transmatrix, bool exceedsBorder, bool showImg = true);
 private:
 	Mat full_scene, outImg;
 	Mat m_Homography;
+	Mat m_Transmtx;
 	// Top and Bottom points of new ROI
 	int topPoint = 0;
 	int bottomPoint = 0;
@@ -51,7 +52,7 @@ MyFeatureDetector::~MyFeatureDetector()
 {
 }
 
-bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &homography, bool exceedsBorder, bool showImg)
+bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &transmatrix, bool exceedsBorder, bool showImg)
 {
 	// Load images
 	full_scene = scene;
@@ -79,8 +80,8 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &homography
 	col_step = n_rows;
 	SlidingWindow(object);
 	// Pass back the homography that we found in FindObject()
-	if (!m_Homography.empty())
-		homography = m_Homography;
+	if (!m_Transmtx.empty())
+		transmatrix = m_Transmtx;
 	// Uncomment to only find a single object in the scene
 	// FindObject(object, scene, 100, Scalar(255, 0, 0), 0, 0);
 
@@ -375,6 +376,9 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 		// TODO: Use this function in Panel.cpp with the homography that we find
 		if (!m_Homography.empty())
 			perspectiveTransform(obj_corners, scene_corners, m_Homography);
+
+		if (row == 0)
+			m_Transmtx = getPerspectiveTransform(obj_corners, scene_corners);
 
 		//-- Draw lines between the corners (the mapped object in the scene - image_2 )
 #ifdef DEBUG_FEATURES

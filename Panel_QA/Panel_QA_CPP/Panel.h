@@ -35,12 +35,17 @@ public:
 	void CascadeClassify(string imgPath, string classPath);
 	void BatchCalibrate(string dirPath);	
 	void DetectFeatures(string scenePath, string objPath, bool exceedsBorder);
+	void ReadSettings(string sFilePath);
 private:
 	Panel *m_pPanel;
 	Rect m_roi;
 	Mat m_Image;
 	Mat m_Homography;
-	// This is just for testing distance measurement
+	Mat m_Transmtx;
+	int m_low = 105, m_high = 255;
+	int m_sigmaX = 10, m_sigmaY = 2;
+	int m_cannyLow = 85, m_ratio = 3, m_aperture = 3;
+	int m_houghLength = 155;
 	vector<Point2f> corners;
 	Mat CannyDetection(Mat image, bool showImg = true);
 	void FindContours(Mat image);
