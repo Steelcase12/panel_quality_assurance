@@ -133,7 +133,7 @@
             this.featureImageBox.Name = "featureImageBox";
             this.featureImageBox.Size = new System.Drawing.Size(281, 20);
             this.featureImageBox.TabIndex = 71;
-            this.featureImageBox.Text = "..\\..\\..\\..\\resources\\Glue_Booth\\img3.png";
+            this.featureImageBox.Text = "..\\..\\..\\..\\resources\\Glue_Booth\\img3.jpg";
             // 
             // settingsLabel
             // 
