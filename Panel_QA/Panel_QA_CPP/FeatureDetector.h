@@ -389,8 +389,8 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 		if (row == 0)
 		{
 			// Get pixels to lenth conversion
-			float height = norm(scene_corners[1] - scene_corners[2]);
-			float width = norm(scene_corners[0] - scene_corners[1]);
+			float height = (float)norm(scene_corners[1] - scene_corners[2]);
+			float width = (float)norm(scene_corners[0] - scene_corners[1]);
 			float ratio = m_FeatureWidthCM / m_FeatureHeightCM;
 			// Conversion in Pixels/Centimeter
 			// The height and width of the feature in cm's

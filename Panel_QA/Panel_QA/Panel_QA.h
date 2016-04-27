@@ -21,11 +21,10 @@ namespace MYopencv {
 	public:
 		MYPanel();
 		~MYPanel();
-		void MeasureDimensions(System::String^ imgPath);
 		void ShowImage(System::String^ imgPath, System::String^ windowTitle);
 		void ShowImageWithCalibration(System::String^ imgPath, System::String^ windowTitle);
 		void MaskWithColor(System::String^ imgPath, System::String^ color);
-		void DetectEdges(System::String^ imgPath);
+		void DetectEdges(System::String^ imgPath, bool debug);
 		void PixelsToLength(System::String^ imgPath);
 		void CalibrateCamera(System::String^ filePath);
 		void CalibrateCameraNoOutput(System::String^ filePath);
