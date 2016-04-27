@@ -1,7 +1,7 @@
 // This is the main DLL file.
 // TODO: Add dialog options for these
 // #define DEBUG_CANNY 1
-// #define DEBUG_COLOR_MASK 1
+ #define DEBUG_COLOR_MASK 1
 // #define DEBUG_BLOB_DETECTION 1
 
 #include "include.h"
@@ -389,20 +389,19 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	}
 	else if (color == "Red")
 	{
-		inRange(HSV, Scalar(0, 100, 30), Scalar(10, 255, 255), Mask1);
-		inRange(HSV, Scalar(160, 100, 30), Scalar(180, 255, 255), Mask2);
+		inRange(HSV, Scalar(0, 100, 30), Scalar(6, 255, 255), Mask1);
+		inRange(HSV, Scalar(165, 100, 30), Scalar(179, 255, 255), Mask2);
 		bitwise_or(Mask1, Mask2, Mask);
 	}
 	else if (color == "panel")
 	{
-		FindContours(image);
 		// test code
 		int h1Lo = 0, s1Lo = 55, v1Lo = 115;
 		int h1Hi = 20, s1Hi = 120, v1Hi = 210;
 		int h2Lo = 0, s2Lo = 0, v2Lo = 0;
 		int h2Hi = 0, s2Hi = 0, v2Hi = 0;
 #ifdef DEBUG_COLOR_MASK
-		namedWindow("InRange Tester", CV_WINDOW_AUTOSIZE);
+		namedWindow("InRange Tester", CV_WINDOW_NORMAL);
 		cvCreateTrackbar("Hue Lo 1:", "InRange Tester", &h1Lo, 180);
 		cvCreateTrackbar("Hue Hi 1:", "InRange Tester", &h1Hi, 180);
 		cvCreateTrackbar("Sat Lo 1", "InRange Tester", &s1Lo, 255);
@@ -477,83 +476,83 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 	Mat eroded, dilated, thresh, blurredThresh, edges, edgesGray;
 	vector<Vec2f> lines;
 
-	threshold(greyImage, thresh, m_low, 255, THRESH_BINARY);
-	erode(thresh, eroded, Mat());
-	dilate(eroded, dilated, Mat());
-	GaussianBlur(thresh, blurredThresh, Size(7, 7), m_sigmaX, m_sigmaY);
-	Canny(blurredThresh, edges, m_cannyLow, m_cannyLow*m_ratio, 3);
-	HoughLines(edges, lines, 1, CV_PI / 180, m_houghLength, 0, 0);
+		threshold(greyImage, thresh, m_low, 255, THRESH_BINARY);
+		erode(thresh, eroded, Mat());
+		dilate(eroded, dilated, Mat());
+		GaussianBlur(thresh, blurredThresh, Size(7, 7), m_sigmaX, m_sigmaY);
+		Canny(blurredThresh, edges, m_cannyLow, m_cannyLow*m_ratio, 3);
+		HoughLines(edges, lines, 1, CV_PI / 180, m_houghLength, 0, 0);
 
-	cvtColor(edges, edgesGray, CV_GRAY2BGR);
-	for (size_t i = 0; i < lines.size(); i++)
-	{
-		float rho = lines[i][0], theta = lines[i][1];
-		Point pt1, pt2;
-		double a = cos(theta), b = sin(theta);
-		double x0 = a*rho, y0 = b*rho;
-		pt1.x = cvRound(x0 + 1000 * (-b));
-		pt1.y = cvRound(y0 + 1000 * (a));
-		pt2.x = cvRound(x0 - 1000 * (-b));
-		pt2.y = cvRound(y0 - 1000 * (a));
-		line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
-	}
-
-	////////////////////////////////////////////////////////
-	// Compute the intersection from the lines detected
-	////////////////////////////////////////////////////////
-	vector<Point2f> intersections;
-	for (size_t i = 0; i < lines.size(); i++)
-	{
-		for (size_t j = 0; j < lines.size(); j++)
+		cvtColor(edges, edgesGray, CV_GRAY2BGR);
+		for (size_t i = 0; i < lines.size(); i++)
 		{
-			Vec2f line1 = lines[i];
-			Vec2f line2 = lines[j];
-			if (acceptLinePair(line1, line2, (float)CV_PI / 32))
+			float rho = lines[i][0], theta = lines[i][1];
+			Point pt1, pt2;
+			double a = cos(theta), b = sin(theta);
+			double x0 = a*rho, y0 = b*rho;
+			pt1.x = cvRound(x0 + 1000 * (-b));
+			pt1.y = cvRound(y0 + 1000 * (a));
+			pt2.x = cvRound(x0 - 1000 * (-b));
+			pt2.y = cvRound(y0 - 1000 * (a));
+			line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
+		}
+
+		////////////////////////////////////////////////////////
+		// Compute the intersection from the lines detected
+		////////////////////////////////////////////////////////
+		vector<Point2f> intersections;
+		for (size_t i = 0; i < lines.size(); i++)
+		{
+			for (size_t j = 0; j < lines.size(); j++)
 			{
-				Point2f intersection = computeIntersect(line1, line2);
-				if (intersection.x >= 0 && intersection.y >= 0)
-					intersections.push_back(intersection);
+				Vec2f line1 = lines[i];
+				Vec2f line2 = lines[j];
+				if (acceptLinePair(line1, line2, (float)CV_PI / 32))
+				{
+					Point2f intersection = computeIntersect(line1, line2);
+					if (intersection.x >= 0 && intersection.y >= 0)
+						intersections.push_back(intersection);
+				}
 			}
 		}
-	}
 
-	if (intersections.size() > 0)
-	{
-		vector<Point2f>::iterator i;
-		for (i = intersections.begin(); i != intersections.end(); ++i)
+		if (intersections.size() > 0)
 		{
-			cout << "Intersection is " << i->x << ", " << i->y << endl;
-			circle(image, *i, 2, Scalar(0, 255, 0), 3);
-		}
-		// Find the minimum bounding rectangle
-		RotatedRect rect;
-		Point2f rectPoints[4];
-		Scalar color = Scalar(255, 0, 0);
-		rect = minAreaRect(intersections);
-		rect.points(rectPoints);
-		int j = 0;
-		for (j; j < 4; j++)
-			line(image, rectPoints[j], rectPoints[(j + 1) % 4], color, 1, 8);
+			vector<Point2f>::iterator i;
+			for (i = intersections.begin(); i != intersections.end(); ++i)
+			{
+				cout << "Intersection is " << i->x << ", " << i->y << endl;
+				circle(image, *i, 2, Scalar(0, 255, 0), 3);
+			}
+			// Find the minimum bounding rectangle
+			RotatedRect rect;
+			Point2f rectPoints[4];
+			Scalar color = Scalar(255, 0, 0);
+			rect = minAreaRect(intersections);
+			rect.points(rectPoints);
+			int j = 0;
+			for (j; j < 4; j++)
+				line(image, rectPoints[j], rectPoints[(j + 1) % 4], color, 1, 8);
 
 		float panelWidthPixels = (float)norm(rectPoints[1] - rectPoints[0]) /*Pixels*/;
 		float panelHeightPixels = (float)norm(rectPoints[2] - rectPoints[1]) /*Pixels*/;
-		string dimensionDisplayPixels = "Pixels:\nWidth: " + to_string(panelWidthPixels) + " pixels\nHeight: " + to_string(panelHeightPixels) + " pixels";
-		ShowMessage(dimensionDisplayPixels);
+			string dimensionDisplayPixels = "Pixels:\nWidth: " + to_string(panelWidthPixels) + " pixels\nHeight: " + to_string(panelHeightPixels) + " pixels";
+			ShowMessage(dimensionDisplayPixels);
 
 		float panelWidthReal = (float)norm(rectPoints[1] - rectPoints[0]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
 		float panelHeightReal = (float)norm(rectPoints[2] - rectPoints[1]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
-		string dimensionDisplayActual = "Actual:\nWidth: " + to_string(panelWidthReal) + " cm\nHeight: " + to_string(panelHeightReal) + " cm";
-		ShowMessage(dimensionDisplayActual);
+			string dimensionDisplayActual = "Actual:\nWidth: " + to_string(panelWidthReal) + " cm\nHeight: " + to_string(panelHeightReal) + " cm";
+			ShowMessage(dimensionDisplayActual);
 
-	}
+		}
 
-	if (showImg){
-		namedWindow("Intersections", CV_WINDOW_KEEPRATIO);
-		imshow("Intersections", image);
-	}
-	/////////////////////////////////////////////////////////////
-	// End of Computing the intersection from the lines detected
-	/////////////////////////////////////////////////////////////
+		if (showImg){
+			namedWindow("Intersections", CV_WINDOW_KEEPRATIO);
+			imshow("Intersections", image);
+		}
+		/////////////////////////////////////////////////////////////
+		// End of Computing the intersection from the lines detected
+		/////////////////////////////////////////////////////////////
 	return edges;
 }
 
