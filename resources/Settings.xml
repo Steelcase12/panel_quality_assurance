@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<!-- Canny & Hough Parameters -->
+<low_threshold>9</low_threshold>
+<blur_sigma_x>14</blur_sigma_x>
+<blur_sigma_y>2</blur_sigma_y>
+<canny_low>31</canny_low>
+<canny_ratio>3</canny_ratio>
+<min_hough_length>95</min_hough_length>
+<!-- Add more settings here if necessary -->
+</opencv_storage>

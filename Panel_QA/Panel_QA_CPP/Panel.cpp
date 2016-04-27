@@ -1,7 +1,7 @@
 // This is the main DLL file.
-
-#define DEBUG_CANNY 1
-#define DEBUG_COLOR_MASK 1
+// TODO: Add dialog options for these
+// #define DEBUG_CANNY 1
+// #define DEBUG_COLOR_MASK 1
 // #define DEBUG_BLOB_DETECTION 1
 
 #include "include.h"
@@ -466,22 +466,17 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 	cvtColor(image, greyImage, CV_BGR2GRAY);
 
 	Mat eroded, dilated, thresh, blurredThresh, edges, edgesGray;
-	// int low = 134, high = 255;
-	// int sigmaX = 7, sigmaY = 2; 
-	// int cannyLow = 100, ratio = 3, aperture = 3
-	// int houghLength = 105;
 	vector<Vec2f> lines;
 	//	This code is for testing different values of various functions
 	//   used with Canny, Blurring, and Hough Lines
 #ifdef DEBUG_CANNY
 	namedWindow("Sliders", CV_WINDOW_KEEPRATIO);
-	cvCreateTrackbar("Threshhold", "Sliders", &m_low, 255);
-	//cvCreateTrackbar("High", "Sliders", &high, 255);
-	cvCreateTrackbar("SigmaX", "Sliders", &m_sigmaX, 100);
-	cvCreateTrackbar("SigmaY", "Sliders", &m_sigmaY, 100);
-	cvCreateTrackbar("Low Threshold", "Sliders", &m_cannyLow, 500);
-	cvCreateTrackbar("Ratio", "Sliders", &m_ratio, 5);
-	cvCreateTrackbar("Hough Line length", "Sliders", &m_houghLength, 1000);
+	cvCreateTrackbar("low_threshold", "Sliders", &m_low, 255);
+	cvCreateTrackbar("blur_sigma_x", "Sliders", &m_sigmaX, 100);
+	cvCreateTrackbar("blur_sigma_y", "Sliders", &m_sigmaY, 100);
+	cvCreateTrackbar("canny_low", "Sliders", &m_cannyLow, 500);
+	cvCreateTrackbar("canny_ratio", "Sliders", &m_ratio, 5);
+	cvCreateTrackbar("min_hough_length", "Sliders", &m_houghLength, 1000);
 
 	while (true)
 	{
@@ -544,6 +539,17 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			int j = 0;
 			for (j; j < 4; j++)
 				line(image, rectPoints[j], rectPoints[(j + 1) % 4], color, 1, 8);
+
+			float panelWidthPixels = norm(rectPoints[1] - rectPoints[0]) /*Pixels*/;
+			float panelHeightPixels = norm(rectPoints[2] - rectPoints[1]) /*Pixels*/;
+			string dimensionDisplayPixels = "Pixels:\nWidth: " + to_string(panelWidthPixels) + "\nHeight: " + to_string(panelHeightPixels);
+			ShowMessage(dimensionDisplayPixels);
+
+			float panelWidthReal = norm(rectPoints[1] - rectPoints[0]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
+			float panelHeightReal = norm(rectPoints[2] - rectPoints[1]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
+			string dimensionDisplayActual = "Actual:\nWidth: " + to_string(panelWidthReal) + "\nHeight: " + to_string(panelHeightReal);
+			ShowMessage(dimensionDisplayActual);
+
 		}
 
 		if (showImg){
@@ -714,22 +720,16 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
 		return;
 
 	MyFeatureDetector detector;
-	if (!detector.Detect(m_Image, objPath, m_roi, m_Transmtx, exceedsBorder, false))
-		return;
+	detector.Detect(m_Image, objPath, m_roi, m_Transmtx, m_conversionRate, exceedsBorder, false);
 
 	Mat boundImg;
-	boundImg = m_Image(m_roi);
+	if (m_roi.width)
+		boundImg = m_Image(m_roi);
+	else
+		boundImg = m_Image;
 
-	namedWindow("bound image", CV_WINDOW_NORMAL);
-	imshow("bound image", boundImg);
-
-	/* Perspective Transorm
-	int offsetSize = 500;
-	Mat transformed = Mat::zeros(boundImg.cols + offsetSize, boundImg.rows + offsetSize, CV_8UC3);
-	warpPerspective(boundImg, transformed, m_Transmtx, transformed.size());
-	namedWindow("Transformed", CV_WINDOW_NORMAL);
-	imshow("Transformed", transformed);
-	*/
+	// namedWindow("bound image", CV_WINDOW_NORMAL);
+	// imshow("bound image", boundImg);
 }
 
 ///////////////////////////////////////////////////////
@@ -1280,16 +1280,17 @@ void Panel::ReadSettings(string sFilePath)
 	FileStorage fs(inputSettingsFile, FileStorage::READ); // Read the settings
 	if (!fs.isOpened())
 	{
-		cout << "Could not open the configuration file: \"" << inputSettingsFile << "\"" << endl;
-		//		return -1;
+		ShowMessage("Could not open the configuration file: \"" + inputSettingsFile + "\n");
 	}
-	/*
-	fs[""] >> import_distortion_coefficients;
-	fs[""] >> import_camera_matrix;
-	fs[""] >> import_image_size.width;
-	fs[""] >> import_image_size.height;
-	fs[""] >> import_image_points;
-	*/
+
+	fs["low_threshold"] >> m_low;
+	fs["blur_sigma_x"] >> m_sigmaX;
+	fs["blur_sigma_y"] >> m_sigmaY;
+	fs["canny_low"] >> m_cannyLow;
+	fs["canny_ratio"] >> m_ratio;
+	fs["min_hough_length"] >> m_houghLength;
 
 	fs.release();
+
+	ShowMessage("Settings Read Successfully");
 }

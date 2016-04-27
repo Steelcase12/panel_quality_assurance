@@ -42,9 +42,10 @@ private:
 	Mat m_Image;
 	Mat m_Homography;
 	Mat m_Transmtx;
-	int m_low = 105, m_high = 255;
+	float m_conversionRate;
+	int m_low = 105;
 	int m_sigmaX = 10, m_sigmaY = 2;
-	int m_cannyLow = 85, m_ratio = 3, m_aperture = 3;
+	int m_cannyLow = 85, m_ratio = 3;
 	int m_houghLength = 155;
 	vector<Point2f> corners;
 	Mat CannyDetection(Mat image, bool showImg = true);

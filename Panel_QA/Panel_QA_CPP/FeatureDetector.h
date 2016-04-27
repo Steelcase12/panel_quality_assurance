@@ -1,5 +1,6 @@
 #pragma once
 #pragma comment(lib,"user32.lib")
+// TODO: Add dialog options for these
 // Uncomment this line to debug feature detection
 // #define DEBUG_FEATURES 1
 // Uncomment this line to debug the sliding window
@@ -24,11 +25,12 @@ public:
 	~MyFeatureDetector();
 	void SlidingWindow(Mat object);
 	void FindObject(Mat objectP, Mat scene, int minHessian, Scalar color, int row, int col);
-	bool Detect(Mat scene, string obj, Rect &roi, Mat &transmatrix, bool exceedsBorder, bool showImg = true);
+	bool Detect(Mat scene, string obj, Rect &roi, Mat &transmatrix, float &conversion, bool exceedsBorder, bool showImg = true);
 private:
 	Mat full_scene, outImg;
 	Mat m_Homography;
 	Mat m_Transmtx;
+	float m_conversionRate = 0;
 	// Top and Bottom points of new ROI
 	int topPoint = 0;
 	int bottomPoint = 0;
@@ -52,7 +54,7 @@ MyFeatureDetector::~MyFeatureDetector()
 {
 }
 
-bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &transmatrix, bool exceedsBorder, bool showImg)
+bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &transmatrix, float &conversion, bool exceedsBorder, bool showImg)
 {
 	// Load images
 	full_scene = scene;
@@ -82,6 +84,8 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &transmatri
 	// Pass back the homography that we found in FindObject()
 	if (!m_Transmtx.empty())
 		transmatrix = m_Transmtx;
+	if (m_conversionRate)
+		conversion = m_conversionRate;
 	// Uncomment to only find a single object in the scene
 	// FindObject(object, scene, 100, Scalar(255, 0, 0), 0, 0);
 
@@ -378,7 +382,39 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 			perspectiveTransform(obj_corners, scene_corners, m_Homography);
 
 		if (row == 0)
-			m_Transmtx = getPerspectiveTransform(obj_corners, scene_corners);
+		{
+			// Get pixels to lenth conversion
+			float ratio = 13.25 / 16.25;
+			float height = norm(scene_corners[1] - scene_corners[2]);
+			float width = norm(scene_corners[0] - scene_corners[1]);
+			float actual_height_cm = 16.25;
+			float actual_width_cm = 13.25;
+			// Conversion in Pixels/Centimeter
+			m_conversionRate = height / actual_height_cm;
+			// height = width * ratio;
+			
+			/* Perspective Correction
+			vector<Point2f> new_corners;
+			new_corners.push_back(Point2f(scene_corners[2].x, scene_corners[2].y - height));
+			new_corners.push_back(Point2f(scene_corners[1].x, scene_corners[1].y - height));
+			new_corners.push_back(Point2f(scene_corners[1].x, scene_corners[1].y));
+			new_corners.push_back(Point2f(scene_corners[2].x, scene_corners[2].y));
+			// Draw new rectangle
+			line(outImg, new_corners[0], new_corners[1], CV_RGB(255, 0, 0), 2);
+			line(outImg, new_corners[1], new_corners[2], CV_RGB(255, 0, 0), 2);
+			line(outImg, new_corners[2], new_corners[3], CV_RGB(255, 0, 0), 2);
+			line(outImg, new_corners[3], new_corners[0], CV_RGB(255, 0, 0), 2);
+			namedWindow("OutImg", CV_WINDOW_NORMAL);
+			imshow("OutImg", outImg);
+			// Perspective Transorm
+			Mat transmtx = getPerspectiveTransform(scene_corners, new_corners);
+			int offsetSize = 500;
+			Mat transformed = Mat::zeros(scene.rows + offsetSize, scene.cols + offsetSize, CV_8UC3);
+			warpPerspective(scene, transformed, transmtx, transformed.size());
+			namedWindow("Transformed", CV_WINDOW_NORMAL);
+			imshow("Transformed", transformed);
+			*/
+		}
 
 		//-- Draw lines between the corners (the mapped object in the scene - image_2 )
 #ifdef DEBUG_FEATURES

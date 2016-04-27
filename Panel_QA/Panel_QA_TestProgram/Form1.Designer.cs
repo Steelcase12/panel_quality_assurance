@@ -191,6 +191,7 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 60;
+            this.inputBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\Glue_Booth\\img3.jpg";
             // 
             // viewWithCalibrationBtn
             // 
