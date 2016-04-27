@@ -746,8 +746,6 @@ void Panel::PixelsToLength(string sImgPath)
 	Point2f corner3;
 	Point2f corner4;
 
-	double pixel_width = 0;
-
 	bool found = false;
 
 	found = findChessboardCorners(m_pPanel->m_Image, Size(9, 6), m_pPanel->corners,
@@ -782,12 +780,34 @@ void Panel::PixelsToLength(string sImgPath)
 	circle(m_pPanel->m_Image, corner3, 10, CV_RGB(255, 0, 0), 2);
 	circle(m_pPanel->m_Image, corner4, 10, CV_RGB(100, 100, 100), 2);
 
-	pixel_width = norm(corner3 - corner4);
+	double pixel_length = 0;
+	double pixel_width = 0;
 
-	// Move constanst to config file
-	m_pPanel->m_cmPerPixel = (m_pPanel->m_squareSize * (float)(m_pPanel->m_boardWidth - 1)) / pixel_width;
+	double pixel_width1 = norm(corner1 - corner2);
+	double pixel_length1 = norm(corner2 - corner3);
+	double pixel_width2 = norm(corner3 - corner4);
+	double pixel_length2 = norm(corner4 - corner1);
 
-	cout << m_pPanel->m_cmPerPixel;
+	if (pixel_length1 >= pixel_length2)
+		pixel_length = pixel_length1;
+	else 
+		pixel_length = pixel_length2;
+
+	if (pixel_width1 >= pixel_width2)
+		pixel_width = pixel_width1;
+	else
+		pixel_width = pixel_width2;
+
+
+	double ratio = (m_pPanel->m_boardLength - 1.0) / (m_pPanel->m_boardWidth - 1.0);
+
+	if (pixel_length >= (pixel_width * ratio)){
+		m_pPanel->m_cmPerPixel = (m_pPanel->m_squareSize * (float)(m_pPanel->m_boardLength - 1)) / pixel_length;
+	}
+	else
+		m_pPanel->m_cmPerPixel = (m_pPanel->m_squareSize * (float)(m_pPanel->m_boardWidth - 1)) / pixel_width;
+
+	cout << "cm per pixel : " << m_pPanel->m_cmPerPixel << endl;
 
 	// Perspective Transform
 	//	double ratio = 8.0 / 5.0;
