@@ -114,7 +114,7 @@ namespace Panel_QA_TestProgram
         private void featureDetectionBtn_Click(object sender, EventArgs e)
             {
             if (inputBox.Text != "" && featureTemplateBox.Text != "") {
-                newPanel.DetectFeatures(inputBox.Text, featureTemplateBox.Text, featuresCheckBox.Checked);
+                newPanel.DetectFeatures(inputBox.Text, featureTemplateBox.Text, featuresCheckBox.Checked, featureRotatedCheckBox.Checked);
                 warningLabel.Text = "";
             } else {
                 warningLabel.Text = "You must enter a path to a file AND a template";

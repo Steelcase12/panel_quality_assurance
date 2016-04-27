@@ -714,13 +714,13 @@ void Panel::CascadeClassify(string sImgPath, string sClassPath)
 //  found, the return value is false. More information on feature 
 //  detection can be found in FeatureDetector.h
 /////////////////////////////////////////////////////////////////////////////
-void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder)
+void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder, bool featureRotated)
 {
 	if (!ShowImage(scenePath, "Scene", false))
 		return;
 
 	MyFeatureDetector detector;
-	detector.Detect(m_Image, objPath, m_roi, m_Transmtx, m_conversionRate, exceedsBorder, false);
+	detector.Detect(m_Image, objPath, m_roi, m_feature_height, m_feature_width, m_conversionRate, exceedsBorder, featureRotated, false);
 
 	Mat boundImg;
 	if (m_roi.width)
@@ -1301,13 +1301,16 @@ void Panel::ReadSettings(string sFilePath)
 	{
 		ShowMessage("Could not open the configuration file: \"" + inputSettingsFile + "\n");
 	}
-
+	// Canny & Hough Parameters
 	fs["low_threshold"] >> m_low;
 	fs["blur_sigma_x"] >> m_sigmaX;
 	fs["blur_sigma_y"] >> m_sigmaY;
 	fs["canny_low"] >> m_cannyLow;
 	fs["canny_ratio"] >> m_ratio;
 	fs["min_hough_length"] >> m_houghLength;
+	// Feature Detection Parameters
+	fs["feature_height_cm"] >> m_feature_height;
+	fs["feature_width_cm"] >> m_feature_width;
 
 	fs.release();
 

@@ -25,11 +25,13 @@ public:
 	~MyFeatureDetector();
 	void SlidingWindow(Mat object);
 	void FindObject(Mat objectP, Mat scene, int minHessian, Scalar color, int row, int col);
-	bool Detect(Mat scene, string obj, Rect &roi, Mat &transmatrix, float &conversion, bool exceedsBorder, bool showImg = true);
+	bool Detect(Mat scene, string obj, Rect &roi, float feature_height_cm, float feature_width_cm, 
+		float &conversion, bool exceedsBorder, bool featureRotated, bool showImg = true);
 private:
 	Mat full_scene, outImg;
 	Mat m_Homography;
-	Mat m_Transmtx;
+	float m_FeatureHeightCM;
+	float m_FeatureWidthCM;
 	float m_conversionRate = 0;
 	// Top and Bottom points of new ROI
 	int topPoint = 0;
@@ -44,7 +46,7 @@ private:
 	// of the top feature and the bottom of the bottom
 	// feature as the border of the new ROI
 	bool m_outerEdges;
-	bool m_FeatureRotated;
+	bool m_bFeatureRotated;
 };
 
 MyFeatureDetector::MyFeatureDetector() 
@@ -55,10 +57,14 @@ MyFeatureDetector::~MyFeatureDetector()
 {
 }
 
-bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &transmatrix, float &conversion, bool exceedsBorder, bool showImg)
+bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_height_cm, float feature_width_cm, 
+	float &conversion, bool exceedsBorder, bool featureRotated, bool showImg)
 {
 	// Load images
 	full_scene = scene;
+	m_FeatureHeightCM = feature_height_cm;
+	m_FeatureWidthCM = feature_width_cm;
+	m_bFeatureRotated = featureRotated;
 
 	Mat object = imread(obj);
 	if (!object.data) {
@@ -83,8 +89,6 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, Mat &transmatri
 	col_step = n_rows;
 	SlidingWindow(object);
 	// Pass back the homography that we found in FindObject()
-	if (!m_Transmtx.empty())
-		transmatrix = m_Transmtx;
 	if (m_conversionRate)
 		conversion = m_conversionRate;
 	// Uncomment to only find a single object in the scene
@@ -387,14 +391,14 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 			// Get pixels to lenth conversion
 			float height = norm(scene_corners[1] - scene_corners[2]);
 			float width = norm(scene_corners[0] - scene_corners[1]);
-			float actual_height_cm = 16.25;
-			float actual_width_cm = 13.25;
-			float ratio = actual_width_cm / actual_height_cm;
+			float ratio = m_FeatureWidthCM / m_FeatureHeightCM;
 			// Conversion in Pixels/Centimeter
-			if (m_FeatureRotated)
-				m_conversionRate = height / actual_height_cm;
+			// The height and width of the feature in cm's
+			// are set in the settings file
+			if (m_bFeatureRotated)
+				m_conversionRate = height / m_FeatureHeightCM;
 			else
-				m_conversionRate = width / actual_width_cm;
+				m_conversionRate = width / m_FeatureWidthCM;
 			
 			/* Perspective Correction
 			vector<Point2f> new_corners;

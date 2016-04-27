@@ -31,7 +31,7 @@ namespace MYopencv {
 		void LoadCalibration(System::String^ filePath);
 		void CascadeClassify(System::String^ imgPath, System::String^ classifierPath);
 		void BatchCalibrate(System::String^ dirPath);		
-		void DetectFeatures(System::String^ scenePath, System::String^ objPath, bool exceedsBorder);
+		void DetectFeatures(System::String^ scenePath, System::String^ objPath, bool exceedsBorder, bool featureRotated);
 		void ReadSettings(System::String ^ sFilePath);
 	private:
 		Panel *panel;

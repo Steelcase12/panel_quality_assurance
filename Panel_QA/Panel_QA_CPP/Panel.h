@@ -34,7 +34,7 @@ public:
 	void LoadCalibration(string filePath);
 	void CascadeClassify(string imgPath, string classPath);
 	void BatchCalibrate(string dirPath);	
-	void DetectFeatures(string scenePath, string objPath, bool exceedsBorder);
+	void DetectFeatures(string scenePath, string objPath, bool exceedsBorder, bool featureRotated);
 	void ReadSettings(string sFilePath);
 private:
 	Panel *m_pPanel;
@@ -43,11 +43,14 @@ private:
 	Mat m_Homography;
 	Mat m_Transmtx;
 	float m_conversionRate;
+	// Canny Parameter Default Settings
 	int m_low = 105;
 	int m_sigmaX = 10, m_sigmaY = 2;
 	int m_cannyLow = 85, m_ratio = 3;
 	int m_houghLength = 155;
-
+	// Feature Detection Settings Defaults
+	float m_feature_height = 16.25;
+	float m_feature_width = 13.25;
 	// Calibration and Conversion
 	int m_boardWidth = 6;
 	int m_boardLength = 9;
