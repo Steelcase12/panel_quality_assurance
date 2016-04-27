@@ -152,10 +152,13 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_h
 			ShowMessage("Only bottom feature found. \nThe boundary is set, but will be more refined if both features are found.");
 		}
 		Mat bound_image;
-		bound_image = full_scene(roi);
-		if (showImg){
-			namedWindow("Bound Image", CV_WINDOW_NORMAL);
-			imshow("Bound Image", bound_image);
+		if (roi.width)
+		{
+			bound_image = full_scene(roi);
+			if (showImg){
+				namedWindow("Bound Image", CV_WINDOW_NORMAL);
+				imshow("Bound Image", bound_image);
+			}
 		}
 	}
 	else {
