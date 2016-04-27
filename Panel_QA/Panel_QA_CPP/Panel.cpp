@@ -542,12 +542,12 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 
 			float panelWidthPixels = norm(rectPoints[1] - rectPoints[0]) /*Pixels*/;
 			float panelHeightPixels = norm(rectPoints[2] - rectPoints[1]) /*Pixels*/;
-			string dimensionDisplayPixels = "Pixels:\nWidth: " + to_string(panelWidthPixels) + "\nHeight: " + to_string(panelHeightPixels);
+			string dimensionDisplayPixels = "Pixels:\nWidth: " + to_string(panelWidthPixels) + " pixels\nHeight: " + to_string(panelHeightPixels) + " pixels";
 			ShowMessage(dimensionDisplayPixels);
 
 			float panelWidthReal = norm(rectPoints[1] - rectPoints[0]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
 			float panelHeightReal = norm(rectPoints[2] - rectPoints[1]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
-			string dimensionDisplayActual = "Actual:\nWidth: " + to_string(panelWidthReal) + "\nHeight: " + to_string(panelHeightReal);
+			string dimensionDisplayActual = "Actual:\nWidth: " + to_string(panelWidthReal) + " cm\nHeight: " + to_string(panelHeightReal) + " cm";
 			ShowMessage(dimensionDisplayActual);
 
 		}

@@ -44,6 +44,7 @@ private:
 	// of the top feature and the bottom of the bottom
 	// feature as the border of the new ROI
 	bool m_outerEdges;
+	bool m_FeatureRotated;
 };
 
 MyFeatureDetector::MyFeatureDetector() 
@@ -384,14 +385,16 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 		if (row == 0)
 		{
 			// Get pixels to lenth conversion
-			float ratio = 13.25 / 16.25;
 			float height = norm(scene_corners[1] - scene_corners[2]);
 			float width = norm(scene_corners[0] - scene_corners[1]);
 			float actual_height_cm = 16.25;
 			float actual_width_cm = 13.25;
+			float ratio = actual_width_cm / actual_height_cm;
 			// Conversion in Pixels/Centimeter
-			m_conversionRate = height / actual_height_cm;
-			// height = width * ratio;
+			if (m_FeatureRotated)
+				m_conversionRate = height / actual_height_cm;
+			else
+				m_conversionRate = width / actual_width_cm;
 			
 			/* Perspective Correction
 			vector<Point2f> new_corners;
