@@ -185,6 +185,7 @@ namespace Panel_QA_TestProgram
             {
                 warningLabel.Text = "You must enter a path to an image";
             }
-        }    
+        }
+
     }
 }

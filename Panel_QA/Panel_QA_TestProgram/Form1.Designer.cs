@@ -29,6 +29,9 @@
         {
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.featureRotatedCheckBox = new System.Windows.Forms.CheckBox();
+            this.featureImageLabel = new System.Windows.Forms.Label();
+            this.featureImageBox = new System.Windows.Forms.TextBox();
             this.settingsLabel = new System.Windows.Forms.Label();
             this.blueBtn = new System.Windows.Forms.Button();
             this.redBtn = new System.Windows.Forms.Button();
@@ -54,6 +57,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.calibrateNoOutputBtn = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dimensionsBtn = new System.Windows.Forms.Button();
             this.tagLabel = new System.Windows.Forms.Label();
             this.imagePath = new System.Windows.Forms.TextBox();
             this.colorGroupBox1 = new System.Windows.Forms.GroupBox();
@@ -61,9 +65,6 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.detectTagBtn = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.dimensionsBtn = new System.Windows.Forms.Button();
-            this.featureImageBox = new System.Windows.Forms.TextBox();
-            this.featureImageLabel = new System.Windows.Forms.Label();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.colorGroupBox1.SuspendLayout();
@@ -72,6 +73,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.featureRotatedCheckBox);
             this.tabPage2.Controls.Add(this.featureImageLabel);
             this.tabPage2.Controls.Add(this.featureImageBox);
             this.tabPage2.Controls.Add(this.settingsLabel);
@@ -105,6 +107,32 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // featureRotatedCheckBox
+            // 
+            this.featureRotatedCheckBox.AutoSize = true;
+            this.featureRotatedCheckBox.Location = new System.Drawing.Point(536, 174);
+            this.featureRotatedCheckBox.Name = "featureRotatedCheckBox";
+            this.featureRotatedCheckBox.Size = new System.Drawing.Size(111, 17);
+            this.featureRotatedCheckBox.TabIndex = 73;
+            this.featureRotatedCheckBox.Text = "Template Rotated";
+            this.featureRotatedCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // featureImageLabel
+            // 
+            this.featureImageLabel.AutoSize = true;
+            this.featureImageLabel.Location = new System.Drawing.Point(6, 175);
+            this.featureImageLabel.Name = "featureImageLabel";
+            this.featureImageLabel.Size = new System.Drawing.Size(78, 13);
+            this.featureImageLabel.TabIndex = 72;
+            this.featureImageLabel.Text = "Feature Image:";
+            // 
+            // featureImageBox
+            // 
+            this.featureImageBox.Location = new System.Drawing.Point(114, 172);
+            this.featureImageBox.Name = "featureImageBox";
+            this.featureImageBox.Size = new System.Drawing.Size(281, 20);
+            this.featureImageBox.TabIndex = 71;
             // 
             // settingsLabel
             // 
@@ -269,7 +297,7 @@
             // featuresCheckBox
             // 
             this.featuresCheckBox.AutoSize = true;
-            this.featuresCheckBox.Location = new System.Drawing.Point(401, 196);
+            this.featuresCheckBox.Location = new System.Drawing.Point(401, 174);
             this.featuresCheckBox.Name = "featuresCheckBox";
             this.featuresCheckBox.Size = new System.Drawing.Size(128, 17);
             this.featuresCheckBox.TabIndex = 54;
@@ -278,7 +306,7 @@
             // 
             // featureDetectionBtn
             // 
-            this.featureDetectionBtn.Location = new System.Drawing.Point(532, 196);
+            this.featureDetectionBtn.Location = new System.Drawing.Point(408, 195);
             this.featureDetectionBtn.Name = "featureDetectionBtn";
             this.featureDetectionBtn.Size = new System.Drawing.Size(98, 23);
             this.featureDetectionBtn.TabIndex = 53;
@@ -339,10 +367,20 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(648, 282);
+            this.tabPage1.Size = new System.Drawing.Size(648, 300);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // dimensionsBtn
+            // 
+            this.dimensionsBtn.Location = new System.Drawing.Point(242, 101);
+            this.dimensionsBtn.Name = "dimensionsBtn";
+            this.dimensionsBtn.Size = new System.Drawing.Size(202, 37);
+            this.dimensionsBtn.TabIndex = 6;
+            this.dimensionsBtn.Text = "Measure Dimensions";
+            this.dimensionsBtn.UseVisualStyleBackColor = true;
+            this.dimensionsBtn.Click += new System.EventHandler(this.dimensionsBtn_Click);
             // 
             // tagLabel
             // 
@@ -414,32 +452,6 @@
             this.tabControl1.Size = new System.Drawing.Size(656, 326);
             this.tabControl1.TabIndex = 0;
             // 
-            // dimensionsBtn
-            // 
-            this.dimensionsBtn.Location = new System.Drawing.Point(242, 101);
-            this.dimensionsBtn.Name = "dimensionsBtn";
-            this.dimensionsBtn.Size = new System.Drawing.Size(202, 37);
-            this.dimensionsBtn.TabIndex = 6;
-            this.dimensionsBtn.Text = "Measure Dimensions";
-            this.dimensionsBtn.UseVisualStyleBackColor = true;
-            this.dimensionsBtn.Click += new System.EventHandler(this.dimensionsBtn_Click);
-            // 
-            // featureImageBox
-            // 
-            this.featureImageBox.Location = new System.Drawing.Point(114, 172);
-            this.featureImageBox.Name = "featureImageBox";
-            this.featureImageBox.Size = new System.Drawing.Size(281, 20);
-            this.featureImageBox.TabIndex = 71;
-            // 
-            // featureImageLabel
-            // 
-            this.featureImageLabel.AutoSize = true;
-            this.featureImageLabel.Location = new System.Drawing.Point(6, 175);
-            this.featureImageLabel.Name = "featureImageLabel";
-            this.featureImageLabel.Size = new System.Drawing.Size(78, 13);
-            this.featureImageLabel.TabIndex = 72;
-            this.featureImageLabel.Text = "Feature Image:";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -498,6 +510,7 @@
         private System.Windows.Forms.Button dimensionsBtn;
         private System.Windows.Forms.Label featureImageLabel;
         private System.Windows.Forms.TextBox featureImageBox;
+        private System.Windows.Forms.CheckBox featureRotatedCheckBox;
     }
 }
 
