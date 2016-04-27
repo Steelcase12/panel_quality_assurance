@@ -1,7 +1,7 @@
 // This is the main DLL file.
 // TODO: Add dialog options for these
 // #define DEBUG_CANNY 1
-// #define DEBUG_COLOR_MASK 1
+ #define DEBUG_COLOR_MASK 1
 // #define DEBUG_BLOB_DETECTION 1
 
 #include "include.h"
@@ -389,20 +389,19 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	}
 	else if (color == "Red")
 	{
-		inRange(HSV, Scalar(0, 100, 30), Scalar(10, 255, 255), Mask1);
-		inRange(HSV, Scalar(160, 100, 30), Scalar(180, 255, 255), Mask2);
+		inRange(HSV, Scalar(0, 100, 30), Scalar(6, 255, 255), Mask1);
+		inRange(HSV, Scalar(165, 100, 30), Scalar(179, 255, 255), Mask2);
 		bitwise_or(Mask1, Mask2, Mask);
 	}
 	else if (color == "panel")
 	{
-		FindContours(m_pPanel->m_Image);
 		// test code
 		int h1Lo = 0, s1Lo = 55, v1Lo = 115;
 		int h1Hi = 20, s1Hi = 120, v1Hi = 210;
 		int h2Lo = 0, s2Lo = 0, v2Lo = 0;
 		int h2Hi = 0, s2Hi = 0, v2Hi = 0;
 #ifdef DEBUG_COLOR_MASK
-		namedWindow("InRange Tester", CV_WINDOW_AUTOSIZE);
+		namedWindow("InRange Tester", CV_WINDOW_NORMAL);
 		cvCreateTrackbar("Hue Lo 1:", "InRange Tester", &h1Lo, 180);
 		cvCreateTrackbar("Hue Hi 1:", "InRange Tester", &h1Hi, 180);
 		cvCreateTrackbar("Sat Lo 1", "InRange Tester", &s1Lo, 255);
