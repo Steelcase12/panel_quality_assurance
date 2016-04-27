@@ -21,6 +21,7 @@ class Panel
 public:
 	Panel();
 	~Panel();
+	void MeasureDimensions(string imgPath);
 	bool ShowImage(string imgPath, string windowTitle, bool showImg = true);
 	bool ShowImageWithCalibration(string imgPath, string windowTitle, Mat calibratedImg, bool showImg = true);
 	string ColorName(Vec3b HSV);

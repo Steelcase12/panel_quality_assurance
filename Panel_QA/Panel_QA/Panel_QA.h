@@ -21,6 +21,7 @@ namespace MYopencv {
 	public:
 		MYPanel();
 		~MYPanel();
+		void MeasureDimensions(System::String^ imgPath);
 		void ShowImage(System::String^ imgPath, System::String^ windowTitle);
 		void ShowImageWithCalibration(System::String^ imgPath, System::String^ windowTitle);
 		void MaskWithColor(System::String^ imgPath, System::String^ color);

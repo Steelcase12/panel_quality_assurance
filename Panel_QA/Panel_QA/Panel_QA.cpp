@@ -14,6 +14,13 @@ MYPanel::~MYPanel()
 	// delete panel;
 }
 
+void MYPanel::MeasureDimensions(System::String^ imgPath)
+{
+	MYConversion ^convert = gcnew MYConversion();
+	string strImgPath = convert->myStringToChar(imgPath);
+	panel->MeasureDimensions((string)strImgPath);
+}
+
 void MYPanel::ShowImage(System::String^ imgPath, System::String^ windowTitle)
 {
 	MYConversion ^convert = gcnew MYConversion();

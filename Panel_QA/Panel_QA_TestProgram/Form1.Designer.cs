@@ -54,13 +54,16 @@
             this.label4 = new System.Windows.Forms.Label();
             this.calibrateNoOutputBtn = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tagLabel = new System.Windows.Forms.Label();
             this.imagePath = new System.Windows.Forms.TextBox();
             this.colorGroupBox1 = new System.Windows.Forms.GroupBox();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.detectTagBtn = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tagLabel = new System.Windows.Forms.Label();
+            this.dimensionsBtn = new System.Windows.Forms.Button();
+            this.featureImageBox = new System.Windows.Forms.TextBox();
+            this.featureImageLabel = new System.Windows.Forms.Label();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.colorGroupBox1.SuspendLayout();
@@ -69,6 +72,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.featureImageLabel);
+            this.tabPage2.Controls.Add(this.featureImageBox);
             this.tabPage2.Controls.Add(this.settingsLabel);
             this.tabPage2.Controls.Add(this.blueBtn);
             this.tabPage2.Controls.Add(this.redBtn);
@@ -96,7 +101,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(648, 282);
+            this.tabPage2.Size = new System.Drawing.Size(648, 300);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Settings";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -104,7 +109,7 @@
             // settingsLabel
             // 
             this.settingsLabel.AutoSize = true;
-            this.settingsLabel.Location = new System.Drawing.Point(6, 224);
+            this.settingsLabel.Location = new System.Drawing.Point(6, 236);
             this.settingsLabel.Name = "settingsLabel";
             this.settingsLabel.Size = new System.Drawing.Size(67, 13);
             this.settingsLabel.TabIndex = 70;
@@ -141,7 +146,7 @@
             // 
             // settingsBtn
             // 
-            this.settingsBtn.Location = new System.Drawing.Point(406, 219);
+            this.settingsBtn.Location = new System.Drawing.Point(406, 231);
             this.settingsBtn.Name = "settingsBtn";
             this.settingsBtn.Size = new System.Drawing.Size(100, 23);
             this.settingsBtn.TabIndex = 69;
@@ -151,7 +156,7 @@
             // 
             // settingsInput
             // 
-            this.settingsInput.Location = new System.Drawing.Point(111, 221);
+            this.settingsInput.Location = new System.Drawing.Point(111, 233);
             this.settingsInput.Name = "settingsInput";
             this.settingsInput.Size = new System.Drawing.Size(281, 20);
             this.settingsInput.TabIndex = 68;
@@ -159,7 +164,7 @@
             // warningLabel
             // 
             this.warningLabel.AutoSize = true;
-            this.warningLabel.Location = new System.Drawing.Point(270, 260);
+            this.warningLabel.Location = new System.Drawing.Point(270, 272);
             this.warningLabel.Name = "warningLabel";
             this.warningLabel.Size = new System.Drawing.Size(56, 13);
             this.warningLabel.TabIndex = 66;
@@ -265,7 +270,7 @@
             // featuresCheckBox
             // 
             this.featuresCheckBox.AutoSize = true;
-            this.featuresCheckBox.Location = new System.Drawing.Point(402, 187);
+            this.featuresCheckBox.Location = new System.Drawing.Point(401, 196);
             this.featuresCheckBox.Name = "featuresCheckBox";
             this.featuresCheckBox.Size = new System.Drawing.Size(128, 17);
             this.featuresCheckBox.TabIndex = 54;
@@ -274,7 +279,7 @@
             // 
             // featureDetectionBtn
             // 
-            this.featureDetectionBtn.Location = new System.Drawing.Point(532, 184);
+            this.featureDetectionBtn.Location = new System.Drawing.Point(532, 196);
             this.featureDetectionBtn.Name = "featureDetectionBtn";
             this.featureDetectionBtn.Size = new System.Drawing.Size(98, 23);
             this.featureDetectionBtn.TabIndex = 53;
@@ -285,7 +290,7 @@
             // featureTemplateLabel
             // 
             this.featureTemplateLabel.AutoSize = true;
-            this.featureTemplateLabel.Location = new System.Drawing.Point(6, 189);
+            this.featureTemplateLabel.Location = new System.Drawing.Point(6, 201);
             this.featureTemplateLabel.Name = "featureTemplateLabel";
             this.featureTemplateLabel.Size = new System.Drawing.Size(93, 13);
             this.featureTemplateLabel.TabIndex = 52;
@@ -293,11 +298,11 @@
             // 
             // featureTemplateBox
             // 
-            this.featureTemplateBox.Location = new System.Drawing.Point(114, 186);
+            this.featureTemplateBox.Location = new System.Drawing.Point(114, 198);
             this.featureTemplateBox.Name = "featureTemplateBox";
             this.featureTemplateBox.Size = new System.Drawing.Size(281, 20);
             this.featureTemplateBox.TabIndex = 51;
-            this.featureTemplateBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\Glue_Booth\\qr_steelcase.png";
+            this.featureTemplateBox.Text = "..\\..\\..\\..\\resources\\Glue_Booth\\qr_steelcase.png";
             // 
             // calibrationPath
             // 
@@ -327,6 +332,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.dimensionsBtn);
             this.tabPage1.Controls.Add(this.tagLabel);
             this.tabPage1.Controls.Add(this.imagePath);
             this.tabPage1.Controls.Add(this.colorGroupBox1);
@@ -334,10 +340,19 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(648, 318);
+            this.tabPage1.Size = new System.Drawing.Size(648, 282);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tagLabel
+            // 
+            this.tagLabel.AutoSize = true;
+            this.tagLabel.Location = new System.Drawing.Point(6, 24);
+            this.tagLabel.Name = "tagLabel";
+            this.tagLabel.Size = new System.Drawing.Size(64, 13);
+            this.tagLabel.TabIndex = 5;
+            this.tagLabel.Text = "Image Path:";
             // 
             // imagePath
             // 
@@ -397,23 +412,40 @@
             this.tabControl1.Location = new System.Drawing.Point(4, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(656, 308);
+            this.tabControl1.Size = new System.Drawing.Size(656, 326);
             this.tabControl1.TabIndex = 0;
             // 
-            // tagLabel
+            // dimensionsBtn
             // 
-            this.tagLabel.AutoSize = true;
-            this.tagLabel.Location = new System.Drawing.Point(6, 24);
-            this.tagLabel.Name = "tagLabel";
-            this.tagLabel.Size = new System.Drawing.Size(64, 13);
-            this.tagLabel.TabIndex = 5;
-            this.tagLabel.Text = "Image Path:";
+            this.dimensionsBtn.Location = new System.Drawing.Point(242, 101);
+            this.dimensionsBtn.Name = "dimensionsBtn";
+            this.dimensionsBtn.Size = new System.Drawing.Size(202, 37);
+            this.dimensionsBtn.TabIndex = 6;
+            this.dimensionsBtn.Text = "Measure Dimensions";
+            this.dimensionsBtn.UseVisualStyleBackColor = true;
+            this.dimensionsBtn.Click += new System.EventHandler(this.dimensionsBtn_Click);
+            // 
+            // featureImageBox
+            // 
+            this.featureImageBox.Location = new System.Drawing.Point(114, 172);
+            this.featureImageBox.Name = "featureImageBox";
+            this.featureImageBox.Size = new System.Drawing.Size(281, 20);
+            this.featureImageBox.TabIndex = 71;
+            // 
+            // featureImageLabel
+            // 
+            this.featureImageLabel.AutoSize = true;
+            this.featureImageLabel.Location = new System.Drawing.Point(6, 175);
+            this.featureImageLabel.Name = "featureImageLabel";
+            this.featureImageLabel.Size = new System.Drawing.Size(78, 13);
+            this.featureImageLabel.TabIndex = 72;
+            this.featureImageLabel.Text = "Feature Image:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(663, 324);
+            this.ClientSize = new System.Drawing.Size(663, 341);
             this.Controls.Add(this.tabControl1);
             this.Name = "Form1";
             this.Text = "Panels Test Program";
@@ -464,6 +496,9 @@
         private System.Windows.Forms.Button settingsBtn;
         private System.Windows.Forms.Label settingsLabel;
         private System.Windows.Forms.Label tagLabel;
+        private System.Windows.Forms.Button dimensionsBtn;
+        private System.Windows.Forms.Label featureImageLabel;
+        private System.Windows.Forms.TextBox featureImageBox;
     }
 }
 
