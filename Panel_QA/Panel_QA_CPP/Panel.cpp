@@ -184,11 +184,6 @@ static void onMouseLocation(int event, int x, int y, int f, void *ptr)
 	}
 }
 
-void Panel::MeasureDimensions(string sImgPath)
-{
-	cout << "Measure";
-}
-
 /////////////////////////////////////////////////////////////////////////
 // Panel::ShowImage()
 // Description: Function mainly used to set the member variable m_Image.
@@ -379,8 +374,13 @@ void Panel::MaskWithColor(string sImgPath, string color)
 	// Show the original image
 	if(!ShowImage(sImgPath, "Original"))
 		return;
+	Mat image;
+	if (m_roi.width)
+		image = m_Image(m_roi);
+	else
+		image = m_Image;
 	// Convert the color HSV Format
-	cvtColor(m_pPanel->m_Image, HSV, CV_BGR2HSV);
+	cvtColor(image, HSV, CV_BGR2HSV);
 	// The inRange() function will create a mask with 
 	// only the pixels of color in the range specified
 	if (color == "Blue")
@@ -425,7 +425,7 @@ void Panel::MaskWithColor(string sImgPath, string color)
 			bitwise_or(Mask1, Mask2, Mask);
 
 #ifdef DEBUG_COLOR_MASK
-			m_pPanel->m_Image.copyTo(MaskResult, Mask);
+			image.copyTo(MaskResult, Mask);
 			namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
 			imshow("Mask Result", MaskResult);
 			if (waitKey(10) == 27)
@@ -433,7 +433,7 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		}
 #endif
 	}
-	m_pPanel->m_Image.copyTo(MaskResult, Mask);
+	image.copyTo(MaskResult, Mask);
 	namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
 	imshow("Mask Result", MaskResult);
 
@@ -445,7 +445,7 @@ void Panel::MaskWithColor(string sImgPath, string color)
 // Panel::DetectEdges() 
 // Description:
 ///////////////////////////////////////////////////////////////////
-void Panel::DetectEdges(string sImgPath)
+void Panel::DetectEdges(string sImgPath, bool debug)
 {
 	if (!ShowImage(sImgPath, "Original"))
 		return;
@@ -457,7 +457,11 @@ void Panel::DetectEdges(string sImgPath)
 		image = m_pPanel->m_Image;
 
 	// Canny Edge and Hough Line Detection
-	Mat edges = CannyDetection(image, true);
+	Mat edges;
+	if (debug)
+		edges = CannyDetectionDebug(image, true);
+	else
+		edges = CannyDetection(image, true);
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -471,20 +475,7 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 
 	Mat eroded, dilated, thresh, blurredThresh, edges, edgesGray;
 	vector<Vec2f> lines;
-	//	This code is for testing different values of various functions
-	//   used with Canny, Blurring, and Hough Lines
-#ifdef DEBUG_CANNY
-	namedWindow("Sliders", CV_WINDOW_KEEPRATIO);
-	cvCreateTrackbar("low_threshold", "Sliders", &m_low, 255);
-	cvCreateTrackbar("blur_sigma_x", "Sliders", &m_sigmaX, 100);
-	cvCreateTrackbar("blur_sigma_y", "Sliders", &m_sigmaY, 100);
-	cvCreateTrackbar("canny_low", "Sliders", &m_cannyLow, 500);
-	cvCreateTrackbar("canny_ratio", "Sliders", &m_ratio, 5);
-	cvCreateTrackbar("min_hough_length", "Sliders", &m_houghLength, 1000);
 
-	while (true)
-	{
-#endif
 		threshold(greyImage, thresh, m_low, 255, THRESH_BINARY);
 		erode(thresh, eroded, Mat());
 		dilate(eroded, dilated, Mat());
@@ -506,7 +497,6 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
 		}
 
-#ifndef DEBUG_CANNY
 		////////////////////////////////////////////////////////
 		// Compute the intersection from the lines detected
 		////////////////////////////////////////////////////////
@@ -544,13 +534,13 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			for (j; j < 4; j++)
 				line(image, rectPoints[j], rectPoints[(j + 1) % 4], color, 1, 8);
 
-			float panelWidthPixels = norm(rectPoints[1] - rectPoints[0]) /*Pixels*/;
-			float panelHeightPixels = norm(rectPoints[2] - rectPoints[1]) /*Pixels*/;
+		float panelWidthPixels = (float)norm(rectPoints[1] - rectPoints[0]) /*Pixels*/;
+		float panelHeightPixels = (float)norm(rectPoints[2] - rectPoints[1]) /*Pixels*/;
 			string dimensionDisplayPixels = "Pixels:\nWidth: " + to_string(panelWidthPixels) + " pixels\nHeight: " + to_string(panelHeightPixels) + " pixels";
 			ShowMessage(dimensionDisplayPixels);
 
-			float panelWidthReal = norm(rectPoints[1] - rectPoints[0]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
-			float panelHeightReal = norm(rectPoints[2] - rectPoints[1]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
+		float panelWidthReal = (float)norm(rectPoints[1] - rectPoints[0]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
+		float panelHeightReal = (float)norm(rectPoints[2] - rectPoints[1]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
 			string dimensionDisplayActual = "Actual:\nWidth: " + to_string(panelWidthReal) + " cm\nHeight: " + to_string(panelHeightReal) + " cm";
 			ShowMessage(dimensionDisplayActual);
 
@@ -563,9 +553,53 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 		/////////////////////////////////////////////////////////////
 		// End of Computing the intersection from the lines detected
 		/////////////////////////////////////////////////////////////
-#endif //ifndef DEBUG_CANNY
+	return edges;
+}
 
-#ifdef DEBUG_CANNY
+///////////////////////////////////////////////////////////////////
+// Panel::CannyDetection() 
+// Description:
+///////////////////////////////////////////////////////////////////
+Mat Panel::CannyDetectionDebug(Mat image, bool showImg)
+{
+	Mat greyImage;
+	cvtColor(image, greyImage, CV_BGR2GRAY);
+
+	Mat eroded, dilated, thresh, blurredThresh, edges, edgesGray;
+	vector<Vec2f> lines;
+	//	This code is for testing different values of various functions
+	//   used with Canny, Blurring, and Hough Lines
+	namedWindow("Sliders", CV_WINDOW_KEEPRATIO);
+	cvCreateTrackbar("low_threshold", "Sliders", &m_low, 255);
+	cvCreateTrackbar("blur_sigma_x", "Sliders", &m_sigmaX, 100);
+	cvCreateTrackbar("blur_sigma_y", "Sliders", &m_sigmaY, 100);
+	cvCreateTrackbar("canny_low", "Sliders", &m_cannyLow, 500);
+	cvCreateTrackbar("canny_ratio", "Sliders", &m_ratio, 5);
+	cvCreateTrackbar("min_hough_length", "Sliders", &m_houghLength, 1000);
+
+	while (true)
+	{
+		threshold(greyImage, thresh, m_low, 255, THRESH_BINARY);
+		erode(thresh, eroded, Mat());
+		dilate(eroded, dilated, Mat());
+		GaussianBlur(thresh, blurredThresh, Size(7, 7), m_sigmaX, m_sigmaY);
+		Canny(blurredThresh, edges, m_cannyLow, m_cannyLow*m_ratio, 3);
+		HoughLines(edges, lines, 1, CV_PI / 180, m_houghLength, 0, 0);
+
+		cvtColor(edges, edgesGray, CV_GRAY2BGR);
+		for (size_t i = 0; i < lines.size(); i++)
+		{
+			float rho = lines[i][0], theta = lines[i][1];
+			Point pt1, pt2;
+			double a = cos(theta), b = sin(theta);
+			double x0 = a*rho, y0 = b*rho;
+			pt1.x = cvRound(x0 + 1000 * (-b));
+			pt1.y = cvRound(y0 + 1000 * (a));
+			pt2.x = cvRound(x0 - 1000 * (-b));
+			pt2.y = cvRound(y0 - 1000 * (a));
+			line(edgesGray, pt1, pt2, Scalar(0, 0, 255), 3, CV_AA);
+		}
+
 		namedWindow("Threshhold", CV_WINDOW_KEEPRATIO);
 		imshow("Threshhold", thresh);
 		namedWindow("Dilated", CV_WINDOW_KEEPRATIO);
@@ -580,7 +614,7 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 		if (waitKey(30) == 27)
 			break;
 	}
-#endif
+
 	return edges;
 }
 

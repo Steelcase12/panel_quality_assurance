@@ -14,13 +14,6 @@ MYPanel::~MYPanel()
 	// delete panel;
 }
 
-void MYPanel::MeasureDimensions(System::String^ imgPath)
-{
-	MYConversion ^convert = gcnew MYConversion();
-	string strImgPath = convert->myStringToChar(imgPath);
-	panel->MeasureDimensions((string)strImgPath);
-}
-
 void MYPanel::ShowImage(System::String^ imgPath, System::String^ windowTitle)
 {
 	MYConversion ^convert = gcnew MYConversion();
@@ -45,11 +38,11 @@ void MYPanel::MaskWithColor(System::String^ imgPath, System::String^ color)
 	panel->MaskWithColor((string)strImgPath, (string)strColor);
 }
 
-void MYPanel::DetectEdges(System::String^ imgPath)
+void MYPanel::DetectEdges(System::String^ imgPath, bool debug)
 {
 	MYConversion ^convert = gcnew MYConversion();
 	string strImgPath = convert->myStringToChar(imgPath);
-	panel->DetectEdges((string)strImgPath);
+	panel->DetectEdges((string)strImgPath, debug);
 }
 
 void MYPanel::CalibrateCamera(System::String^ imgPath)

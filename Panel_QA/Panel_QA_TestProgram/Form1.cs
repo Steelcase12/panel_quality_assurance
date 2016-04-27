@@ -63,7 +63,7 @@ namespace Panel_QA_TestProgram
         private void detectEdgesBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel.DetectEdges(inputBox.Text);
+                newPanel.DetectEdges(inputBox.Text, true);
                 warningLabel.Text = "";
             } else {
                 warningLabel.Text = "You must enter a path to an image";
@@ -146,6 +146,7 @@ namespace Panel_QA_TestProgram
                 warningLabel.Text = "You must enter a path to a file";
             }
         }
+
         private void detectTagBtn_Click(object sender, EventArgs e)
         {
             if (imagePath.Text != "")
@@ -178,7 +179,7 @@ namespace Panel_QA_TestProgram
         {
             if (imagePath.Text != "")
             {
-                newPanel.MeasureDimensions(imagePath.Text);
+                newPanel.DetectEdges(imagePath.Text, false);
                 warningLabel.Text = "";
             }
             else
@@ -186,6 +187,5 @@ namespace Panel_QA_TestProgram
                 warningLabel.Text = "You must enter a path to an image";
             }
         }
-
     }
 }

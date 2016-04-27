@@ -21,14 +21,13 @@ class Panel
 public:
 	Panel();
 	~Panel();
-	void MeasureDimensions(string imgPath);
 	bool ShowImage(string imgPath, string windowTitle, bool showImg = true);
 	bool ShowImageWithCalibration(string imgPath, string windowTitle, Mat calibratedImg, bool showImg = true);
 	string ColorName(Vec3b HSV);
 	void ColorAtPoint(Point point);
 	void PointLocation(Point point);
 	void MaskWithColor(string imgPath, string color);
-	void DetectEdges(string imgPath);
+	void DetectEdges(string imgPath, bool debug);
 	void PixelsToLength(string imgPath);
 	void CalibrateCamera(string filePath);
 	void CalibrateCameraNoOutput(string filePath);
@@ -41,8 +40,6 @@ private:
 	Panel *m_pPanel;
 	Rect m_roi;
 	Mat m_Image;
-	Mat m_Homography;
-	Mat m_Transmtx;
 	float m_conversionRate;
 	// Canny Parameter Default Settings
 	int m_low = 105;
@@ -58,9 +55,11 @@ private:
 	double m_cmPerPixel;
 	double m_squareSize = 12.1;
 	vector<Point2f> corners;
-
+	// Private Methods
 	Mat CannyDetection(Mat image, bool showImg = true);
+	Mat CannyDetectionDebug(Mat image, bool showImg = true);
 	void FindContours(Mat image);
 	void DetectBlob(Mat image);
+	// Default Window Name
 	const char* m_WindowName = "My Image";
 };
