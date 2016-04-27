@@ -46,7 +46,14 @@ private:
 	int m_sigmaX = 10, m_sigmaY = 2;
 	int m_cannyLow = 85, m_ratio = 3, m_aperture = 3;
 	int m_houghLength = 155;
+
+	// Calibration and Conversion
+	int m_boardWidth = 6;
+	int m_boardLength = 9;
+	double m_cmPerPixel;
+	double m_squareSize = 12.1;
 	vector<Point2f> corners;
+
 	Mat CannyDetection(Mat image, bool showImg = true);
 	void FindContours(Mat image);
 	void DetectBlob(Mat image);

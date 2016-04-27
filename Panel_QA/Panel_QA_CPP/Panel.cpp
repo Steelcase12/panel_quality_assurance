@@ -746,16 +746,12 @@ void Panel::PixelsToLength(string sImgPath)
 	Point2f corner3;
 	Point2f corner4;
 
-	double width = 0;
-	double length = 0;
-	double ratio = 0;
+	double pixel_width = 0;
 
 	bool found = false;
 
 	found = findChessboardCorners(m_pPanel->m_Image, Size(9, 6), m_pPanel->corners,
 		CALIB_CB_ADAPTIVE_THRESH | CALIB_CB_FAST_CHECK | CALIB_CB_NORMALIZE_IMAGE);
-
-	cout << found << endl;
 
 	Mat imgGray;
 	cvtColor(m_pPanel->m_Image, imgGray, COLOR_BGR2GRAY);
@@ -786,43 +782,46 @@ void Panel::PixelsToLength(string sImgPath)
 	circle(m_pPanel->m_Image, corner3, 10, CV_RGB(255, 0, 0), 2);
 	circle(m_pPanel->m_Image, corner4, 10, CV_RGB(100, 100, 100), 2);
 
-	ratio = 8.0 / 5.0;
-	width = norm(corner3 - corner4);
-	length = ratio * width;
+	pixel_width = norm(corner3 - corner4);
 
-	vector<Point2f> panel_pts;
-	vector<Point2f> rect_pts;
-	panel_pts.push_back(corner1);
-	panel_pts.push_back(corner2);
-	panel_pts.push_back(corner3);
-	panel_pts.push_back(corner4);
-	rect_pts.push_back(Point2f(0, 0));
-	rect_pts.push_back(Point2f((float)length, 0));
-	rect_pts.push_back(Point2f(0, (float)width));
-	rect_pts.push_back(Point2f((float)length, (float)width));
+	// Move constanst to config file
+	m_pPanel->m_cmPerPixel = (m_pPanel->m_squareSize * (float)(m_pPanel->m_boardWidth - 1)) / pixel_width;
 
-	// Draw new rectangle
-	line(m_pPanel->m_Image, rect_pts[0], rect_pts[1], CV_RGB(255, 0, 0), 2);
-	line(m_pPanel->m_Image, rect_pts[1], rect_pts[2], CV_RGB(255, 0, 0), 2);
-	line(m_pPanel->m_Image, rect_pts[2], rect_pts[3], CV_RGB(255, 0, 0), 2);
-	line(m_pPanel->m_Image, rect_pts[3], rect_pts[0], CV_RGB(255, 0, 0), 2);
+	cout << m_pPanel->m_cmPerPixel;
 
-	// Perspective Transorm
-	Mat transmtx = getPerspectiveTransform(panel_pts, rect_pts);
-	int offsetSize = 500;
-	Mat transformed = Mat::zeros(m_pPanel->m_Image.cols + offsetSize, m_pPanel->m_Image.rows + offsetSize, CV_8UC3);
-	warpPerspective(m_pPanel->m_Image, transformed, transmtx, transformed.size());
-
-//	Mat subImg(transformed, Rect(corner1.x, corner1.y, width, length));
-
-	namedWindow("Original", WINDOW_NORMAL);
-	imshow("Original", m_pPanel->m_Image);
-	namedWindow("Warped", WINDOW_AUTOSIZE);
-	imshow("Warped", transformed);
-//	namedWindow("SubImage", WINDOW_AUTOSIZE);
-//	imshow("SubImage", subImg);
-
-//	imwrite("PersCorrCheck10.jpg", subImg);
+	// Perspective Transform
+	//	double ratio = 8.0 / 5.0;
+	//	double length = ratio * pixel_width;
+	//
+	//	vector<Point2f> panel_pts;
+	//	vector<Point2f> rect_pts;
+	//	panel_pts.push_back(corner1);
+	//	panel_pts.push_back(corner2);
+	//	panel_pts.push_back(corner3);
+	//	panel_pts.push_back(corner4);
+	//	rect_pts.push_back(Point2f(0, 0));
+	//	rect_pts.push_back(Point2f((float)width, 0));
+	//	rect_pts.push_back(Point2f((float)width, (float)length));
+	//	rect_pts.push_back(Point2f(0, (float)length));
+	//
+	//	// Draw new rectangle
+	//	line(m_pPanel->m_Image, rect_pts[0], rect_pts[1], CV_RGB(255, 0, 0), 2);
+	//	line(m_pPanel->m_Image, rect_pts[1], rect_pts[2], CV_RGB(255, 0, 0), 2);
+	//	line(m_pPanel->m_Image, rect_pts[2], rect_pts[3], CV_RGB(255, 0, 0), 2);
+	//	line(m_pPanel->m_Image, rect_pts[3], rect_pts[0], CV_RGB(255, 0, 0), 2);
+	//
+	//	// Perspective Transorm
+	//	Mat transmtx = getPerspectiveTransform(panel_pts, rect_pts);
+	//	int offsetSize = 500;
+	//	Mat transformed = Mat::zeros(m_pPanel->m_Image.cols + offsetSize, m_pPanel->m_Image.rows + offsetSize, CV_8UC3);
+	//	warpPerspective(m_pPanel->m_Image, transformed, transmtx, transformed.size());
+	//
+	////	Mat subImg(transformed, Rect(corner1.x, corner1.y, width, length));
+	//
+	//	namedWindow("Original", WINDOW_NORMAL);
+	//	imshow("Original", m_pPanel->m_Image);
+	//	namedWindow("Warped", WINDOW_AUTOSIZE);
+	//	imshow("Warped", transformed);
 }
 
 ///////////////////////////////////////////////////////
