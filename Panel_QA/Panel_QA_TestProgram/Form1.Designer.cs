@@ -133,6 +133,7 @@
             this.featureImageBox.Name = "featureImageBox";
             this.featureImageBox.Size = new System.Drawing.Size(281, 20);
             this.featureImageBox.TabIndex = 71;
+            this.featureImageBox.Text = "..\\..\\..\\..\\resources\\Glue_Booth\\img3.png";
             // 
             // settingsLabel
             // 
@@ -188,6 +189,7 @@
             this.settingsInput.Name = "settingsInput";
             this.settingsInput.Size = new System.Drawing.Size(281, 20);
             this.settingsInput.TabIndex = 68;
+            this.settingsInput.Text = "..\\..\\..\\..\\resources\\Settings.xml";
             // 
             // warningLabel
             // 
@@ -224,7 +226,7 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 60;
-            this.inputBox.Text = "C:\\CPE 495 496\\panel_quality_assurance\\resources\\Glue_Booth\\img3.jpg";
+            this.inputBox.Text = "..\\..\\..\\..\\resources\\Glue_Booth\\measure1_contrast.jpg";
             // 
             // viewWithCalibrationBtn
             // 
