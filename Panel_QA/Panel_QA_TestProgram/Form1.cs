@@ -172,6 +172,19 @@ namespace Panel_QA_TestProgram
             } else {
                 warningLabel.Text = "You must enter a path to a settings file";
             }
+        }
+
+        private void dimensionsBtn_Click(object sender, EventArgs e)
+        {
+            if (imagePath.Text != "")
+            {
+                newPanel.MeasureDimensions(imagePath.Text);
+                warningLabel.Text = "";
+            }
+            else
+            {
+                warningLabel.Text = "You must enter a path to an image";
+            }
         }    
     }
 }

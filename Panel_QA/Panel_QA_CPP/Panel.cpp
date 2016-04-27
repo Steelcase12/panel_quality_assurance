@@ -184,6 +184,11 @@ static void onMouseLocation(int event, int x, int y, int f, void *ptr)
 	}
 }
 
+void Panel::MeasureDimensions(string sImgPath)
+{
+	cout << "Measure";
+}
+
 /////////////////////////////////////////////////////////////////////////
 // Panel::ShowImage()
 // Description: Function mainly used to set the member variable m_Image.
