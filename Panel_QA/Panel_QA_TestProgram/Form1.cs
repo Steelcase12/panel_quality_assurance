@@ -16,6 +16,9 @@ namespace Panel_QA_TestProgram
         MYPanel newPanel;
         public Form1()
         {
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             InitializeComponent();
             newPanel = new MYPanel();
         }
@@ -24,9 +27,9 @@ namespace Panel_QA_TestProgram
         {
             if (inputBox.Text != "") {
                 newPanel.ShowImage(inputBox.Text, "My Image");
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to an image";
+                toolStripStatusLabel1.Text = "You must enter a path to an image";
             }
         }
 
@@ -34,9 +37,9 @@ namespace Panel_QA_TestProgram
         {
             if (inputBox.Text != "") {
                 newPanel.MaskWithColor(inputBox.Text, "Red");
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to an image";
+                toolStripStatusLabel1.Text = "You must enter a path to an image";
             }
         }
 
@@ -44,9 +47,9 @@ namespace Panel_QA_TestProgram
         {
             if (inputBox.Text != "") {
                 newPanel.MaskWithColor(inputBox.Text, "Blue");
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to an image";
+                toolStripStatusLabel1.Text = "You must enter a path to an image";
             }
         }
 
@@ -54,9 +57,9 @@ namespace Panel_QA_TestProgram
         {
             if (inputBox.Text != "") {
                 newPanel.MaskWithColor(inputBox.Text, "panel");
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to an image";
+                toolStripStatusLabel1.Text = "You must enter a path to an image";
             }
         }
 
@@ -64,9 +67,9 @@ namespace Panel_QA_TestProgram
         {
             if (inputBox.Text != "") {
                 newPanel.DetectEdges(inputBox.Text, true);
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to an image";
+                toolStripStatusLabel1.Text = "You must enter a path to an image";
             }
         }
 
@@ -74,9 +77,9 @@ namespace Panel_QA_TestProgram
         {
             if (calibrationPath.Text != "") {
                 newPanel.CalibrateCamera(calibrationPath.Text);
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to a file";
+                toolStripStatusLabel1.Text = "You must enter a path to a file";
             }
         }
 
@@ -85,9 +88,9 @@ namespace Panel_QA_TestProgram
             if (calibrationPath.Text != "") {
 
                 newPanel.CalibrateCameraNoOutput(calibrationPath.Text);
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to a file";
+                toolStripStatusLabel1.Text = "You must enter a path to a file";
             }
         }
 
@@ -95,9 +98,9 @@ namespace Panel_QA_TestProgram
         {
             if (inputBox.Text != "") {
                 newPanel.ShowImageWithCalibration(inputBox.Text, "My Image");
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to an image";
+                toolStripStatusLabel1.Text = "You must enter a path to an image";
             }
         }
 
@@ -105,9 +108,9 @@ namespace Panel_QA_TestProgram
         {
             if (inputBox.Text != "") {
                 newPanel.BatchCalibrate(inputBox.Text);
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to a directory";
+                toolStripStatusLabel1.Text = "You must enter a path to a directory";
             }
             }
 
@@ -116,9 +119,9 @@ namespace Panel_QA_TestProgram
             if (featureImageBox.Text != "" && featureTemplateBox.Text != "")
             {
                 newPanel.DetectFeatures(featureImageBox.Text, featureTemplateBox.Text, featuresCheckBox.Checked, featureRotatedCheckBox.Checked);
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to a file AND a template";
+                toolStripStatusLabel1.Text = "You must enter a path to a file AND a template";
             }
         }
 
@@ -127,11 +130,11 @@ namespace Panel_QA_TestProgram
             if (inputBox.Text != "")
             {
                 newPanel.PixelsToLength(inputBox.Text);
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             }
             else
             {
-                warningLabel.Text = "You must enter a path to an image";
+                toolStripStatusLabel1.Text = "You must enter a path to an image";
             }
         }
 
@@ -140,11 +143,11 @@ namespace Panel_QA_TestProgram
             if (calibrationPath.Text != "")
             {
                 newPanel.LoadCalibration(calibrationPath.Text);
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             }
             else
             {
-                warningLabel.Text = "You must enter a path to a file";
+                toolStripStatusLabel1.Text = "You must enter a path to a file";
             }
         }
 
@@ -158,11 +161,11 @@ namespace Panel_QA_TestProgram
                 } else if (radioButton2.Checked){
                     newPanel.MaskWithColor(imagePath.Text, radioButton2.Text);
                 }
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             }
             else
             {
-                warningLabel.Text = "You must enter a path to an image";
+                toolStripStatusLabel1.Text = "You must enter a path to an image";
             }
         }      
     
@@ -170,9 +173,9 @@ namespace Panel_QA_TestProgram
         {
             if (settingsInput.Text != "") {
                 newPanel.ReadSettings(settingsInput.Text);
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
-                warningLabel.Text = "You must enter a path to a settings file";
+                toolStripStatusLabel1.Text = "You must enter a path to a settings file";
             }
         }
 
@@ -181,11 +184,11 @@ namespace Panel_QA_TestProgram
             if (imagePath.Text != "")
             {
                 newPanel.DetectEdges(imagePath.Text, false);
-                warningLabel.Text = "";
+                toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             }
             else
             {
-                warningLabel.Text = "You must enter a path to an image";
+                toolStripStatusLabel1.Text = "You must enter a path to an image";
             }
         }
     }

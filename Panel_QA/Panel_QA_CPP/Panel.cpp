@@ -14,17 +14,20 @@ Panel::Panel()
 {
 	m_pPanel = this;
 	// Read image border if it exists
-	FileStorage fs_border("Config/image_border.xml", FileStorage::READ); // Read the settings
+	FileStorage fs_border("../../Config/image_boundary.xml", FileStorage::READ); // Read the settings
 	if (!fs_border.isOpened())
-		ShowMessage("Could not open the configuration file: \"Config\image_border.xml\"\nIf you want an image border you must run \"Detect Features\"");
+	{
+		string errMsg = "Could not open the configuration file: \"..\\..\\Config\\image_border.xml\"\nIf you want an image border you must run \"Detect Features\"\n";
+		ShowMessage(errMsg);
+	}
 	else {
-		fs_border["image_boundary"] >> m_low;
+		fs_border["image_boundary"] >> m_roi;
 		fs_border.release();
 	}
-	// Read Canny and Hough Parameters
-	FileStorage fs("Config/Settings.xml", FileStorage::READ); // Read the settings
+	// Read Canny, Hough, and Feature Detection Parameters
+	FileStorage fs("../../Config/Settings.xml", FileStorage::READ); // Read the settings
 	if (!fs.isOpened())
-		ShowMessage("Could not open the configuration file: \"Config\Settings.xml\"\nLocate or create a settings file to run Canny Edge Detection and Panel Measurement");
+		ShowMessage("Could not open the configuration file: \"..\\..\\Config\\Settings.xml\"\nLocate or create a settings file to run Canny Edge Detection and Panel Measurement");
 	else {
 		// Canny & Hough Parameters
 		fs["low_threshold"] >> m_low;
@@ -232,10 +235,15 @@ bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 	// Size dim = Size(750, int(m_pPanel->m_Image.rows * r));
 	// resize(m_pPanel->m_Image, m_pPanel->m_Image, dim);
 
+	Mat image;
 	// Show the image
 	if (showImg){
+		if (m_roi.width)
+			image = m_pPanel->m_Image(m_roi);
+		else
+			image = m_pPanel->m_Image;
 		namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
-		imshow(windowTitle, m_pPanel->m_Image);
+		imshow(windowTitle, image);
 	}
 	// Set mouse callback to show the color of the point clicked
 	// setMouseCallback(windowTitle, onMouseColor, static_cast<void*>(&m_pPanel));
