@@ -533,22 +533,25 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			rect.points(rectPoints);
 			int j = 0;
 			for (j; j < 4; j++)
-				line(image, rectPoints[j], rectPoints[(j + 1) % 4], color, 1, 8);
+				line(image, rectPoints[j], rectPoints[(j + 1) % 4], color, 5, 8);
 
 			float topLength = (float)norm(rectPoints[1] - rectPoints[0]);
 			float botLength = (float)norm(rectPoints[3] - rectPoints[2]);
 			float panelWidthPixels = topLength < botLength ? topLength : botLength;
-			float panelWidthReal = panelWidthPixels / m_conversionRate;
 
 			float leftHeight = (float)norm(rectPoints[3] - rectPoints[0]);
 			float rightHeight = (float)norm(rectPoints[2] - rectPoints[1]);
 			float panelHeightPixels = leftHeight < rightHeight ? leftHeight : rightHeight;
-			float panelHeightReal = panelHeightPixels / m_conversionRate;
 
 			string dimensionDisplayPixels = "Pixels:\nWidth: " + to_string(panelWidthPixels) + " pixels\nHeight: " + to_string(panelHeightPixels) + " pixels";
 			// ShowMessage(dimensionDisplayPixels);
-			string dimensionDisplayActual = "Actual:\nWidth: " + to_string(panelWidthReal) + " cm\nHeight: " + to_string(panelHeightReal) + " cm";
-			ShowMessage(dimensionDisplayActual);
+			if (m_conversionRate)
+			{
+				float panelWidthReal = panelWidthPixels / m_conversionRate;
+				float panelHeightReal = panelHeightPixels / m_conversionRate;
+				string dimensionDisplayActual = "Actual:\nWidth: " + to_string(panelWidthReal) + " cm\nHeight: " + to_string(panelHeightReal) + " cm";
+				ShowMessage(dimensionDisplayActual);
+			}
 
 		}
 
@@ -1346,23 +1349,26 @@ void Panel::ReadSettings(string sFilePath, bool showSuccess)
 	{
 		ShowMessage("Could not open the configuration file: \"" + inputSettingsFile + "\"\n"); // Locate or create a settings file to run Canny Edge Detection and Panel Measurement\n");
 	}
-	// Canny & Hough Parameters
-	fs["low_threshold"] >> m_lowCannyThreshold;
-	fs["blur_sigma_x"] >> m_sigmaX;
-	fs["blur_sigma_y"] >> m_sigmaY;
-	fs["canny_low"] >> m_cannyLow;
-	fs["canny_ratio"] >> m_ratio;
-	fs["min_hough_length"] >> m_houghLength;
-	// Feature Detection Parameters
-	fs["feature_height_cm"] >> m_feature_height;
-	fs["feature_width_cm"] >> m_feature_width;
-	// Tag Detection Parameters
-	fs["low_tag_threshold"] >> m_lowTagThreshold;
-	fs["blob_area"] >> m_blobArea;
+	else
+	{
+		// Canny & Hough Parameters
+		fs["low_threshold"] >> m_lowCannyThreshold;
+		fs["blur_sigma_x"] >> m_sigmaX;
+		fs["blur_sigma_y"] >> m_sigmaY;
+		fs["canny_low"] >> m_cannyLow;
+		fs["canny_ratio"] >> m_ratio;
+		fs["min_hough_length"] >> m_houghLength;
+		// Feature Detection Parameters
+		fs["feature_height_cm"] >> m_feature_height;
+		fs["feature_width_cm"] >> m_feature_width;
+		// Tag Detection Parameters
+		fs["low_tag_threshold"] >> m_lowTagThreshold;
+		fs["blob_area"] >> m_blobArea;
 
-	fs.release();
-	if (showSuccess)
-		ShowMessage("Settings Read Successfully");
+		fs.release();
+		if (showSuccess)
+			ShowMessage("Settings Read Successfully");
+	}
 }
 
 void Panel::ReadFeatureSettings(string sFilePath, bool showSuccess)
