@@ -216,7 +216,7 @@ bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 			image = m_pPanel->m_Image(m_roi);
 		else
 			image = m_pPanel->m_Image;
-		namedWindow(windowTitle, CV_WINDOW_KEEPRATIO);
+		namedWindow(windowTitle, CV_WINDOW_NORMAL);
 		imshow(windowTitle, image);
 	}
 	// Set mouse callback to show the color of the point clicked
@@ -421,7 +421,6 @@ void Panel::MaskWithColor(string sImgPath, string color, bool debug)
 		cvCreateTrackbar("Val Lo 2", "InRange Tester", &v2Lo, 255);
 		cvCreateTrackbar("Val Hi 2", "InRange Tester", &v2Hi, 255);
 
-		Mat Mask1, Mask2;
 		while (true)
 		{
 			inRange(HSV, Scalar(h1Lo, s1Lo, v1Lo), Scalar(h1Hi, s1Hi, v1Hi), Mask1);
@@ -431,7 +430,7 @@ void Panel::MaskWithColor(string sImgPath, string color, bool debug)
 			image.copyTo(MaskResult, Mask);
 			namedWindow("Mask Result", CV_WINDOW_NORMAL);
 			imshow("Mask Result", MaskResult);
-			if (waitKey(10) == 27)
+			if (waitKey(50) == 27)
 				break;
 		}
 	}
