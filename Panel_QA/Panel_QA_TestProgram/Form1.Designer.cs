@@ -213,7 +213,7 @@
             // 
             // inputBox
             // 
-            this.inputBox.Location = new System.Drawing.Point(111, 90);
+            this.inputBox.Location = new System.Drawing.Point(111, 89);
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 60;
@@ -327,10 +327,11 @@
             // 
             // calibrationPath
             // 
-            this.calibrationPath.Location = new System.Drawing.Point(111, 19);
+            this.calibrationPath.Location = new System.Drawing.Point(111, 21);
             this.calibrationPath.Name = "calibrationPath";
             this.calibrationPath.Size = new System.Drawing.Size(281, 20);
             this.calibrationPath.TabIndex = 49;
+            this.calibrationPath.Text = "..\\..\\Config\\CameraCalibration";
             // 
             // label4
             // 
