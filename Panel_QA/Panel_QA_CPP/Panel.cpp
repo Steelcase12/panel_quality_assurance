@@ -22,10 +22,6 @@ Panel::~Panel()
 	// delete m_pPanel;
 }
 
-// Camera Calibration Constants
-Mat mainMap1, mainMap2;
-Mat mainCameraMatrix, mainDistCoeffs;
-
 ////////////////////////////////////////////////////////////
 // Helper Function for Cascade Classifier				  
 ////////////////////////////////////////////////////////////
@@ -251,8 +247,8 @@ bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat ca
 
 	// Calibrate
 	Mat rview;
-	if (!mainMap1.empty()){
-		remap(m_pPanel->m_Image, rview, mainMap1, mainMap2, INTER_LINEAR);
+	if (!m_mainMap1.empty()){
+		remap(m_pPanel->m_Image, rview, m_mainMap1, m_mainMap2, INTER_LINEAR);
 	}
 	else{
 		rview = m_pPanel->m_Image;
@@ -292,7 +288,7 @@ void Panel::BatchCalibrate(string sdirPath)
 	{
 		img = imread(fn[i]);
 		
-		remap(img, rview, mainMap1, mainMap2, INTER_LINEAR);
+		remap(img, rview, m_mainMap1, m_mainMap2, INTER_LINEAR);
 
 		ss << setw(3) << setfill('0') << i;
 		s = ss.str();
@@ -1067,8 +1063,8 @@ void Panel::CalibrateCamera(string sFilePath)
 			getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, imageSize, 1, imageSize, 0),
 			imageSize, CV_16SC2, map1, map2);
 
-		mainMap1 = map1;
-		mainMap2 = map2;
+		m_mainMap1 = map1;
+		m_mainMap2 = map2;
 
 		for (size_t i = 0; i < s.imageList.size(); i++)
 		{
@@ -1284,13 +1280,13 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 		getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, imageSize, 1, imageSize, 0),
 		imageSize, CV_16SC2, map1, map2);
 
-	mainMap1 = map1;
-	mainMap2 = map2;
+	m_mainMap1 = map1;
+	m_mainMap2 = map2;
 
 	// Just for testing DrawOnBoard
 
-	mainCameraMatrix = cameraMatrix;
-	mainDistCoeffs = distCoeffs;
+	m_mainCameraMatrix = cameraMatrix;
+	m_mainDistCoeffs = distCoeffs;
 	//	return 0;
 
 }
@@ -1332,11 +1328,11 @@ void Panel::LoadCalibration(string sFilePath)
 		getOptimalNewCameraMatrix(import_camera_matrix, import_distortion_coefficients, import_image_size, 1, import_image_size, 0),
 		import_image_size, CV_16SC2, map1, map2);
 
-	mainMap1 = map1;
-	mainMap2 = map2;
+	m_mainMap1 = map1;
+	m_mainMap2 = map2;
 
-	mainCameraMatrix = import_camera_matrix;
-	mainDistCoeffs = import_distortion_coefficients;
+	m_mainCameraMatrix = import_camera_matrix;
+	m_mainDistCoeffs = import_distortion_coefficients;
 
 	cout << "Calibration Loaded" << endl << endl;
 

@@ -52,7 +52,10 @@ private:
 	// Tag Detection Settings
 	int m_lowTagThreshold = 60;
 	int m_blobArea = 325;
-	// Calibration and Conversion
+	// Camera Calibration
+	Mat m_mainMap1, m_mainMap2;
+	Mat m_mainCameraMatrix, m_mainDistCoeffs;
+	//Pixel Conversion with Checkerboard
 	int m_boardWidth = 6;
 	int m_boardLength = 9;
 	double m_cmPerPixel;
