@@ -22,6 +22,7 @@ Panel::Panel()
 	}
 	else {
 		fs_border["image_boundary"] >> m_roi;
+		fs_border["conversion_rate"] >> m_conversionRate;
 		fs_border.release();
 	}
 	// Read Canny, Hough, and Feature Detection Parameters
@@ -805,8 +806,9 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder,
 	{
 		boundImg = m_Image(m_roi);
 		// Store the image boundary in the settings file
-		FileStorage fs("./Config/image_boundary.xml", FileStorage::WRITE);
+		FileStorage fs("../../Config/image_boundary.xml", FileStorage::WRITE);
 		fs << "image_boundary" << m_roi;
+		fs << "conversion_rate" << m_conversionRate;
 		fs.release();
 	}
 	else

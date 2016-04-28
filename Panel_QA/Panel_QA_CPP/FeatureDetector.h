@@ -402,28 +402,6 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 				m_conversionRate = height / m_FeatureHeightCM;
 			else
 				m_conversionRate = width / m_FeatureWidthCM;
-			
-			/* Perspective Correction
-			vector<Point2f> new_corners;
-			new_corners.push_back(Point2f(scene_corners[2].x, scene_corners[2].y - height));
-			new_corners.push_back(Point2f(scene_corners[1].x, scene_corners[1].y - height));
-			new_corners.push_back(Point2f(scene_corners[1].x, scene_corners[1].y));
-			new_corners.push_back(Point2f(scene_corners[2].x, scene_corners[2].y));
-			// Draw new rectangle
-			line(outImg, new_corners[0], new_corners[1], CV_RGB(255, 0, 0), 2);
-			line(outImg, new_corners[1], new_corners[2], CV_RGB(255, 0, 0), 2);
-			line(outImg, new_corners[2], new_corners[3], CV_RGB(255, 0, 0), 2);
-			line(outImg, new_corners[3], new_corners[0], CV_RGB(255, 0, 0), 2);
-			namedWindow("OutImg", CV_WINDOW_NORMAL);
-			imshow("OutImg", outImg);
-			// Perspective Transorm
-			Mat transmtx = getPerspectiveTransform(scene_corners, new_corners);
-			int offsetSize = 500;
-			Mat transformed = Mat::zeros(scene.rows + offsetSize, scene.cols + offsetSize, CV_8UC3);
-			warpPerspective(scene, transformed, transmtx, transformed.size());
-			namedWindow("Transformed", CV_WINDOW_NORMAL);
-			imshow("Transformed", transformed);
-			*/
 		}
 
 		//-- Draw lines between the corners (the mapped object in the scene - image_2 )
@@ -468,7 +446,6 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 			rightPoint = (scene_corners[3].x > temp4) ? (int)scene_corners[3].x : temp4;
 			rightPoint += col;
 		}
-		
 	}
 	// else 
 	//	cout << "OBJECT NOT FOUND!" << endl;
