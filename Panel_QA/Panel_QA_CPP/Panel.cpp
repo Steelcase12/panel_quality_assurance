@@ -223,7 +223,9 @@ bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 
 ////////////////////////////////////////////////////////////////////
 // Panel::ShowImageWithCalibration
-// Description: Nick add description here
+// Description: Views image with camera calibration applied if a 
+// calibration has been loaded or computed. Saves the image in the 
+// release folder as "Calibrated_Image.jpg"
 ////////////////////////////////////////////////////////////////////
 bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat calibratedImg, bool showImg)
 {
@@ -268,11 +270,13 @@ bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat ca
 	return true;
 }
 
-/////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 // Panel::BatchCalibrate() 
-// Description: Nick add description here.
+// Description: Will save all of the images located in the specified folder, 
+// with camera calibration added, into the folder "Calibrated_Folder"
+//
 // Must have folder named Calibrated_Folder prexisting in build folder 
-/////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 void Panel::BatchCalibrate(string sdirPath)
 {
 	String path(sdirPath + "/*.jpg");
@@ -294,7 +298,7 @@ void Panel::BatchCalibrate(string sdirPath)
 		s = ss.str();
 
 		// Save image
-		imwrite("Calibrated_Folder/Checkerboard" + s + ".jpg", rview);
+		imwrite("Calibrated_Folder/Calibrated_" + s + ".jpg", rview);
 		cout << "Image " << i + 1 << " completed" << endl;
 
 		ss.str("");
@@ -782,7 +786,8 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder,
 
 ///////////////////////////////////////////////////////
 // Panel::PixelsToLength() 
-//  Description: Nick
+//  Description: Not currently used: Calculates the
+// ratio of cm to pixels from one checkerboard image
 ///////////////////////////////////////////////////////
 void Panel::PixelsToLength(string sImgPath)
 {
@@ -1087,10 +1092,14 @@ void Panel::CalibrateCamera(string sFilePath)
 
 }
 
-///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
 // Panel::CalibrateCameraNoOutput() 
-//  Description: Nick
-///////////////////////////////////////////////////////
+//  Description: Creates a camera calibration without 
+// displaying extra windows of the images used. Saves 
+// a file for later importing named "out_camera_data.xml"
+// in Config/CameraCalibration. 
+// Input is "Steelcase.xml" in Config/CameraCalibration 
+/////////////////////////////////////////////////////////////
 void Panel::CalibrateCameraNoOutput(string sFilePath)
 {
 	help();
@@ -1296,7 +1305,8 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 
 ///////////////////////////////////////////////////////
 // Panel::LoadCalibration() 
-//  Description: Nick
+//  Description: Imports a previously created camera
+// calibration created by CalibrateCameraNoOutput. 
 ///////////////////////////////////////////////////////
 void Panel::LoadCalibration(string sFilePath)
 {
