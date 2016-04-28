@@ -18,7 +18,7 @@ namespace Panel_QA_TestProgram
         {
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            this.MinimizeBox = true;
             InitializeComponent();
             newPanel = new MYPanel();
         }
