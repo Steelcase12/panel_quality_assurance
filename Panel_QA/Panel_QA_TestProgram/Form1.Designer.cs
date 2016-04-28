@@ -129,9 +129,9 @@
             // 
             // featureImageBox
             // 
-            this.featureImageBox.Location = new System.Drawing.Point(114, 161);
+            this.featureImageBox.Location = new System.Drawing.Point(111, 161);
             this.featureImageBox.Name = "featureImageBox";
-            this.featureImageBox.Size = new System.Drawing.Size(281, 20);
+            this.featureImageBox.Size = new System.Drawing.Size(284, 20);
             this.featureImageBox.TabIndex = 71;
             this.featureImageBox.Text = "..\\..\\resources\\Glue_Booth\\img3.jpg";
             // 
@@ -146,7 +146,7 @@
             // 
             // blueBtn
             // 
-            this.blueBtn.Location = new System.Drawing.Point(204, 126);
+            this.blueBtn.Location = new System.Drawing.Point(204, 125);
             this.blueBtn.Name = "blueBtn";
             this.blueBtn.Size = new System.Drawing.Size(93, 23);
             this.blueBtn.TabIndex = 69;
@@ -156,7 +156,7 @@
             // 
             // redBtn
             // 
-            this.redBtn.Location = new System.Drawing.Point(111, 126);
+            this.redBtn.Location = new System.Drawing.Point(111, 125);
             this.redBtn.Name = "redBtn";
             this.redBtn.Size = new System.Drawing.Size(87, 23);
             this.redBtn.TabIndex = 68;
@@ -185,15 +185,15 @@
             // 
             // settingsInput
             // 
-            this.settingsInput.Location = new System.Drawing.Point(114, 217);
+            this.settingsInput.Location = new System.Drawing.Point(111, 217);
             this.settingsInput.Name = "settingsInput";
-            this.settingsInput.Size = new System.Drawing.Size(281, 20);
+            this.settingsInput.Size = new System.Drawing.Size(284, 20);
             this.settingsInput.TabIndex = 68;
-            this.settingsInput.Text = "..\\..\\resources\\Settings.xml";
+            this.settingsInput.Text = "..\\..\\Config\\Settings.xml";
             // 
             // panelBtn
             // 
-            this.panelBtn.Location = new System.Drawing.Point(303, 126);
+            this.panelBtn.Location = new System.Drawing.Point(303, 125);
             this.panelBtn.Name = "panelBtn";
             this.panelBtn.Size = new System.Drawing.Size(89, 23);
             this.panelBtn.TabIndex = 65;
@@ -213,11 +213,11 @@
             // 
             // inputBox
             // 
-            this.inputBox.Location = new System.Drawing.Point(111, 90);
+            this.inputBox.Location = new System.Drawing.Point(111, 89);
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 60;
-            this.inputBox.Text = "..\\..\\resources\\Glue_Booth\\measure1_contrast.jpg";
+            this.inputBox.Text = "..\\..\\resources\\Resources\\measure1_contrast.jpg";
             // 
             // viewWithCalibrationBtn
             // 
@@ -242,7 +242,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 101);
+            this.label1.Location = new System.Drawing.Point(6, 93);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(64, 13);
             this.label1.TabIndex = 61;
@@ -319,18 +319,19 @@
             // 
             // featureTemplateBox
             // 
-            this.featureTemplateBox.Location = new System.Drawing.Point(114, 187);
+            this.featureTemplateBox.Location = new System.Drawing.Point(111, 187);
             this.featureTemplateBox.Name = "featureTemplateBox";
-            this.featureTemplateBox.Size = new System.Drawing.Size(281, 20);
+            this.featureTemplateBox.Size = new System.Drawing.Size(284, 20);
             this.featureTemplateBox.TabIndex = 51;
             this.featureTemplateBox.Text = "..\\..\\resources\\Glue_Booth\\qr_steelcase.png";
             // 
             // calibrationPath
             // 
-            this.calibrationPath.Location = new System.Drawing.Point(111, 19);
+            this.calibrationPath.Location = new System.Drawing.Point(111, 21);
             this.calibrationPath.Name = "calibrationPath";
             this.calibrationPath.Size = new System.Drawing.Size(281, 20);
             this.calibrationPath.TabIndex = 49;
+            this.calibrationPath.Text = "..\\..\\Config\\CameraCalibration";
             // 
             // label4
             // 
@@ -391,7 +392,7 @@
             this.imagePath.Name = "imagePath";
             this.imagePath.Size = new System.Drawing.Size(350, 20);
             this.imagePath.TabIndex = 4;
-            this.imagePath.Text = "..\\..\\resources\\";
+            this.imagePath.Text = "..\\..\\resources\\Resources";
             // 
             // colorGroupBox1
             // 

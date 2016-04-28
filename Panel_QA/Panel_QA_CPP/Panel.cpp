@@ -22,10 +22,6 @@ Panel::~Panel()
 	// delete m_pPanel;
 }
 
-// Camera Calibration Constants
-Mat mainMap1, mainMap2;
-Mat mainCameraMatrix, mainDistCoeffs;
-
 ////////////////////////////////////////////////////////////
 // Helper Function for Cascade Classifier				  
 ////////////////////////////////////////////////////////////
@@ -227,7 +223,9 @@ bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 
 ////////////////////////////////////////////////////////////////////
 // Panel::ShowImageWithCalibration
-// Description: Nick add description here
+// Description: Views image with camera calibration applied if a 
+// calibration has been loaded or computed. Saves the image in the 
+// release folder as "Calibrated_Image.jpg"
 ////////////////////////////////////////////////////////////////////
 bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat calibratedImg, bool showImg)
 {
@@ -251,8 +249,8 @@ bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat ca
 
 	// Calibrate
 	Mat rview;
-	if (!mainMap1.empty()){
-		remap(m_pPanel->m_Image, rview, mainMap1, mainMap2, INTER_LINEAR);
+	if (!m_mainMap1.empty()){
+		remap(m_pPanel->m_Image, rview, m_mainMap1, m_mainMap2, INTER_LINEAR);
 	}
 	else{
 		rview = m_pPanel->m_Image;
@@ -272,11 +270,13 @@ bool Panel::ShowImageWithCalibration(string sImgPath, string windowTitle, Mat ca
 	return true;
 }
 
-/////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 // Panel::BatchCalibrate() 
-// Description: Nick add description here.
+// Description: Will save all of the images located in the specified folder, 
+// with camera calibration added, into the folder "Calibrated_Folder"
+//
 // Must have folder named Calibrated_Folder prexisting in build folder 
-/////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 void Panel::BatchCalibrate(string sdirPath)
 {
 	String path(sdirPath + "/*.jpg");
@@ -292,13 +292,13 @@ void Panel::BatchCalibrate(string sdirPath)
 	{
 		img = imread(fn[i]);
 		
-		remap(img, rview, mainMap1, mainMap2, INTER_LINEAR);
+		remap(img, rview, m_mainMap1, m_mainMap2, INTER_LINEAR);
 
 		ss << setw(3) << setfill('0') << i;
 		s = ss.str();
 
 		// Save image
-		imwrite("Calibrated_Folder/Checkerboard" + s + ".jpg", rview);
+		imwrite("Calibrated_Folder/Calibrated_" + s + ".jpg", rview);
 		cout << "Image " << i + 1 << " completed" << endl;
 
 		ss.str("");
@@ -789,7 +789,8 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder,
 
 ///////////////////////////////////////////////////////
 // Panel::PixelsToLength() 
-//  Description: Nick
+//  Description: Not currently used: Calculates the
+// ratio of cm to pixels from one checkerboard image
 ///////////////////////////////////////////////////////
 void Panel::PixelsToLength(string sImgPath)
 {
@@ -1073,8 +1074,8 @@ void Panel::CalibrateCamera(string sFilePath)
 			getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, imageSize, 1, imageSize, 0),
 			imageSize, CV_16SC2, map1, map2);
 
-		mainMap1 = map1;
-		mainMap2 = map2;
+		m_mainMap1 = map1;
+		m_mainMap2 = map2;
 
 		for (size_t i = 0; i < s.imageList.size(); i++)
 		{
@@ -1094,10 +1095,14 @@ void Panel::CalibrateCamera(string sFilePath)
 
 }
 
-///////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
 // Panel::CalibrateCameraNoOutput() 
-//  Description: Nick
-///////////////////////////////////////////////////////
+//  Description: Creates a camera calibration without 
+// displaying extra windows of the images used. Saves 
+// a file for later importing named "out_camera_data.xml"
+// in Config/CameraCalibration. 
+// Input is "Steelcase.xml" in Config/CameraCalibration 
+/////////////////////////////////////////////////////////////
 void Panel::CalibrateCameraNoOutput(string sFilePath)
 {
 	help();
@@ -1290,20 +1295,21 @@ void Panel::CalibrateCameraNoOutput(string sFilePath)
 		getOptimalNewCameraMatrix(cameraMatrix, distCoeffs, imageSize, 1, imageSize, 0),
 		imageSize, CV_16SC2, map1, map2);
 
-	mainMap1 = map1;
-	mainMap2 = map2;
+	m_mainMap1 = map1;
+	m_mainMap2 = map2;
 
 	// Just for testing DrawOnBoard
 
-	mainCameraMatrix = cameraMatrix;
-	mainDistCoeffs = distCoeffs;
+	m_mainCameraMatrix = cameraMatrix;
+	m_mainDistCoeffs = distCoeffs;
 	//	return 0;
 
 }
 
 ///////////////////////////////////////////////////////
 // Panel::LoadCalibration() 
-//  Description: Nick
+//  Description: Imports a previously created camera
+// calibration created by CalibrateCameraNoOutput. 
 ///////////////////////////////////////////////////////
 void Panel::LoadCalibration(string sFilePath)
 {
@@ -1338,11 +1344,11 @@ void Panel::LoadCalibration(string sFilePath)
 		getOptimalNewCameraMatrix(import_camera_matrix, import_distortion_coefficients, import_image_size, 1, import_image_size, 0),
 		import_image_size, CV_16SC2, map1, map2);
 
-	mainMap1 = map1;
-	mainMap2 = map2;
+	m_mainMap1 = map1;
+	m_mainMap2 = map2;
 
-	mainCameraMatrix = import_camera_matrix;
-	mainDistCoeffs = import_distortion_coefficients;
+	m_mainCameraMatrix = import_camera_matrix;
+	m_mainDistCoeffs = import_distortion_coefficients;
 
 	cout << "Calibration Loaded" << endl << endl;
 
