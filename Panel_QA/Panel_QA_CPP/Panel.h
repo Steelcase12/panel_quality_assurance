@@ -23,7 +23,7 @@ public:
 	~Panel();
 	bool ShowImage(string imgPath, string windowTitle, bool showImg = true);
 	bool ShowImageWithCalibration(string imgPath, string windowTitle, Mat calibratedImg, bool showImg = true);
-	void MaskWithColor(string imgPath, string color);
+	void MaskWithColor(string imgPath, string color, bool debug = false);
 	void DetectEdges(string imgPath, bool debug);
 	void PixelsToLength(string imgPath);
 	void CalibrateCamera(string filePath);
@@ -62,8 +62,9 @@ private:
 	Mat CannyDetection(Mat image, bool showImg = true);
 	Mat CannyDetectionDebug(Mat image, bool showImg = true);
 	void FindContours(Mat image);
-	void DetectBlob(Mat image);
+	void DetectBlob(Mat image, bool debug = false);
 	void ReadFeatureSettings(string sFilePath, bool showSuccess = false);
+	void GetKeyPoints(Mat image, std::vector<KeyPoint> &keypoints, bool debug);
 	// Default Window Name
 	const char* m_WindowName = "My Image";
 };

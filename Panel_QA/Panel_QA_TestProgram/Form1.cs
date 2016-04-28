@@ -36,7 +36,7 @@ namespace Panel_QA_TestProgram
         private void redBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel.MaskWithColor(inputBox.Text, "Red");
+                newPanel.MaskWithColor(inputBox.Text, "Red", true);
                 toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
                 toolStripStatusLabel1.Text = "You must enter a path to an image";
@@ -46,7 +46,7 @@ namespace Panel_QA_TestProgram
         private void blueBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel.MaskWithColor(inputBox.Text, "Blue");
+                newPanel.MaskWithColor(inputBox.Text, "Blue", true);
                 toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
                 toolStripStatusLabel1.Text = "You must enter a path to an image";
@@ -56,7 +56,7 @@ namespace Panel_QA_TestProgram
         private void panelBtn_Click(object sender, EventArgs e)
         {
             if (inputBox.Text != "") {
-                newPanel.MaskWithColor(inputBox.Text, "panel");
+                newPanel.MaskWithColor(inputBox.Text, "panel", false);
                 toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             } else {
                 toolStripStatusLabel1.Text = "You must enter a path to an image";
@@ -157,9 +157,9 @@ namespace Panel_QA_TestProgram
             {
                 if (radioButton1.Checked)
                 {
-                    newPanel.MaskWithColor(imagePath.Text, radioButton1.Text);
+                    newPanel.MaskWithColor(imagePath.Text, radioButton1.Text, false);
                 } else if (radioButton2.Checked){
-                    newPanel.MaskWithColor(imagePath.Text, radioButton2.Text);
+                    newPanel.MaskWithColor(imagePath.Text, radioButton2.Text, false);
                 }
                 toolStripStatusLabel1.Text = "StPaQuAs - Ready";
             }

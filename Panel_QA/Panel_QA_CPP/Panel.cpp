@@ -1,8 +1,6 @@
 // This is the main DLL file.
 // TODO: Add dialog options for these
-// #define DEBUG_CANNY 1
-// #define DEBUG_COLOR_MASK 1
-// #define DEBUG_BLOB_DETECTION 1
+#define DEBUG_BLOB_DETECTION 1
 
 #include "include.h"
 #include "Panel.h"
@@ -211,10 +209,10 @@ bool Panel::ShowImage(string sImgPath, string windowTitle, bool showImg)
 	// Size dim = Size(750, int(m_pPanel->m_Image.rows * r));
 	// resize(m_pPanel->m_Image, m_pPanel->m_Image, dim);
 
-	Mat image;
 	// Show the image
+	Mat image;
 	if (showImg){
-		if (m_roi.width)
+		if (m_roi.width && m_roi.width <= m_Image.cols && m_roi.height && m_roi.height <= m_Image.rows)
 			image = m_pPanel->m_Image(m_roi);
 		else
 			image = m_pPanel->m_Image;
@@ -377,17 +375,17 @@ void Panel::ColorAtPoint(Point point)
 // Panel::MaskWithColor() 
 // Description:
 ///////////////////////////////////////////////////////////////////
-void Panel::MaskWithColor(string sImgPath, string color)
+void Panel::MaskWithColor(string sImgPath, string color, bool debug)
 {
 	Mat HSV, Mask, Mask1, Mask2, MaskResult;
 	// Show the original image
 	if(!ShowImage(sImgPath, "Original"))
 		return;
 	Mat image;
-	if (m_roi.width)
-		image = m_Image(m_roi);
+	if (m_roi.width && m_roi.width <= m_Image.cols && m_roi.height && m_roi.height <= m_Image.rows)
+		image = m_pPanel->m_Image(m_roi);
 	else
-		image = m_Image;
+		image = m_pPanel->m_Image;
 	// Convert the color HSV Format
 	cvtColor(image, HSV, CV_BGR2HSV);
 	// The inRange() function will create a mask with 
@@ -409,7 +407,6 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		int h1Hi = 20, s1Hi = 120, v1Hi = 210;
 		int h2Lo = 0, s2Lo = 0, v2Lo = 0;
 		int h2Hi = 0, s2Hi = 0, v2Hi = 0;
-#ifdef DEBUG_COLOR_MASK
 		namedWindow("InRange Tester", CV_WINDOW_NORMAL);
 		cvCreateTrackbar("Hue Lo 1:", "InRange Tester", &h1Lo, 180);
 		cvCreateTrackbar("Hue Hi 1:", "InRange Tester", &h1Hi, 180);
@@ -427,29 +424,26 @@ void Panel::MaskWithColor(string sImgPath, string color)
 		Mat Mask1, Mask2;
 		while (true)
 		{
-#endif
-
 			inRange(HSV, Scalar(h1Lo, s1Lo, v1Lo), Scalar(h1Hi, s1Hi, v1Hi), Mask1);
 			inRange(HSV, Scalar(h2Lo, s2Lo, v2Lo), Scalar(h2Hi, s2Hi, v2Hi), Mask2);
 			bitwise_or(Mask1, Mask2, Mask);
 
-#ifdef DEBUG_COLOR_MASK
 			image.copyTo(MaskResult, Mask);
-			namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
+			namedWindow("Mask Result", CV_WINDOW_NORMAL);
 			imshow("Mask Result", MaskResult);
 			if (waitKey(10) == 27)
 				break;
 		}
-#endif
 	}
 	image.copyTo(MaskResult, Mask);
-#ifdef DEBUG_COLOR_MASK
-	namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
-	imshow("Mask Result", MaskResult);
-#endif
 
 	if (color == "Red" || color == "Blue")
-		DetectBlob(MaskResult);
+	{
+		// Use the below lines to debug red or blue color mask 
+		// namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
+		// imshow("Mask Result", MaskResult);
+		DetectBlob(MaskResult, debug);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -462,7 +456,7 @@ void Panel::DetectEdges(string sImgPath, bool debug)
 		return;
 
 	Mat image;
-	if (m_roi.width)
+	if (m_roi.width && m_roi.width <= m_Image.cols && m_roi.height && m_roi.height <= m_Image.rows)
 		image = m_pPanel->m_Image(m_roi);
 	else
 		image = m_pPanel->m_Image;
@@ -556,7 +550,7 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			float panelHeightReal = panelHeightPixels / m_conversionRate;
 
 			string dimensionDisplayPixels = "Pixels:\nWidth: " + to_string(panelWidthPixels) + " pixels\nHeight: " + to_string(panelHeightPixels) + " pixels";
-			ShowMessage(dimensionDisplayPixels);
+			// ShowMessage(dimensionDisplayPixels);
 			string dimensionDisplayActual = "Actual:\nWidth: " + to_string(panelWidthReal) + " cm\nHeight: " + to_string(panelHeightReal) + " cm";
 			ShowMessage(dimensionDisplayActual);
 
@@ -660,6 +654,40 @@ void Panel::FindContours(Mat image)
 	imshow("Largest Contour", image);
 }
 
+void Panel::GetKeyPoints(Mat grayImage, std::vector<KeyPoint> &keypoints, bool debug)
+{
+	Mat dilatedEroded, dilated, blurred;
+	Mat im_with_keypoints, thresh;
+	Ptr<SimpleBlobDetector> detector;
+	SimpleBlobDetector::Params params;
+	dilate(grayImage, dilated, Mat());
+	GaussianBlur(dilated, blurred, Size(7, 7), 0, 0);
+	threshold(blurred, thresh, m_lowTagThreshold, 255, THRESH_BINARY);
+	// Filter by Area.
+	params.filterByArea = true;
+	params.filterByColor = false;
+	params.filterByConvexity = false;
+	params.filterByCircularity = false;
+	params.filterByInertia = false;
+	params.minArea = (float)m_blobArea;
+	// Set up the detector with default parameters.
+	detector = SimpleBlobDetector::create(params);
+	// Detect blobs.
+	detector->detect(thresh, keypoints);
+	detector.release();
+	// Draw detected blobs as red circles.
+	// DrawMatchesFlags::DRAW_RICH_KEYPOINTS flag ensures the size of the circle corresponds to the size of blob
+	drawKeypoints(thresh, keypoints, im_with_keypoints, Scalar(0, 0, 255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+	// Show blobs
+	imshow("keypoints", im_with_keypoints);
+	if (debug)
+	{
+		// namedWindow("Dilated and Blurred", CV_WINDOW_KEEPRATIO);
+		// imshow("Dilated and Blurred", blurred);
+		namedWindow("Threshold", CV_WINDOW_AUTOSIZE);
+		imshow("Threshold", thresh);
+	}
+}
 /////////////////////////////////////////////////////////////////////////////
 // Panel::DetectBlob() 
 // Description: This is the function which finds the largest blob in an 
@@ -670,70 +698,33 @@ void Panel::FindContours(Mat image)
 //  may need to be adjusted based on the camera angle and distance to the
 //  part. 
 /////////////////////////////////////////////////////////////////////////////
-void Panel::DetectBlob(Mat image)
+void Panel::DetectBlob(Mat image, bool debug)
 {
 	Mat grayImage, dilatedEroded, dilated, blurred;
 	cvtColor(image, grayImage, CV_BGR2GRAY);
 
 	// Setup SimpleBlobDetector parameters.
-	Ptr<SimpleBlobDetector> detector;
-	SimpleBlobDetector::Params params;
 	std::vector<KeyPoint> keypoints;
-	Mat im_with_keypoints, thresh;
 
-#ifdef DEBUG_BLOB_DETECTION
-	//	This is Test Code
-	//	Uncomment #define DEBUG_BLOB_DETECTION at the 
-	//	top of this file to debug blob detection
-
-	namedWindow("Blob", CV_WINDOW_NORMAL);
-	cvCreateTrackbar("Blob Area", "Blob", &blobArea, 1000);
-	cvCreateTrackbar("Threshhold", "Blob", &low, 255);
-	while (true)
+	if (!debug)
+		GetKeyPoints(grayImage, keypoints, false);
+	else
 	{
-#endif
-	dilate(grayImage, dilated, Mat());
-
-	GaussianBlur(dilated, blurred, Size(7, 7), 0, 0);
-	threshold(blurred, thresh, m_lowTagThreshold, 255, THRESH_BINARY);
-#ifdef DEBUG_BLOB_DETECTION
-	namedWindow("Dilated and Blurred", CV_WINDOW_KEEPRATIO);
-	imshow("Dilated and Blurred", blurred);
-	namedWindow("Threshold", CV_WINDOW_AUTOSIZE);
-	imshow("Threshold", thresh);
-#endif
-
-	// Filter by Area.
-	params.filterByArea = true;
-	params.filterByColor = false;
-	params.filterByConvexity = false;
-	params.filterByCircularity = false;
-	params.filterByInertia = false;
-	params.minArea = (float)m_blobArea;
-
-	// Set up the detector with default parameters.
-	detector = SimpleBlobDetector::create(params);
-
-	// Detect blobs.
-	detector->detect(thresh, keypoints);
-
-	// Draw detected blobs as red circles.
-	// DrawMatchesFlags::DRAW_RICH_KEYPOINTS flag ensures the size of the circle corresponds to the size of blob
-	drawKeypoints(thresh, keypoints, im_with_keypoints, Scalar(0, 0, 255), DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-
-	// Show blobs
-	imshow("keypoints", im_with_keypoints);
-
+		namedWindow("Blob", CV_WINDOW_NORMAL);
+		cvCreateTrackbar("Blob Area", "Blob", &m_blobArea, 2000);
+		cvCreateTrackbar("Threshhold", "Blob", &m_lowTagThreshold, 255);
+		while (true)
+		{
+			GetKeyPoints(grayImage, keypoints, true);
+			if (waitKey(50) == 27)
+				break;
+		}
+	}
 	// Pass/Fail Message
 	if (!keypoints.empty())
 		ShowMessage("Tag detected");
 	else
 		ShowMessage("No tag detected");
-#ifdef DEBUG_BLOB_DETECTION
-		if (waitKey(30) == 27)
-			break;
-			}
-#endif
 }
 
 ////////////////////////////////////////////////////////////////////
