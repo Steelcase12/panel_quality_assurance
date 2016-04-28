@@ -13,6 +13,31 @@
 Panel::Panel()
 {
 	m_pPanel = this;
+	// Read image border if it exists
+	FileStorage fs_border("Config/image_border.xml", FileStorage::READ); // Read the settings
+	if (!fs_border.isOpened())
+		ShowMessage("Could not open the configuration file: \"Config\image_border.xml\"\nIf you want an image border you must run \"Detect Features\"");
+	else {
+		fs_border["image_boundary"] >> m_low;
+		fs_border.release();
+	}
+	// Read Canny and Hough Parameters
+	FileStorage fs("Config/Settings.xml", FileStorage::READ); // Read the settings
+	if (!fs.isOpened())
+		ShowMessage("Could not open the configuration file: \"Config\Settings.xml\"\nLocate or create a settings file to run Canny Edge Detection and Panel Measurement");
+	else {
+		// Canny & Hough Parameters
+		fs["low_threshold"] >> m_low;
+		fs["blur_sigma_x"] >> m_sigmaX;
+		fs["blur_sigma_y"] >> m_sigmaY;
+		fs["canny_low"] >> m_cannyLow;
+		fs["canny_ratio"] >> m_ratio;
+		fs["min_hough_length"] >> m_houghLength;
+		// Feature Detection Parameters
+		fs["feature_height_cm"] >> m_feature_height;
+		fs["feature_width_cm"] >> m_feature_width;
+		fs.release();
+	}
 }
 
 Panel::~Panel()
@@ -534,13 +559,18 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			for (j; j < 4; j++)
 				line(image, rectPoints[j], rectPoints[(j + 1) % 4], color, 1, 8);
 
-		float panelWidthPixels = (float)norm(rectPoints[1] - rectPoints[0]) /*Pixels*/;
-		float panelHeightPixels = (float)norm(rectPoints[2] - rectPoints[1]) /*Pixels*/;
+			float topLength = (float)norm(rectPoints[1] - rectPoints[0]);
+			float botLength = (float)norm(rectPoints[3] - rectPoints[2]);
+			float panelWidthPixels = topLength < botLength ? topLength : botLength;
+			float panelWidthReal = panelWidthPixels / m_conversionRate;
+
+			float leftHeight = (float)norm(rectPoints[3] - rectPoints[0]);
+			float rightHeight = (float)norm(rectPoints[2] - rectPoints[1]);
+			float panelHeightPixels = leftHeight < rightHeight ? leftHeight : rightHeight;
+			float panelHeightReal = panelHeightPixels / m_conversionRate;
+
 			string dimensionDisplayPixels = "Pixels:\nWidth: " + to_string(panelWidthPixels) + " pixels\nHeight: " + to_string(panelHeightPixels) + " pixels";
 			ShowMessage(dimensionDisplayPixels);
-
-		float panelWidthReal = (float)norm(rectPoints[1] - rectPoints[0]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
-		float panelHeightReal = (float)norm(rectPoints[2] - rectPoints[1]) /*Pixels*/ / m_conversionRate /*Pixels per cm*/;
 			string dimensionDisplayActual = "Actual:\nWidth: " + to_string(panelWidthReal) + " cm\nHeight: " + to_string(panelHeightReal) + " cm";
 			ShowMessage(dimensionDisplayActual);
 
@@ -762,7 +792,13 @@ void Panel::DetectFeatures(string scenePath, string objPath, bool exceedsBorder,
 
 	Mat boundImg;
 	if (m_roi.width)
+	{
 		boundImg = m_Image(m_roi);
+		// Store the image boundary in the settings file
+		FileStorage fs("./Config/image_boundary.xml", FileStorage::WRITE);
+		fs << "image_boundary" << m_roi;
+		fs.release();
+	}
 	else
 		boundImg = m_Image;
 
