@@ -533,6 +533,10 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 			RotatedRect rect;
 			Point2f rectPoints[4];
 			Scalar color = Scalar(255, 0, 0);
+			if (intersections.size() == 4)
+			{
+				// TODO
+			}
 			rect = minAreaRect(intersections);
 			rect.points(rectPoints);
 			int j = 0;
