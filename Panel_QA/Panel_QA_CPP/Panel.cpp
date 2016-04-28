@@ -1,7 +1,7 @@
 // This is the main DLL file.
 // TODO: Add dialog options for these
 // #define DEBUG_CANNY 1
- #define DEBUG_COLOR_MASK 1
+// #define DEBUG_COLOR_MASK 1
 // #define DEBUG_BLOB_DETECTION 1
 
 #include "include.h"
@@ -459,8 +459,10 @@ void Panel::MaskWithColor(string sImgPath, string color)
 #endif
 	}
 	image.copyTo(MaskResult, Mask);
+#ifdef DEBUG_COLOR_MASK
 	namedWindow("Mask Result", CV_WINDOW_AUTOSIZE);
 	imshow("Mask Result", MaskResult);
+#endif
 
 	if (color == "Red" || color == "Blue")
 		DetectBlob(MaskResult);
