@@ -197,7 +197,7 @@
             this.panelBtn.Name = "panelBtn";
             this.panelBtn.Size = new System.Drawing.Size(89, 23);
             this.panelBtn.TabIndex = 65;
-            this.panelBtn.Text = "Panel";
+            this.panelBtn.Text = "Debug";
             this.panelBtn.UseVisualStyleBackColor = true;
             this.panelBtn.Click += new System.EventHandler(this.panelBtn_Click);
             // 
@@ -361,7 +361,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(652, 268);
+            this.tabPage1.Size = new System.Drawing.Size(643, 250);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Main";
             this.tabPage1.UseVisualStyleBackColor = true;

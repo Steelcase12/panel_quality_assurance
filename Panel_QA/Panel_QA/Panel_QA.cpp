@@ -1,3 +1,4 @@
+#pragma once
 // This is the main DLL file.
 #include "stdafx.h"
 #include "Panel_QA.h"
@@ -30,12 +31,12 @@ void MYPanel::ShowImageWithCalibration(System::String^ imgPath, System::String^ 
 	panel->ShowImageWithCalibration((string)strImgPath, (string)strWindowTitle, Mat());
 }
 
-void MYPanel::MaskWithColor(System::String^ imgPath, System::String^ color)
+void MYPanel::MaskWithColor(System::String^ imgPath, System::String^ color, bool debug)
 {
 	MYConversion ^convert = gcnew MYConversion();
 	string strImgPath = convert->myStringToChar(imgPath);
 	string strColor = convert->myStringToChar(color);
-	panel->MaskWithColor((string)strImgPath, (string)strColor);
+	panel->MaskWithColor((string)strImgPath, (string)strColor, debug);
 }
 
 void MYPanel::DetectEdges(System::String^ imgPath, bool debug)

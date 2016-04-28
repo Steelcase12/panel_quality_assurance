@@ -23,7 +23,7 @@ namespace MYopencv {
 		~MYPanel();
 		void ShowImage(System::String^ imgPath, System::String^ windowTitle);
 		void ShowImageWithCalibration(System::String^ imgPath, System::String^ windowTitle);
-		void MaskWithColor(System::String^ imgPath, System::String^ color);
+		void MaskWithColor(System::String^ imgPath, System::String^ color, bool debug);
 		void DetectEdges(System::String^ imgPath, bool debug);
 		void PixelsToLength(System::String^ imgPath);
 		void CalibrateCamera(System::String^ filePath);
