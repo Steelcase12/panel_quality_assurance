@@ -10,5 +10,8 @@
 <!-- Feature Detection Parameters -->
 <feature_height_cm>16.25</feature_height_cm>
 <feature_width_cm>13.25</feature_width_cm>
+<!-- Tag Detection Parameters -->
+<low_tag_threshold>60</low_tag_threshold>
+<blob_area>325</blob_area>
 <!-- Add more settings here if necessary -->
 </opencv_storage>

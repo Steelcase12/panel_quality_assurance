@@ -14,34 +14,9 @@ Panel::Panel()
 {
 	m_pPanel = this;
 	// Read image border if it exists
-	FileStorage fs_border("../../Config/image_boundary.xml", FileStorage::READ); // Read the settings
-	if (!fs_border.isOpened())
-	{
-		string errMsg = "Could not open the configuration file: \"..\\..\\Config\\image_border.xml\"\nIf you want an image border you must run \"Detect Features\"\n";
-		ShowMessage(errMsg);
-	}
-	else {
-		fs_border["image_boundary"] >> m_roi;
-		fs_border["conversion_rate"] >> m_conversionRate;
-		fs_border.release();
-	}
+	ReadFeatureSettings("../../Config/image_boundary.xml");
 	// Read Canny, Hough, and Feature Detection Parameters
-	FileStorage fs("../../Config/Settings.xml", FileStorage::READ); // Read the settings
-	if (!fs.isOpened())
-		ShowMessage("Could not open the configuration file: \"..\\..\\Config\\Settings.xml\"\nLocate or create a settings file to run Canny Edge Detection and Panel Measurement");
-	else {
-		// Canny & Hough Parameters
-		fs["low_threshold"] >> m_low;
-		fs["blur_sigma_x"] >> m_sigmaX;
-		fs["blur_sigma_y"] >> m_sigmaY;
-		fs["canny_low"] >> m_cannyLow;
-		fs["canny_ratio"] >> m_ratio;
-		fs["min_hough_length"] >> m_houghLength;
-		// Feature Detection Parameters
-		fs["feature_height_cm"] >> m_feature_height;
-		fs["feature_width_cm"] >> m_feature_width;
-		fs.release();
-	}
+	ReadSettings("../../Config/Settings.xml");
 }
 
 Panel::~Panel()
@@ -512,7 +487,7 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 	Mat eroded, dilated, thresh, blurredThresh, edges, edgesGray;
 	vector<Vec2f> lines;
 
-		threshold(greyImage, thresh, m_low, 255, THRESH_BINARY);
+		threshold(greyImage, thresh, m_lowCannyThreshold, 255, THRESH_BINARY);
 		erode(thresh, eroded, Mat());
 		dilate(eroded, dilated, Mat());
 		GaussianBlur(thresh, blurredThresh, Size(7, 7), m_sigmaX, m_sigmaY);
@@ -611,7 +586,7 @@ Mat Panel::CannyDetectionDebug(Mat image, bool showImg)
 	//	This code is for testing different values of various functions
 	//   used with Canny, Blurring, and Hough Lines
 	namedWindow("Sliders", CV_WINDOW_KEEPRATIO);
-	cvCreateTrackbar("low_threshold", "Sliders", &m_low, 255);
+	cvCreateTrackbar("low_threshold", "Sliders", &m_lowCannyThreshold, 255);
 	cvCreateTrackbar("blur_sigma_x", "Sliders", &m_sigmaX, 100);
 	cvCreateTrackbar("blur_sigma_y", "Sliders", &m_sigmaY, 100);
 	cvCreateTrackbar("canny_low", "Sliders", &m_cannyLow, 500);
@@ -620,7 +595,7 @@ Mat Panel::CannyDetectionDebug(Mat image, bool showImg)
 
 	while (true)
 	{
-		threshold(greyImage, thresh, m_low, 255, THRESH_BINARY);
+		threshold(greyImage, thresh, m_lowCannyThreshold, 255, THRESH_BINARY);
 		erode(thresh, eroded, Mat());
 		dilate(eroded, dilated, Mat());
 		GaussianBlur(thresh, blurredThresh, Size(7, 7), m_sigmaX, m_sigmaY);
@@ -706,16 +681,13 @@ void Panel::DetectBlob(Mat image)
 	std::vector<KeyPoint> keypoints;
 	Mat im_with_keypoints, thresh;
 
-	int low = 60;
-	int blobArea = 325;
-	int sigmaX = 0, sigmaY = 0;
 #ifdef DEBUG_BLOB_DETECTION
 	//	This is Test Code
 	//	Uncomment #define DEBUG_BLOB_DETECTION at the 
 	//	top of this file to debug blob detection
 
 	namedWindow("Blob", CV_WINDOW_NORMAL);
-	cvCreateTrackbar("Blob Area", "Blob", &blobArea, 2000);
+	cvCreateTrackbar("Blob Area", "Blob", &blobArea, 1000);
 	cvCreateTrackbar("Threshhold", "Blob", &low, 255);
 	while (true)
 	{
@@ -723,7 +695,7 @@ void Panel::DetectBlob(Mat image)
 	dilate(grayImage, dilated, Mat());
 
 	GaussianBlur(dilated, blurred, Size(7, 7), 0, 0);
-	threshold(blurred, thresh, low, 255, THRESH_BINARY);
+	threshold(blurred, thresh, m_lowTagThreshold, 255, THRESH_BINARY);
 #ifdef DEBUG_BLOB_DETECTION
 	namedWindow("Dilated and Blurred", CV_WINDOW_KEEPRATIO);
 	imshow("Dilated and Blurred", blurred);
@@ -737,7 +709,7 @@ void Panel::DetectBlob(Mat image)
 	params.filterByConvexity = false;
 	params.filterByCircularity = false;
 	params.filterByInertia = false;
-	params.minArea = (float)blobArea;
+	params.minArea = (float)m_blobArea;
 
 	// Set up the detector with default parameters.
 	detector = SimpleBlobDetector::create(params);
@@ -1379,16 +1351,16 @@ void Panel::LoadCalibration(string sFilePath)
 
 }
 
-void Panel::ReadSettings(string sFilePath)
+void Panel::ReadSettings(string sFilePath, bool showSuccess)
 {
 	const string inputSettingsFile = sFilePath;
 	FileStorage fs(inputSettingsFile, FileStorage::READ); // Read the settings
 	if (!fs.isOpened())
 	{
-		ShowMessage("Could not open the configuration file: \"" + inputSettingsFile + "\n");
+		ShowMessage("Could not open the configuration file: \"" + inputSettingsFile + "\"\n"); // Locate or create a settings file to run Canny Edge Detection and Panel Measurement\n");
 	}
 	// Canny & Hough Parameters
-	fs["low_threshold"] >> m_low;
+	fs["low_threshold"] >> m_lowCannyThreshold;
 	fs["blur_sigma_x"] >> m_sigmaX;
 	fs["blur_sigma_y"] >> m_sigmaY;
 	fs["canny_low"] >> m_cannyLow;
@@ -1397,8 +1369,29 @@ void Panel::ReadSettings(string sFilePath)
 	// Feature Detection Parameters
 	fs["feature_height_cm"] >> m_feature_height;
 	fs["feature_width_cm"] >> m_feature_width;
+	// Tag Detection Parameters
+	fs["low_tag_threshold"] >> m_lowTagThreshold;
+	fs["blob_area"] >> m_blobArea;
 
 	fs.release();
+	if (showSuccess)
+		ShowMessage("Settings Read Successfully");
+}
 
-	ShowMessage("Settings Read Successfully");
+void Panel::ReadFeatureSettings(string sFilePath, bool showSuccess)
+{
+	const string inputSettingsFile = sFilePath;
+	FileStorage fs_border(inputSettingsFile, FileStorage::READ); // Read the settings
+	if (!fs_border.isOpened())
+	{
+		string errMsg = "Could not open the configuration file: " + inputSettingsFile + "\"\n";
+		ShowMessage(errMsg);
+	}
+	else {
+		fs_border["image_boundary"] >> m_roi;
+		fs_border["conversion_rate"] >> m_conversionRate;
+		fs_border.release();
+	}
+	if (showSuccess)
+		ShowMessage("Settings Read Successfully");
 }

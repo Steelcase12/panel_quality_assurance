@@ -23,9 +23,6 @@ public:
 	~Panel();
 	bool ShowImage(string imgPath, string windowTitle, bool showImg = true);
 	bool ShowImageWithCalibration(string imgPath, string windowTitle, Mat calibratedImg, bool showImg = true);
-	string ColorName(Vec3b HSV);
-	void ColorAtPoint(Point point);
-	void PointLocation(Point point);
 	void MaskWithColor(string imgPath, string color);
 	void DetectEdges(string imgPath, bool debug);
 	void PixelsToLength(string imgPath);
@@ -35,20 +32,26 @@ public:
 	void CascadeClassify(string imgPath, string classPath);
 	void BatchCalibrate(string dirPath);	
 	void DetectFeatures(string scenePath, string objPath, bool exceedsBorder, bool featureRotated);
-	void ReadSettings(string sFilePath);
+	void ReadSettings(string sFilePath, bool showSuccess = false);
+	void ColorAtPoint(Point point);
+	void PointLocation(Point point);
 private:
 	Panel *m_pPanel;
 	Rect m_roi;
 	Mat m_Image;
+	string ColorName(Vec3b HSV);
 	float m_conversionRate;
 	// Canny Parameter Default Settings
-	int m_low = 105;
+	int m_lowCannyThreshold = 105;
 	int m_sigmaX = 10, m_sigmaY = 2;
 	int m_cannyLow = 85, m_ratio = 3;
 	int m_houghLength = 155;
-	// Feature Detection Settings Defaults
+	// Feature Detection Settings
 	float m_feature_height = 16.25;
 	float m_feature_width = 13.25;
+	// Tag Detection Settings
+	int m_lowTagThreshold = 60;
+	int m_blobArea = 325;
 	// Calibration and Conversion
 	int m_boardWidth = 6;
 	int m_boardLength = 9;
@@ -60,6 +63,7 @@ private:
 	Mat CannyDetectionDebug(Mat image, bool showImg = true);
 	void FindContours(Mat image);
 	void DetectBlob(Mat image);
+	void ReadFeatureSettings(string sFilePath, bool showSuccess = false);
 	// Default Window Name
 	const char* m_WindowName = "My Image";
 };

@@ -100,7 +100,7 @@ void MYPanel::ReadSettings(System::String^ sFilePath)
 {
 	MYConversion ^convert = gcnew MYConversion();
 	string strScenePath = convert->myStringToChar(sFilePath);
-	panel->ReadSettings(strScenePath);
+	panel->ReadSettings(strScenePath, true);
 }
 
 // ++++++++++++ MYConversion Class ++++++++++++ 
