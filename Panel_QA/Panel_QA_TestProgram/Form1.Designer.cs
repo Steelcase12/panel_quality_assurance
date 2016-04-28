@@ -189,7 +189,7 @@
             this.settingsInput.Name = "settingsInput";
             this.settingsInput.Size = new System.Drawing.Size(284, 20);
             this.settingsInput.TabIndex = 68;
-            this.settingsInput.Text = "..\\..\\resources\\Settings.xml";
+            this.settingsInput.Text = "..\\..\\Config\\Settings.xml";
             // 
             // panelBtn
             // 
@@ -217,7 +217,7 @@
             this.inputBox.Name = "inputBox";
             this.inputBox.Size = new System.Drawing.Size(281, 20);
             this.inputBox.TabIndex = 60;
-            this.inputBox.Text = "..\\..\\resources\\Glue_Booth\\measure1_contrast.jpg";
+            this.inputBox.Text = "..\\..\\resources\\Resources\\measure1_contrast.jpg";
             // 
             // viewWithCalibrationBtn
             // 
@@ -391,7 +391,7 @@
             this.imagePath.Name = "imagePath";
             this.imagePath.Size = new System.Drawing.Size(350, 20);
             this.imagePath.TabIndex = 4;
-            this.imagePath.Text = "..\\..\\resources\\";
+            this.imagePath.Text = "..\\..\\resources\\Resources";
             // 
             // colorGroupBox1
             // 
