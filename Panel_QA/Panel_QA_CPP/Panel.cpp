@@ -1,6 +1,15 @@
-// This is the main DLL file.
-// TODO: Add dialog options for these
-#define DEBUG_BLOB_DETECTION 1
+/////////////////////////////////////////////////////////////
+// File: Panel.cpp
+// Descripiton:
+//  This is the source file for the C++ project. It contains
+//  all of the funtions used for image processing. Each
+//  funciton has a comment at the top which contains its
+//  description. We also attempted to add as many embedded
+//  comments in the code as we could. 
+////////////////////////////////////////////////////////////
+
+// TODO: Add dialog options for blob detection
+// #define DEBUG_BLOB_DETECTION 1
 
 #include "include.h"
 #include "Panel.h"
@@ -660,6 +669,14 @@ void Panel::FindContours(Mat image)
 	imshow("Largest Contour", image);
 }
 
+/////////////////////////////////////////////////////////////////////
+// Panel::DetectBlob() 
+// Description: this function is a helper function for DetectBlob().
+//  It uses a SimpleBlobDetector to detect keypoints based on the 
+//  parameters specified. The parameters can be debugged currently
+//  by uncommenting the following line at the top of this file:
+//  #define DEBUG_BLOB_DETECTION 1
+/////////////////////////////////////////////////////////////////////
 void Panel::GetKeyPoints(Mat grayImage, std::vector<KeyPoint> &keypoints, bool debug)
 {
 	Mat dilatedEroded, dilated, blurred;
@@ -694,6 +711,7 @@ void Panel::GetKeyPoints(Mat grayImage, std::vector<KeyPoint> &keypoints, bool d
 		imshow("Threshold", thresh);
 	}
 }
+
 /////////////////////////////////////////////////////////////////////////////
 // Panel::DetectBlob() 
 // Description: This is the function which finds the largest blob in an 
@@ -1354,6 +1372,15 @@ void Panel::LoadCalibration(string sFilePath)
 
 }
 
+//////////////////////////////////////////////////////////
+// Panel::ReadSettings() 
+//  Description: Reads the settings file which currently 
+//  contains settings for Canny, Hough, Feature Detection,
+//  and Tag Detection. That file is only ever modfied 
+//  manually. ReadSettings() is called by the Panel 
+//  constructor and when the "Read Settings" button is 
+//  selected. More settings can be added very easily.
+//////////////////////////////////////////////////////////
 void Panel::ReadSettings(string sFilePath, bool showSuccess)
 {
 	const string inputSettingsFile = sFilePath;
@@ -1384,6 +1411,14 @@ void Panel::ReadSettings(string sFilePath, bool showSuccess)
 	}
 }
 
+////////////////////////////////////////////////////////////////
+// Panel::ReadFeatureSettings() 
+//  Description: Reads the settings file image_boundary.xml
+//  which contains the settings which are returned by 
+//  feature detection (See Panel::DetectFeatures()). The only
+//  calling funciton of ReadFeatureSettings is the constructor
+//  for Panel().
+////////////////////////////////////////////////////////////////
 void Panel::ReadFeatureSettings(string sFilePath, bool showSuccess)
 {
 	const string inputSettingsFile = sFilePath;

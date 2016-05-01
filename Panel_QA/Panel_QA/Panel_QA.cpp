@@ -1,5 +1,14 @@
+/////////////////////////////////////////////////////////////
+// File: Panel_QA.cpp
+// Descripiton:
+//  This is the source file for the project which links
+//  the C# project with the C++ project. It is 
+//  written in C++/CLI. It contains calls to Panel.cpp
+//  functions and some string conversions. See Panel.cpp 
+//  for function explainations.
+////////////////////////////////////////////////////////////
+
 #pragma once
-// This is the main DLL file.
 #include "stdafx.h"
 #include "Panel_QA.h"
 
