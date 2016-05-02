@@ -331,7 +331,7 @@
             this.calibrationPath.Name = "calibrationPath";
             this.calibrationPath.Size = new System.Drawing.Size(281, 20);
             this.calibrationPath.TabIndex = 49;
-            this.calibrationPath.Text = "..\\..\\Config\\CameraCalibration";
+            this.calibrationPath.Text = "..\\..\\Config\\CameraCalibration\\Steelcase.xml";
             // 
             // label4
             // 
