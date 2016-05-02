@@ -1,4 +1,12 @@
-// Panel.h
+/////////////////////////////////////////////////////////////////
+// File: Panel.cpp
+// Descripiton:
+//  This is the main header file for the C++ project. It 
+//  contains the function prototypes for all of the Panel image
+//  processing funcitons and the declarations of all of Panel's
+//  private member variables. See Panel.cpp for function
+//  descriptions. 
+////////////////////////////////////////////////////////////////
 #pragma once
 #pragma comment(lib,"user32.lib")
 #include <iostream>
@@ -37,10 +45,10 @@ public:
 	void PointLocation(Point point);
 private:
 	Panel *m_pPanel;
-	Rect m_roi;
 	Mat m_Image;
 	string ColorName(Vec3b HSV);
-	float m_conversionRate;
+	// Default Window Name
+	const char* m_WindowName = "My Image";
 	// Canny Parameter Default Settings
 	int m_lowCannyThreshold = 105;
 	int m_sigmaX = 10, m_sigmaY = 2;
@@ -49,6 +57,8 @@ private:
 	// Feature Detection Settings
 	float m_feature_height = 16.25;
 	float m_feature_width = 13.25;
+	Rect m_roi;
+	float m_conversionRate;
 	// Tag Detection Settings
 	int m_lowTagThreshold = 60;
 	int m_blobArea = 325;
@@ -68,6 +78,4 @@ private:
 	void DetectBlob(Mat image, bool debug = false);
 	void ReadFeatureSettings(string sFilePath, bool showSuccess = false);
 	void GetKeyPoints(Mat image, std::vector<KeyPoint> &keypoints, bool debug);
-	// Default Window Name
-	const char* m_WindowName = "My Image";
 };

@@ -1,4 +1,14 @@
-﻿using System;
+﻿/////////////////////////////////////////////////////////////
+// File: Form.cs 
+// Descripiton: 
+//  This is the file which contains all of the event
+//  handlers for the C# dialog Form1. The constructor
+//  disallows resize and creates a new MYPanel() object.
+//  The event handlers are named according to the name of
+//  it's button which is set in the designer. 
+//////////////////////////////////////////////////////////// 
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;

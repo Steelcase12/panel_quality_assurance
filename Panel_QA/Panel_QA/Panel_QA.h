@@ -1,5 +1,15 @@
 #pragma once
 
+/////////////////////////////////////////////////////////////
+// File: Panel_QA.h
+// Descripiton:
+//  This is the header file for the project which links
+//  the C# project with the C++ project. It is 
+//  written in C++/CLI. It contains calls to Panel.cpp
+//  functions and some string conversions. See Panel.cpp 
+//  for function explainations.
+////////////////////////////////////////////////////////////
+
 #include "..\Panel_QA_CPP\Panel.h"
 #include "..\Panel_QA_CPP\Panel.cpp"
 
