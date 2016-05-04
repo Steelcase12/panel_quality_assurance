@@ -20,7 +20,7 @@
 Panel::Panel()
 {
 	m_pPanel = this;
-	// Read image border if it exists
+	// Read image border settings file if it exists
 	ReadFeatureSettings("../../Config/image_boundary.xml");
 	// Read Canny, Hough, and Feature Detection Parameters
 	ReadSettings("../../Config/Settings.xml");
@@ -32,7 +32,10 @@ Panel::~Panel()
 }
 
 ////////////////////////////////////////////////////////////
-// Helper Function for Cascade Classifier				  
+// Helper Function for Cascade Classifier	
+//  Note: Cascade classifier is not currently used 
+//  by this application. We left the functions associated
+//  with this method for future reference. 
 ////////////////////////////////////////////////////////////
 void detectAndDisplay(Mat image, string panel_cascade_name)
 {
@@ -456,13 +459,21 @@ void Panel::MaskWithColor(string sImgPath, string color, bool debug)
 
 ///////////////////////////////////////////////////////////////////
 // Panel::DetectEdges() 
-// Description:
+// Description: This function is the entry point for Canny
+//  Edge Detection. It is called by the CLR project which
+//  is called by the C# dialog. Image path is the image which 
+//  Canny Edge Detection will be applied. If debug is true
+//  we will call CannyDetectionDebug() which is very similar to 
+//  CannyDetection except with debugging statements. This is 
+//  not good programming but it is the way we chose to implement
+//  it with short time remaining. 
 ///////////////////////////////////////////////////////////////////
 void Panel::DetectEdges(string sImgPath, bool debug)
 {
 	if (!ShowImage(sImgPath, "Original"))
 		return;
 
+	// Set the image boundary if we have one
 	Mat image;
 	if (m_roi.width && m_roi.width <= m_Image.cols && m_roi.height && m_roi.height <= m_Image.rows)
 		image = m_pPanel->m_Image(m_roi);
@@ -479,7 +490,18 @@ void Panel::DetectEdges(string sImgPath, bool debug)
 
 ///////////////////////////////////////////////////////////////////
 // Panel::CannyDetection() 
-// Description:
+// Description: This function is called by DetectEdges() and it
+//  is the Canny edge detection function which does not contain
+//  debugging statements. We run the image through several different 
+//  image processing functions to prepare the image before edge
+//  detection. After detection the edges we run Hough lines which 
+//  approximates lines of minimum length as specified in 
+//  Settings.xml. We find all intersections of the Hough lines 
+//  then make a minimum area rectangle around the intersections to 
+//  approximate the edges of the panel which we are trying to
+//  measure. From there we use the unit conversion calculated 
+//  in DetectFeatures() to find a length and width of the current
+//  panel. We report the length and width with a message box. 
 ///////////////////////////////////////////////////////////////////
 Mat Panel::CannyDetection(Mat image, bool showImg)
 {
@@ -583,7 +605,15 @@ Mat Panel::CannyDetection(Mat image, bool showImg)
 
 ///////////////////////////////////////////////////////////////////
 // Panel::CannyDetection() 
-// Description:
+// Description: This is the debug version of CannyDetection(). As
+//  mentioned in DetectEdges() description, we know this is bad 
+//  coding to have similar code in different functions but we 
+//  were on a short schedule. The differences in this function and 
+//  CannyDetection are that this one contains sliders which the 
+//  Canny parameters can be adjusted and the intersections are not
+//  computed after Hough lines. See description of CannyDetection()
+//  for more information on the image processing used in this 
+//  function. 
 ///////////////////////////////////////////////////////////////////
 Mat Panel::CannyDetectionDebug(Mat image, bool showImg)
 {
@@ -641,32 +671,6 @@ Mat Panel::CannyDetectionDebug(Mat image, bool showImg)
 	}
 
 	return edges;
-}
-
-///////////////////////////////////////////////////////////////////
-// Panel::FindContours() 
-// Description: 
-///////////////////////////////////////////////////////////////////
-void Panel::FindContours(Mat image)
-{
-	int low = 155;
-	Mat grayImage;
-	cvtColor(image, grayImage, CV_BGR2GRAY);
-	// Mat dilated;
-	// dilate(grayImage, dilated, Mat());
-	// Mat eroded;
-	// erode(grayImage, eroded, Mat());
-	Mat blurred;
-	GaussianBlur(grayImage, blurred, Size(7, 7), 0, 0);
-	Mat thresh;
-	threshold(blurred, thresh, low, 255, THRESH_BINARY);
-	namedWindow("Threshold", CV_WINDOW_KEEPRATIO);
-	imshow("Threshold", thresh);
-	showimgcontours(thresh, image);
-	// namedWindow("Contours", CV_WINDOW_AUTOSIZE);
-	// imshow("Contours", thresh);
-	namedWindow("Largest Contour", CV_WINDOW_KEEPRATIO);
-	imshow("Largest Contour", image);
 }
 
 /////////////////////////////////////////////////////////////////////

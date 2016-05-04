@@ -1,3 +1,6 @@
+# Note From UAH Panel Quality Assurance Team
+We are not using Haar training in our current application. We wanted to leave the directory structure in case someone did want to experiment with cascade classifier training. The reason we chose not to go with it is because training may take several days and you must have several images which contain the desired part. It is also not good with scale and rotation differences. 
+
 # Train your own OpenCV Haar classifier
 
 This repository aims to provide tools and information on training your own
