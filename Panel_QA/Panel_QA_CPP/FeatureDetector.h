@@ -1,3 +1,13 @@
+//////////////////////////////////////////////////////////////
+// FeatureDetector.h Description:
+//  This file contains the code which detects the specified
+//  feature in an image. When the feature is found a region
+//  of interest (a rectangle) is created for the original
+//  image to reduce the amount of noise in the panel 
+//  environment. This file also contains the code which finds
+//  the pixels to length conversion based on the feature's 
+//  actual size specified in Settings.xml.
+//////////////////////////////////////////////////////////////
 #pragma once
 #pragma comment(lib,"user32.lib")
 // TODO: Add dialog options for these
@@ -49,17 +59,21 @@ private:
 	bool m_bFeatureRotated;
 };
 
+// Constructor
 MyFeatureDetector::MyFeatureDetector() 
 {
 }
 
+// Destructor
 MyFeatureDetector::~MyFeatureDetector()
 {
 }
 
+// Main function for MyFeatureDetector
 bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_height_cm, float feature_width_cm, 
 	float &conversion, bool exceedsBorder, bool featureRotated, bool showImg)
 {
+    // Set the member variables
 	// Load images
 	full_scene = scene;
 	m_FeatureHeightCM = feature_height_cm;
@@ -75,6 +89,7 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_h
 	// Size size(400, 400);
 	// resize(object, object, size);
 
+    ////////////////////////////////////////////////////////////////
 	// SlidingWindow() is only necessary when detecting 
 	//	more than feature in a single image
 	// IMPORTANT: Parameters n_rows, row_step, n_cols, & col_step
@@ -82,18 +97,18 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_h
 	//	the features in the image. The current settings assume
 	//	there are 2 features: one at the top, and one at the 
 	//	bottom of the image
+    ////////////////////////////////////////////////////////////////
 	outImg = full_scene;
 	n_rows = full_scene.cols;
 	n_cols = full_scene.rows / 2;
 	row_step = n_cols;
 	col_step = n_rows;
 	SlidingWindow(object);
-	// Pass back the homography that we found in FindObject()
+	// Pass back the conversion rate that we found in FindObject()
 	if (m_conversionRate)
 		conversion = m_conversionRate;
-	// Uncomment to only find a single object in the scene
-	// FindObject(object, scene, 100, Scalar(255, 0, 0), 0, 0);
 
+    ////////////////////////////////////////////////////////////////////
 	// When only detecting one feature in an image,
 	//	comment out SlidingWindow() above and un-comment
 	//	FindObject below
@@ -101,11 +116,16 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_h
 	//	used by feature decection. It may need to be adjusted 
 	//  according to the template used for feature detection 
 	//  or the visibility of the feature that is being dectected
-	// FindObject(object, full_scene, 100, Scalar(255, 0, 0));
+    ///////////////////////////////////////////////////////////////////
+	// FindObject(object, full_scene, 100, Scalar(255, 0, 0), 0, 0);
 
+    ///////////////////////////////////////////////////////////////////
 	// The below lines are for debugging the points that are
 	//	derived by feature detection to be used as the top
 	//	and bottom boundaries of the ROI return value
+    //  Uncomment DEBUG_FEATURES=1 at the top of this file to debug
+    //  feature detection parameters.
+    ///////////////////////////////////////////////////////////////////
 #ifdef DEBUG_FEATURES
 	namedWindow("Match", CV_WINDOW_KEEPRATIO);
 	line(outImg, Point(0, topPoint), Point(outImg.cols, topPoint), Scalar(255, 0, 0), 4);
@@ -115,14 +135,19 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_h
 	imshow("Match", outImg);
 #endif
 
+    ///////////////////////////////////////////////////////////////
 	// The below lines will print out the image after the ROI
 	//	(determined by feature detection) is applied. The ROI 
 	//  is what is being passed back to the main function
+    ///////////////////////////////////////////////////////////////
 	if (topPoint || bottomPoint) {
+        // If exceedsBorder is true, expand the border to the far left
+        //  and far right points of the image
 		if (exceedsBorder){
 			leftPoint = 0;
 			rightPoint = full_scene.cols;
 		}
+        // If top and bottom features are found
 		if (topPoint && bottomPoint){
 			// Checks to ensure points don't exceed image border, this causes a crash
 			if (topPoint < 0) topPoint = 0;
@@ -133,7 +158,7 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_h
 			roi = Rect(Point(leftPoint, topPoint), Point(rightPoint, bottomPoint));
 			ShowMessage("Top and bottom features found. \nBoundary successfully set.");
 		}
-		// Only top template found
+		// Only top feature found
 		else if (topPoint){
 			// Checks to ensure points don't exceed image border, this causes a crash
 			if (topPoint < 0) topPoint = 0;
@@ -142,7 +167,7 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_h
 			roi = Rect(Point(leftPoint, topPoint), Point(full_scene.rows, full_scene.cols));
 			ShowMessage("Only top feature found. \nThe boundary is set, but will be more refined if both features are found.");
 		}
-		// Only bottom template found
+		// Only bottom feature found
 		else if (bottomPoint){
 			// Checks to ensure points don't exceed image border, this causes a crash
 			if (bottomPoint > full_scene.rows) bottomPoint = full_scene.rows;
@@ -152,6 +177,7 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_h
 			ShowMessage("Only bottom feature found. \nThe boundary is set, but will be more refined if both features are found.");
 		}
 		Mat bound_image;
+        // If we found a region of interest, show the new bound image
 		if (roi.width)
 		{
 			bound_image = full_scene(roi);
@@ -161,19 +187,31 @@ bool MyFeatureDetector::Detect(Mat scene, string obj, Rect &roi, float feature_h
 			}
 		}
 	}
+    // No features found
 	else {
 		ShowMessage("No features found.");
 		return false;
 	}
 
-	// Use the waitkey below when a pause is needed for 
+    /////////////////////////////////////////////////////////
+	// Use the waitkey() below when a pause is needed for 
 	//	debugging. It will ensure the windows created stay
 	//	up until a key is pressed.
+    /////////////////////////////////////////////////////////
 	// waitkey(0);
 
 	return true;
 }
 
+////////////////////////////////////////////////////////////
+// MyFeatureDetector::SlidingWindow Description
+//  This function is used to create a sliding window to
+//  allow us to find multiple (right now 2) features in a 
+//  single image. This function calls FindObject() passing
+//  in a portion of the full image and numbers for the row
+//  and column which allows FindObject to locate the feature
+//  in the full image rather than just a portion of it. 
+////////////////////////////////////////////////////////////
 void MyFeatureDetector::SlidingWindow(Mat object)
 {
 	// Un-comment the below line when debugging 
@@ -201,6 +239,8 @@ void MyFeatureDetector::SlidingWindow(Mat object)
 			///////////////////////////////////////
 			// Begin Sliding Window Debugging Code
 			///////////////////////////////////////
+            // Uncomment DEBUG_SLIDING_WINDOW at the top of this file
+            //  to visualize the steps used for the sliding window
 #ifdef DEBUG_SLIDING_WINDOW
 			Mat drawResults = full_scene.clone();
 
@@ -236,6 +276,17 @@ void MyFeatureDetector::SlidingWindow(Mat object)
 	}
 }
 
+////////////////////////////////////////////////////////////
+// MyFeatureDetector::FindObject Description:
+//  This is the function which finds the feature in an 
+//  image using BRISK feature detector and BRISK feature
+//  extractor. The parameters are object (the feature), 
+//  scene (the full image), minHessian (a parameter used 
+//  with feature detection), color (used for the boxes 
+//  drawn around the features during debugging, row
+//  (indicating the sliding window row), and column 
+//  (indicating the sliding window column).
+////////////////////////////////////////////////////////////
 void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar color, int row, int col)
 {
 	//vector of keypoints	
@@ -349,6 +400,7 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 			good_matches.push_back(forward);
 	}
 
+    // These lines can be used for debugging the features found
 	/*
 	drawMatches(object,keypointsO,scene,keypointsS,good_matches,outImg,Scalar::all(-1), Scalar::all(-1),vector<char>(),DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
 
@@ -375,6 +427,8 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 
 		// TODO: Pass this image back to Panel.cpp to perspective
 		//  transform every image 
+        //  NOTE: This Homography is never actually used because 
+        //  we couldn't get it to work properly
 		m_Homography = findHomography(obj, scene_vec, CV_RANSAC);
 
 		//-- Get the corners from the image_1 ( the object to be "detected" )
@@ -388,7 +442,10 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 		// TODO: Use this function in Panel.cpp with the homography that we find
 		if (!m_Homography.empty())
 			perspectiveTransform(obj_corners, scene_corners, m_Homography);
-
+        ////////////////////////////////////////////////////////////////////////
+        // row == 0 means to use the top feature
+        // So we are using the top feature to find the length conversion rate
+        ////////////////////////////////////////////////////////////////////////
 		if (row == 0)
 		{
 			// Get pixels to lenth conversion
@@ -417,7 +474,7 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 #endif
 
 		///////////////////////////////////////////////////////
-		// This portion of the code is the logic control 
+		// This portion of the code is the math used
 		//  for finding the corners of the feature detected
 		///////////////////////////////////////////////////////
 
@@ -450,6 +507,7 @@ void MyFeatureDetector::FindObject(Mat object, Mat scene, int minHessian, Scalar
 	// else 
 	//	cout << "OBJECT NOT FOUND!" << endl;
 
+    // Performance evaluation if needed
 	duration = static_cast<double>(cv::getTickCount()) - duration;
 	duration = (duration / cv::getTickFrequency());
 
